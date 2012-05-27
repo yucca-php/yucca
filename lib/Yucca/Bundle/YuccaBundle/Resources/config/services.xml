@@ -1,0 +1,116 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="yucca.entity_manager" class="Yucca\Component\EntityManager">
+            <call method="setMappingManager">
+                <argument type="service" id="yucca.mapping_manager"/>
+            </call>
+            <call method="setSelectorManager">
+                <argument type="service" id="yucca.selector_manager"/>
+            </call>
+
+        </service>
+
+        <service id="yucca.connection_manager" class="Yucca\Component\ConnectionManager">
+            <argument>%yucca.connections%</argument>
+        </service>
+
+        <service id="yucca.schema_manager" class="Yucca\Component\SchemaManager">
+            <argument>%yucca.schema%</argument>
+            <call method="setConnectionManager">
+                <argument type="service" id="yucca.connection_manager" />
+            </call>
+        </service>
+
+        <service id="yucca.mapping_manager" class="Yucca\Component\MappingManager">
+            <argument>%yucca.mapping%</argument>
+            <call method="setSourceManager">
+                <argument type="service" id="yucca.source_manager" />
+            </call>
+        </service>
+
+        <!--
+
+            Source
+
+        -->
+        <service id="yucca.source_manager" class="Yucca\Component\SourceManager">
+            <argument>%yucca.sources%</argument>
+        </service>
+
+        <service id="yucca.source.data_parser" class="Yucca\Component\Source\DataParser\DataParser">
+            <call method="setEntityManager">
+                <argument type="service" id="yucca.entity_manager" />
+            </call>
+        </service>
+
+        <!--
+
+            Source Factory
+
+        -->
+        <service id="yucca.source_factory.database_single_row" class="Yucca\Component\SourceFactory\DatabaseSingleRowFactory">
+            <tag name="yucca.source_factory" alias="database_single_row"/>
+            <argument type="service" id="yucca.schema_manager" />
+            <argument type="service" id="yucca.connection_manager" />
+            <argument type="service" id="yucca.source.data_parser" />
+        </service>
+
+        <service id="yucca.source_factory.database_multiple_row" class="Yucca\Component\SourceFactory\DatabaseMultipleRowFactory">
+            <tag name="yucca.source_factory" alias="database_multiple_row"/>
+            <argument type="service" id="yucca.schema_manager" />
+            <argument type="service" id="yucca.connection_manager" />
+            <argument type="service" id="yucca.source.data_parser" />
+        </service>
+
+        <service id="yucca.source_factory.memcache" class="Yucca\Component\SourceFactory\MemcacheFactory">
+            <tag name="yucca.source_factory" alias="memcache"/>
+            <argument type="service" id="yucca.connection_manager" />
+            <argument type="service" id="yucca.source.data_parser" />
+        </service>
+
+        <service id="yucca.source_factory.chain" class="Yucca\Component\SourceFactory\ChainFactory">
+            <tag name="yucca.source_factory" alias="chain"/>
+            <argument type="service" id="yucca.source.data_parser" />
+        </service>
+
+        <!--
+
+            Selector
+
+        -->
+        <service id="yucca.selector_manager" class="Yucca\Component\SelectorManager">
+            <argument>%yucca.selectors%</argument>
+        </service>
+
+        <service id="yucca.selector.source_factory.database" class="Yucca\Component\Selector\SourceFactory\DatabaseFactory">
+            <tag name="yucca.selector.source_factory" alias="database"/>
+            <argument type="service" id="yucca.schema_manager" />
+        </service>
+
+        <service id="yucca.selector.source_factory.memcache" class="Yucca\Component\Selector\SourceFactory\MemcacheFactory">
+            <tag name="yucca.selector.source_factory" alias="memcache"/>
+            <argument type="service" id="yucca.connection_manager" />
+        </service>
+
+        <service id="yucca.selector.source_factory.chain" class="Yucca\Component\Selector\SourceFactory\ChainFactory">
+            <tag name="yucca.selector.source_factory" alias="chain"/>
+        </service>
+
+        <service id="yucca.sharding_strategy.modulo" class="Yucca\Component\ShardingStrategy\Modulo">
+            <tag name="yucca.sharding_strategy" alias="modulo"/>
+        </service>
+
+        <service id="yucca.connection_factory.doctrine" class="Yucca\Component\ConnectionFactory\DoctrineFactory">
+            <tag name="yucca.connection_factory" alias="doctrine"/>
+        </service>
+
+        <service id="yucca.connection_factory.memcache" class="Yucca\Component\ConnectionFactory\MemcacheFactory">
+            <tag name="yucca.connection_factory" alias="memcache"/>
+        </service>
+    </services>
+</container>
