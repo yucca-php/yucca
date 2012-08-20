@@ -92,9 +92,6 @@ class Mapper {
             $identifier = array();
         }
 
-
-        $propertyValues = $propertyValues;
-
         //First, create datas to save for each sources
         $datasBySource = array();
         foreach($propertyValues as $propertyName => $value) {
@@ -105,11 +102,13 @@ class Mapper {
             $field = $this->getFieldNameFromProperty($propertyName);
 
             //Foreach sources, if it can handle the field, save to it (should only appear once)
+            $isFirstSource = true;
             foreach($sources as $sourceName){
                 $source = $this->sourceManager->getSource($sourceName);
-                if($source->canHandle($field) && false === $source->isIdentifier($field)) {
+                if($source->canHandle($field) && (false === $source->isIdentifier($field) || false === $isFirstSource)) {
                     $datasBySource[$sourceName][$field] = $value;
                 }
+                $isFirstSource = false;
             }
         }
 
