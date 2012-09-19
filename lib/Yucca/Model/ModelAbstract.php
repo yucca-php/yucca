@@ -108,6 +108,28 @@ abstract class ModelAbstract {
         return $this;
     }
 
+    /**
+     * @throws \Yucca\Component\Source\Exception\NoDataException
+     */
+    public function ensureExist(){
+        if(empty($this->yuccaIdentifier)){
+            throw new \Yucca\Component\Source\Exception\NoDataException(get_class($this).' doesn\'t seems to be saved in database');
+        }
+        try {
+            foreach($this->yuccaProperties as $propertyName) {
+                if(false === isset($this->yuccaInitialized[$propertyName])) {
+                    $this->hydrate($propertyName);
+                }
+            }
+        } catch(\Yucca\Component\Source\Exception\NoDataException $exception){
+            throw new \Yucca\Component\Source\Exception\NoDataException(get_class($this).' doesn\'t seems to exist with identifiers : '.var_export($this->yuccaIdentifier,true));
+        }
+    }
+
+    /**
+     * @return ModelAbstract
+     * @throws \Exception
+     */
     public function save(){
         // Check that we have a mapping
         if(false === isset($this->yuccaMappingManager)){

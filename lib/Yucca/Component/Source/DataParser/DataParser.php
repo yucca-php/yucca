@@ -93,6 +93,9 @@ class DataParser
                             if(false === isset($fieldsConfiguration[$dataKey]['class_name'])) {
                                 throw new \Exception('Missing "class_name" for object dependency');
                             }
+                            if(false === ($dataValue instanceof \Yucca\Model\ModelAbstract)) {
+                                throw new \Exception(sprintf('dataValue(%s) is not an instance of \Yucca\Model\ModelAbstract'));
+                            }
                             if(false === ($dataValue instanceof $fieldsConfiguration[$dataKey]['class_name'])) {
                                 throw new \Exception(sprintf('dataValue(%s) is not an instance of configured class(%s)', get_class($dataValue), $fieldsConfiguration[$dataKey]['class_name']));
                             }
@@ -101,6 +104,7 @@ class DataParser
                             } else {
                                 $idMethod = 'getId';
                             }
+                            $dataValue->ensureExist();
                             $toReturn[$dataKey] = $dataValue->$idMethod();
                         }
 
