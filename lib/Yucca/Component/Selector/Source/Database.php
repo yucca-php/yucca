@@ -26,6 +26,7 @@ class Database implements SelectorSourceInterface{
         //Merge options
         $defaultOptions = array(
             SelectorSourceInterface::ID_FIELD => array('id'),
+            SelectorSourceInterface::FORCE_FROM_MASTER => false,
             SelectorSourceInterface::SHARDING_KEY_FIELD => '',
             SelectorSourceInterface::TABLE => '',
             SelectorSourceInterface::RESULT => SelectorSourceInterface::RESULT_IDENTIFIERS,
@@ -58,7 +59,7 @@ class Database implements SelectorSourceInterface{
             throw new \Exception('Unknown result type');
         }
 
-        $result = $this->schemaManager->fetchIds($options[SelectorSourceInterface::TABLE], $criterias, $fields);
+        $result = $this->schemaManager->fetchIds($options[SelectorSourceInterface::TABLE], $criterias, $fields, $options[SelectorSourceInterface::FORCE_FROM_MASTER], $options);
 
         return $result;
     }

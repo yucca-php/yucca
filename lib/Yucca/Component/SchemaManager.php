@@ -153,12 +153,12 @@ class SchemaManager
             $sql .= ' WHERE '.implode(" AND ",$whereCriterias);
         }
 
-        if(isset($option['orderBy'])) {
-            $sql .= ' ORDER BY '.$option['orderBy'];
+        if(isset($options['orderBy'])) {
+            $sql .= ' ORDER BY '.$options['orderBy'];
         }
 
-        if(isset($option['limit'])) {
-            $sql .= ' LIMIT '.$option['limit'];
+        if(isset($options['limit'])) {
+            $sql .= ' LIMIT '.$options['limit'];
         }
 
         return $connection->fetchAll($sql, $params);
