@@ -112,6 +112,7 @@ class DatabaseSingleRow extends SourceAbstract{
      */
     public function save($datas, array $identifier=array(), &$affectedRows=null){
         //Extract sharding key from identifier
+        $originalIdentifier = $identifier;
         $shardingKey = null;
         if(isset($identifier['sharding_key'])) {
             $shardingKey = $identifier['sharding_key'];
@@ -156,15 +157,10 @@ class DatabaseSingleRow extends SourceAbstract{
             //Insert
             $affectedRows = $connection->insert($tableName, $datas);
 
-            $lastInsertId = array(
-                "sharding_key"=>$shardingKey,
-                "last_id"=>$connection->lastInsertId(),
-            );
-
             if(isset($identifierFieldName)) {
                 return array(
-                    'sharding_key' => $lastInsertId['sharding_key'],
-                    $identifierFieldName=>$lastInsertId['last_id']
+                    'sharding_key' => $shardingKey,
+                    $identifierFieldName=>$connection->lastInsertId()
                 );
             } else {
                 return $identifier;
@@ -172,7 +168,7 @@ class DatabaseSingleRow extends SourceAbstract{
         } else {
             //Update
             $affectedRows = $connection->update($tableName, $datas, $identifier);
-            return array();
+            return $originalIdentifier;
         }
     }
 
