@@ -88,7 +88,6 @@ abstract class SelectorAbstract implements SelectorInterface
         if(is_null($this->idsCount)) {
             $options = array(
                 SelectorSourceInterface::RESULT => SelectorSourceInterface::RESULT_COUNT,
-                SelectorSourceInterface::LIMIT => $this->limit,
             );
             $this->idsCount = current(current($this->source->loadIds(
                 $this->criterias,
