@@ -1,7 +1,14 @@
 <?php
 /*
- * This is included first by PHPUnit to initialize autoloader
+ * This file was delivered to you as part of the Yucca package.
+ *
+ * (c) Rémi JANOT <r.janot@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
  */
+
+// This is included first by PHPUnit to initialize autoloader
 require_once __DIR__.'/../../symfony/src/Symfony/Component/ClassLoader/UniversalClassLoader.php';
 use Symfony\Component\ClassLoader\UniversalClassLoader;
 
