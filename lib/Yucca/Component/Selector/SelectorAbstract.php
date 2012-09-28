@@ -210,6 +210,9 @@ abstract class SelectorAbstract implements SelectorInterface
 
     public function limit($value)
     {
+        if(0===preg_match('/^([0-9]+)(,[0-9]+)?$/',$value)){
+            throw new \InvalidArgumentException($value.' doesn\'t match limit pattern');
+        }
         $this->limit = $value;
         return $this;
     }
