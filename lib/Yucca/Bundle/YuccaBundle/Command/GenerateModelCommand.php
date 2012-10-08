@@ -52,7 +52,7 @@ class GenerateModelCommand extends ContainerAwareCommand
             rtrim($path,DIRECTORY_SEPARATOR),
             trim(str_replace('\\',DIRECTORY_SEPARATOR,$modelClassName),DIRECTORY_SEPARATOR),
         );
-        $realPath = '/'.implode('/',$realPath).'.php';
+        $realPath = implode('/',$realPath).'.php';
 
         //Concatenate Properties and methods
         $properties = implode("\n\n",$toAdd['properties']);
