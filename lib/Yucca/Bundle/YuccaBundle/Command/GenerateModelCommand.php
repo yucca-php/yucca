@@ -75,6 +75,7 @@ EOT;
         } else {
             $namespace = substr($modelClassName,0,strrpos($modelClassName,'\\'));
             $className = substr($modelClassName,strrpos($modelClassName,'\\')+1);
+            $yuccaProperties = implode('\',\'', array_keys($toAdd['properties']));
             $data = <<<EOT
 <?php
 namespace $namespace;
@@ -82,7 +83,7 @@ namespace $namespace;
  *
  */
 class $className extends \\Yucca\\Model\\ModelAbstract {
-
+    protected \$yuccaProperties = array('$yuccaProperties');
 $properties
 
 $methods
@@ -130,7 +131,7 @@ EOT;
         foreach($fields as $fieldName=>$fieldInformation) {
             $tmp = $this->generatePropertyCode($modelClassName, $fieldName, $this->extractFieldType($fieldInformation));
             if($tmp) {
-                $propertiesToAdd[] = $tmp;
+                $propertiesToAdd[$fieldName] = $tmp;
             }
 
             $tmp = $this->generatePropertyGetter($modelClassName, $fieldName, $this->extractFieldType($fieldInformation));
@@ -186,18 +187,16 @@ EOT;
      * @return string
      */
     protected function generatePropertyCode($className,$fieldName,$type) {
-        $propertyName = $this->underscoreToCamelcase($fieldName, false);
-
         try {
             $class = new  \ReflectionClass($className);
-            $class->getProperty($propertyName);
+            $class->getProperty($fieldName);
             return '';
         } catch(\ReflectionException $exception) {
             return <<<EOT
     /**
      * @var $type
      */
-    protected \$$propertyName;
+    protected \$$fieldName;
 EOT;
         }
     }
@@ -209,7 +208,6 @@ EOT;
      * @return string
      */
     protected function generatePropertyGetter($className,$fieldName,$type) {
-        $propertyName = $this->underscoreToCamelcase($fieldName, false);
         $getterName = 'get'.$this->underscoreToCamelcase($fieldName, true);
         try {
             $class = new  \ReflectionClass($className);
@@ -221,7 +219,8 @@ EOT;
      * @return $type
      */
     public function $getterName() {
-        return \$this->$propertyName;
+        \$this->hydrate('$fieldName');
+        return \$this->$fieldName;
     }
 EOT;
         }
@@ -234,7 +233,6 @@ EOT;
      * @return string
      */
     protected function generatePropertySetter($className,$fieldName,$type) {
-        $propertyName = $this->underscoreToCamelcase($fieldName, false);
         $setterName = 'set'.$this->underscoreToCamelcase($fieldName, true);
         $typeHinting = (('mixed'===$type) ? '' : $type.' ');
 
@@ -245,11 +243,12 @@ EOT;
         } catch(\ReflectionException $exception) {
             return <<<EOT
     /**
-     * @param $typeHinting\$$propertyName
+     * @param $typeHinting\$$fieldName
      * @return \\$className
      */
-    public function $setterName($typeHinting\$$propertyName) {
-        \$this->$propertyName = \$$propertyName;
+    public function $setterName($typeHinting\$$fieldName) {
+        \$this->hydrate('$fieldName');
+        \$this->$fieldName = \$$fieldName;
         return \$this;
     }
 EOT;
