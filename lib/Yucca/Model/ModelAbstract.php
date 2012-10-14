@@ -14,7 +14,7 @@ use Yucca\Component\MappingManager;
 use Yucca\Component\SelectorManager;
 
 abstract class ModelAbstract {
-    private $yuccaInitialized = array();
+    protected $yuccaInitialized = array();
     protected $yuccaProperties = array();
 
     /**
@@ -181,5 +181,12 @@ abstract class ModelAbstract {
         $this->reset(array());
 
         return $this;
+    }
+
+    public function __sleep() {
+        return array_merge(
+            array('yuccaInitialized', 'yuccaProperties', 'yuccaIdentifier'),
+            $this->yuccaProperties
+        );
     }
 }
