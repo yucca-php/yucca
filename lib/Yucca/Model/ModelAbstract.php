@@ -132,6 +132,7 @@ abstract class ModelAbstract {
         } catch(\Yucca\Component\Source\Exception\NoDataException $exception){
             throw new \Yucca\Component\Source\Exception\NoDataException(get_class($this).' doesn\'t seems to exist with identifiers : '.var_export($this->yuccaIdentifier,true));
         }
+        return $this;
     }
 
     /**
