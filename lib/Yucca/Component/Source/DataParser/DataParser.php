@@ -64,6 +64,9 @@ class DataParser
                     case 'json':
                         $toReturn[$dataKey] = json_decode($dataValue);
                         break;
+                    case 'json_assoc':
+                        $toReturn[$dataKey] = json_decode($dataValue,true);
+                        break;
                     case 'scalar':
                     case 'identifier':
                     default: {
@@ -139,6 +142,7 @@ class DataParser
                         }
                         break;
                     case 'json':
+                    case 'json_assoc':
                         $toReturn[$dataKey] = json_encode($dataValue);
                         break;
                     case 'scalar':
