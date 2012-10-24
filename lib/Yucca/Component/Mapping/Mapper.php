@@ -72,7 +72,10 @@ class Mapper {
             if($source->canHandle($field)){
                 $mappedIdentifiers = array();
                 foreach($identifier as $id=>$value){
-                    $mappedIdentifiers[$this->getFieldNameFromProperty($id)] = $value;
+                    $fieldName = $this->getFieldNameFromProperty($id);
+                    if($source->canHandle($fieldName)) {
+                        $mappedIdentifiers[$fieldName] = $value;
+                    }
                 }
 
                 $datas = $source->load($mappedIdentifiers);
