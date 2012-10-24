@@ -28,6 +28,9 @@ abstract class SelectorAbstract implements SelectorInterface
     protected $orderBy = null;
     protected $limit = null;
 
+    /**
+     * @var SelectorSourceInterface
+     */
     protected $source;
 
     protected $idFields;
@@ -39,9 +42,7 @@ abstract class SelectorAbstract implements SelectorInterface
     protected $SPECIFIC_VERSION_OFFSET = '1';
 
     /**
-     * Constructor
-     * @param array $sources
-     * @return \Yucca\Component\Selector\SelectorAbstract
+     * @param Source\SelectorSourceInterface $source
      */
     public function __construct(SelectorSourceInterface $source = null)
     {

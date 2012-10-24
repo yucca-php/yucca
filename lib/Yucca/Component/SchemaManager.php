@@ -17,7 +17,7 @@ class SchemaManager
     protected $schemaConfig;
     protected $shardingStrategies;
     /**
-     * @var Yucca\Component\ConnectionManager
+     * @var \Yucca\Component\ConnectionManager
      */
     protected $connectionManager;
 
@@ -104,22 +104,59 @@ class SchemaManager
         }
 
         if((false === $allowEmptyCriterias) && empty($criterias)){
+            if(is_array($tableName)){
+                $tableName = implode(',',array_keys($tableName));
+            }
             throw new \Exception("Trying to load from $tableName with no identifiers");
         }
+        if(empty($tableName)) {
+            throw new \RuntimeException('table name must not be empty');
+        }
 
-        $connection = $this->connectionManager->getConnection(
-            $this->getConnectionName($tableName, $shardingKey, $forceFromMaster),
-            $forceFromMaster
-        );
+        if(is_array($tableName)){
+            $connectionName = $this->getConnectionName(key($tableName), $shardingKey, $forceFromMaster);
+            $from = array();
+            $join = array();
 
-        $shardingIdentifier = $this->getShardingIdentifier($tableName,$shardingKey);
-        if($shardingIdentifier) {
-            $tableName = sprintf('%1$s_%2$s', $tableName, $shardingIdentifier);
+            foreach($tableName as $table => $tableJoin) {
+                if($connectionName != $this->getConnectionName($table, $shardingKey, $forceFromMaster)) {
+                    throw new \RuntimeException('Expected connection : '.$connectionName.', but '.$table.' use another one');
+                }
+
+                $shardingIdentifier = $this->getShardingIdentifier($table,$shardingKey);
+                if($shardingIdentifier) {
+                    $table = sprintf('%1$s_%2$s', $table, $shardingIdentifier);
+                }
+
+                if(empty($tableJoin['join'])) {
+                    $from[] = $table. (isset($tableJoin['alias'])?' AS '.$tableJoin['alias']:'');
+                } else {
+                    $join[] = sprintf($tableJoin['join'], $table);
+                }
+            }
+
+            $tables = implode(',',$from).' '.implode(' ',$join);
+            $connection = $this->connectionManager->getConnection(
+                $connectionName,
+                $forceFromMaster
+            );
+        } else {
+            $connection = $this->connectionManager->getConnection(
+                $this->getConnectionName($tableName, $shardingKey, $forceFromMaster),
+                $forceFromMaster
+            );
+
+            $shardingIdentifier = $this->getShardingIdentifier($tableName,$shardingKey);
+            if($shardingIdentifier) {
+                $tableName = sprintf('%1$s_%2$s', $tableName, $shardingIdentifier);
+            }
+
+            $tables = '`'.$tableName.'`';
         }
 
         $fields = implode(',',$fields);
 
-        $sql = "SELECT $fields FROM `$tableName`";
+        $sql = "SELECT $fields FROM $tables";
         $params = array();
         $whereCriterias = array();
         foreach($criterias as $criteriaKey=>$criteriaValue){
