@@ -13,7 +13,7 @@ use Yucca\Component\EntityManager;
 use Yucca\Component\MappingManager;
 use Yucca\Component\SelectorManager;
 
-abstract class ModelAbstract {
+abstract class ModelAbstract implements ModelInterface{
     protected $yuccaInitialized = array();
     protected $yuccaProperties = array();
 
@@ -34,7 +34,8 @@ abstract class ModelAbstract {
 
     abstract public function getId();
 
-    /**EntityManager
+    /**
+     * EntityManager
      * @param \Yucca\Component\MappingManager $mappingManager
      * @return ModelAbstract
      */

@@ -9,7 +9,7 @@
  */
 namespace Yucca\Component;
 
-use Yucca\Model\ModelAbstract;
+use Yucca\Model\ModelInterface;
 
 class EntityManager
 {
@@ -54,11 +54,11 @@ class EntityManager
     }
 
     /**
-     * @param \Yucca\Model\ModelAbstract $modelAbstract
+     * @param \Yucca\Model\ModelInterface $model
      * @return EntityManager
      */
-    protected function initModel(ModelAbstract $modelAbstract){
-        $modelAbstract->setYuccaMappingManager($this->mappingManager)
+    protected function initModel(ModelInterface $model){
+        $model->setYuccaMappingManager($this->mappingManager)
                 ->setYuccaSelectorManager($this->selectorManager)
                 ->setYuccaEntityManager($this);
 
@@ -70,7 +70,7 @@ class EntityManager
      * @param $identifier
      * @param mixed $shardingKey
      * @throws \Exception
-     * @return \Yucca\Model\ModelAbstract
+     * @return \Yucca\Model\ModelInterface
      */
     public function load($entityClassName, $identifier, $shardingKey=null){
         //If $identifier isn't an array, assumed it's the id value
@@ -94,8 +94,8 @@ class EntityManager
         $toReturn = new $entityClassName();
 
         //@Fixme : generate proxy like doctrine
-        if(false === ($toReturn instanceof ModelAbstract)) {
-            throw new \Exception("Entity class $entityClassName must inherit from \Yucca\Model\ModelAbstract.");
+        if(false === ($toReturn instanceof ModelInterface)) {
+            throw new \Exception("Entity class $entityClassName must implement \Yucca\Model\ModelInterface.");
         }
 
         $this->initModel($toReturn);
@@ -104,7 +104,7 @@ class EntityManager
         return $toReturn;
     }
 
-    public function save(ModelAbstract $model){
+    public function save(ModelInterface $model){
         $this->initModel($model);
 
         $model->save();
@@ -112,7 +112,7 @@ class EntityManager
         return $this;
     }
 
-    public function remove(ModelAbstract $model){
+    public function remove(ModelInterface $model){
         $this->initModel($model);
 
         $model->remove();
@@ -120,7 +120,7 @@ class EntityManager
         return $this;
     }
 
-    public function resetModel(ModelAbstract $model, $identifier) {
+    public function resetModel(ModelInterface $model, $identifier) {
         $model->reset($identifier);
 
         return $this;
