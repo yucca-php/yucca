@@ -184,6 +184,8 @@ class SchemaManager
                 if($criteriaValue instanceof \Yucca\Model\ModelAbstract) {
                     $whereCriterias[] = "`$criteriaKey`=:$criteriaKey";
                     $params[":$criteriaKey"] = $criteriaValue->getId();
+                } elseif(is_null($criteriaValue)) {
+                    $whereCriterias[] = "`$criteriaKey` IS NULL";
                 } elseif(is_scalar($criteriaValue)) {
                     $whereCriterias[] = "`$criteriaKey`=:$criteriaKey";
                     $params[":$criteriaKey"] = $criteriaValue;
