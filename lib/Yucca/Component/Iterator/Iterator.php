@@ -15,7 +15,7 @@ use Yucca\Component\EntityManager;
 class Iterator implements \Countable, \Iterator
 {
     /**
-     * @var \Yucca\Model\ModelAbstract
+     * @var \Yucca\Model\ModelInterface
      */
     protected $model = null;
 
@@ -91,7 +91,7 @@ class Iterator implements \Countable, \Iterator
 
     /**
      * retrieve the current Model
-     * @return \Yucca\Model\ModelAbstract
+     * @return \Yucca\Model\ModelInterface
      */
     public function current()
     {

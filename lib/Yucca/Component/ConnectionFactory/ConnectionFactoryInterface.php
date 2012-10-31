@@ -10,5 +10,9 @@
 namespace Yucca\Component\ConnectionFactory;
 
 interface ConnectionFactoryInterface {
+    /**
+     * @param array $params
+     * @return mixed
+     */
     function getConnection(array $params);
 }

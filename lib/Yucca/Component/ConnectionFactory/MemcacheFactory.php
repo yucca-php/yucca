@@ -11,6 +11,10 @@ namespace Yucca\Component\ConnectionFactory;
 
 
 class MemcacheFactory implements ConnectionFactoryInterface {
+    /**
+     * @param array $params
+     * @return \Memcache
+     */
     public function getConnection(array $params) {
         $addServerParamsDefault = array(
             'host'=>null,

@@ -12,6 +12,10 @@ namespace Yucca\Component\ConnectionFactory;
 use Doctrine\DBAL\DriverManager;
 
 class DoctrineFactory implements ConnectionFactoryInterface {
+    /**
+     * @param array $params
+     * @return \Doctrine\DBAL\Connection
+     */
     public function getConnection(array $params) {
         return DriverManager::getConnection($params['options']);
     }

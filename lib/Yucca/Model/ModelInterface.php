@@ -12,31 +12,31 @@ interface ModelInterface {
     /**
      * EntityManager
      * @param \Yucca\Component\MappingManager $mappingManager
-     * @return ModelAbstract
+     * @return ModelInterface
      */
     public function setYuccaMappingManager(MappingManager $mappingManager);
 
     /**
      * @param \Yucca\Component\EntityManager $entityManager
-     * @return ModelAbstract
+     * @return ModelInterface
      */
     public function setYuccaEntityManager(EntityManager $entityManager);
 
     /**
      * @param \Yucca\Component\SelectorManager $selectorManager
-     * @return ModelAbstract
+     * @return ModelInterface
      */
     public function setYuccaSelectorManager(SelectorManager $selectorManager);
 
     /**
      * @param $identifier
-     * @return ModelAbstract
+     * @return ModelInterface
      */
     public function setYuccaIdentifier($identifier);
 
     /**
      * @param $identifier
-     * @return ModelAbstract
+     * @return ModelInterface
      */
     public function reset($identifier);
 
@@ -46,7 +46,7 @@ interface ModelInterface {
     public function ensureExist();
 
     /**
-     * @return ModelAbstract
+     * @return ModelInterface
      * @throws \Exception
      */
     public function save();

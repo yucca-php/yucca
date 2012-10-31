@@ -60,6 +60,8 @@ class ConnectionManager
     /**
      * Build connection
      * @param array $connectionConfig
+     * @throws \InvalidArgumentException
+     * @return mixed
      */
     protected function buildConnection(array $connectionConfig) {
         if(false === isset($connectionConfig['type'])) {

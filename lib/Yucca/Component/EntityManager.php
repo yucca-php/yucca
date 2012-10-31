@@ -89,7 +89,7 @@ class EntityManager
         }
 
         /**
-         * @var \Yucca\Model\ModelAbstract $toReturn
+         * @var \Yucca\Model\ModelInterface $toReturn
          */
         $toReturn = new $entityClassName();
 
