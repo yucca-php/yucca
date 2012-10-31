@@ -59,10 +59,10 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
 
         //Load with wrong class
         try {
-            $entityManager->load('\Datetime',1);
+            $entityManager->load('\DateTime',1);
             $this->fail('Should raise an exception');
         } catch(\Exception $exception) {
-            $this->assertContains('Entity class \Datetime must inherit from \Yucca\Model\ModelAbstract.', $exception->getMessage());
+            $this->assertContains('Entity class \DateTime must implement \Yucca\Model\ModelInterface.', $exception->getMessage());
         }
         //Load with class that does not exists
         try {

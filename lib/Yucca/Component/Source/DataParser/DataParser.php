@@ -12,7 +12,7 @@ use Yucca\Component\EntityManager;
 class DataParser
 {
     /**
-     * @var Yucca\Component\EntityManager
+     * @var \Yucca\Component\EntityManager
      */
     protected  $entityManager;
 
@@ -90,6 +90,7 @@ class DataParser
      */
     public function encode(array $datas, array $fieldsConfiguration) {
         //TODO : We may have to introduce factories for sharded objects for example
+        $toReturn = array();
         foreach($datas as $dataKey => $dataValue){
             if(isset($fieldsConfiguration[$dataKey]['type'])) {
                 switch($fieldsConfiguration[$dataKey]['type']){
@@ -99,13 +100,13 @@ class DataParser
                             $toReturn[$dataKey] = null;
                         } else {
                             if(false === is_object($dataValue)) {
-                                throw new \Exception('dataValue is not an object');
+                                throw new \Exception($dataKey.' is not an object');
                             }
                             if(false === isset($fieldsConfiguration[$dataKey]['class_name'])) {
                                 throw new \Exception('Missing "class_name" for object dependency');
                             }
-                            if(false === ($dataValue instanceof \Yucca\Model\ModelAbstract)) {
-                                throw new \Exception(sprintf('dataValue(%s) is not an instance of \Yucca\Model\ModelAbstract'));
+                            if(false === ($dataValue instanceof \Yucca\Model\ModelInterface)) {
+                                throw new \Exception(sprintf('dataValue(%s) doesn\'t implement \Yucca\Model\ModelInterface'));
                             }
                             if(false === ($dataValue instanceof $fieldsConfiguration[$dataKey]['class_name'])) {
                                 throw new \Exception(sprintf('dataValue(%s) is not an instance of configured class(%s)', get_class($dataValue), $fieldsConfiguration[$dataKey]['class_name']));

@@ -167,7 +167,7 @@ class SchemaManager
                 $parametersNames = array();
                 $i = 0;
                 foreach($criteriaValue as $v){
-                    if($v instanceof \Yucca\Model\ModelAbstract) {
+                    if($v instanceof \Yucca\Model\ModelInterface) {
                         $params[":$criteriaKey$i"] = $v->getId();
                         $parametersNames[] = ":$criteriaKey$i";
                         $i++;
@@ -181,7 +181,7 @@ class SchemaManager
                 }
                 $whereCriterias[] = "`$criteriaKey` IN (".implode(',',$parametersNames).")";
             } else {
-                if($criteriaValue instanceof \Yucca\Model\ModelAbstract) {
+                if($criteriaValue instanceof \Yucca\Model\ModelInterface) {
                     $whereCriterias[] = "`$criteriaKey`=:$criteriaKey";
                     $params[":$criteriaKey"] = $criteriaValue->getId();
                 } elseif(is_null($criteriaValue)) {

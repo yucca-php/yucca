@@ -40,7 +40,7 @@ class Memcache implements SelectorSourceInterface{
             }
 
             foreach($criteriaValue as $v){
-                if($v instanceof \Yucca\Model\ModelAbstract) {
+                if($v instanceof \Yucca\Model\ModelInterface) {
                     $cacheKey[] = $criteriaKey.'-'.$v->getId().'-'.$v->getUpdatedAt();
                 } elseif(is_scalar($v)) {
                     $cacheKey[] = $criteriaKey.'-'.$v;
@@ -95,6 +95,12 @@ class Memcache implements SelectorSourceInterface{
         }
     }
 
+    /**
+     * @param array $ids
+     * @param array $criterias
+     * @param array $options
+     * @return mixed
+     */
     public function saveIds(array $ids, array $criterias, array $options = array()) {
         $options = $this->mergeOptions($options);
 
@@ -102,7 +108,13 @@ class Memcache implements SelectorSourceInterface{
         return $connection->set( $this->getCacheKey($criterias, $options) , $ids, null, 0);
     }
 
+    /**
+     * @param array $options
+     */
     public function invalidateGlobal(array $options = array()){
+        /**
+         * @var $connection \Memcache
+         */
         $connection = $this->connectionManager->getConnection($options[SelectorSourceInterface::CONNECTION_NAME]);
         $connection->delete( $this->getCacheKey(array(), array_merge($options, array(SelectorSourceInterface::RESULT => SelectorSourceInterface::RESULT_IDENTIFIERS))));
         $connection->delete( $this->getCacheKey(array(), array_merge($options, array(SelectorSourceInterface::RESULT => SelectorSourceInterface::RESULT_COUNT))));
