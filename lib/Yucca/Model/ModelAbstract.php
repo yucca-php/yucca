@@ -32,7 +32,8 @@ abstract class ModelAbstract implements ModelInterface{
 
     protected $yuccaIdentifier;
 
-    abstract public function getId();
+    // For old PHP 5.3 (like 5.3.3) compatibility
+    //abstract public function getId();
 
     /**
      * EntityManager
