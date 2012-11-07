@@ -53,9 +53,13 @@ class Database implements SelectorSourceInterface{
         if (self::RESULT_COUNT === $options[SelectorSourceInterface::RESULT]) {
             $securedFields = array();
             foreach($options[SelectorSourceInterface::ID_FIELD] as $optionFieldName){
-                $fullyQualifiedFieldName = explode(' as ',$optionFieldName);
-                $fieldName = explode('.',$fullyQualifiedFieldName[0]);
-                $securedFields[] = '`'.implode('`.`',$fieldName).'`';
+                if('*' == $optionFieldName) {
+                    $securedFields[] = '*';
+                } else {
+                    $fullyQualifiedFieldName = explode(' as ',$optionFieldName);
+                    $fieldName = explode('.',$fullyQualifiedFieldName[0]);
+                    $securedFields[] = '`'.implode('`.`',$fieldName).'`';
+                }
             }
             $fields = array("COUNT(".implode(',',$securedFields).")");
         } elseif (self::RESULT_IDENTIFIERS === $options[SelectorSourceInterface::RESULT]) {
