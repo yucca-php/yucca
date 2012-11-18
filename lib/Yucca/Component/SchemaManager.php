@@ -233,7 +233,19 @@ class SchemaManager
             $tableName = sprintf('%1$s_%2$s', $tableName, $shardingIdentifier);
         }
 
-        $connection->delete($tableName, $criterias);
+        $deleteCriteria = $deleteCriteriaValues = array();
+        foreach ($criterias as $columnName=>$criteria) {
+            if(is_array($criteria) && false == empty($criteria)) {
+                $deleteCriteria[] = $columnName . ' IN ('.implode(',',array_fill(0, count($criteria), '?')).')';
+                $deleteCriteriaValues = array_merge($deleteCriteriaValues, $criteria);
+            }else {
+                $deleteCriteria[] = $columnName . ' = ?';
+                $deleteCriteriaValues[] = $criteria;
+            }
+        }
+        $query = 'DELETE FROM ' . $tableName . ' WHERE '.implode(' AND ',$deleteCriteria);
+
+        $connection->executeUpdate($query, $deleteCriteriaValues);
 
         return $this;
     }

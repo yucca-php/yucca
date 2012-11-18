@@ -40,6 +40,11 @@ class DatabaseMultipleRow extends SourceAbstract{
     protected $mapping;
 
     /**
+     * @var array
+     */
+    protected $fields;
+
+    /**
      * @var \Yucca\Component\SchemaManager
      */
     protected $schemaManager;
@@ -82,6 +87,11 @@ class DatabaseMultipleRow extends SourceAbstract{
             throw new \InvalidArgumentException("Configuration array must contain a 'mapping' key");
         }
         $this->mapping = $this->configuration['mapping'];
+
+        if(false===isset($this->configuration['fields'])){
+            throw new \InvalidArgumentException("Configuration array must contain a 'fields' key");
+        }
+        $this->fields = $this->configuration['fields'];
     }
 
     /**
@@ -150,7 +160,13 @@ class DatabaseMultipleRow extends SourceAbstract{
      * @return \Yucca\Component\Source\DatabaseMultipleRow
      */
     public function remove(array $identifier){
-        $this->schemaManager->remove($this->tableName, $this->mapIdentifier($identifier));
+        $this->schemaManager->remove(
+            $this->tableName,
+            array_merge(
+                $this->mapIdentifier($identifier),
+                array($this->nameField=>array_keys($this->fields))
+            )
+        );
 
         return $this;
     }
