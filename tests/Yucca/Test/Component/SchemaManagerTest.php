@@ -363,8 +363,8 @@ class SchemaManagerTest extends \PHPUnit_Framework_TestCase {
             ->disableOriginalConstructor()
             ->getMock();
         $connection->expects($this->once())
-            ->method('delete')
-            ->with('table0',array('id'=>1));
+            ->method('executeUpdate')
+            ->with('DELETE FROM table0 WHERE id = ?',array(0=>1));
         $connectionManager = $this->getMockBuilder('Yucca\Component\ConnectionManager')
             ->disableOriginalConstructor()
             ->getMock();
@@ -389,8 +389,8 @@ class SchemaManagerTest extends \PHPUnit_Framework_TestCase {
             ->disableOriginalConstructor()
             ->getMock();
         $connection->expects($this->once())
-            ->method('delete')
-            ->with('table0_0',array('id'=>1));
+            ->method('executeUpdate')
+            ->with('DELETE FROM table0_0 WHERE id = ?',array(0=>1));
         $connectionManager = $this->getMockBuilder('Yucca\Component\ConnectionManager')
             ->disableOriginalConstructor()
             ->getMock();
