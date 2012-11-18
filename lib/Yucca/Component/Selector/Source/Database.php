@@ -57,8 +57,7 @@ class Database implements SelectorSourceInterface{
                     $securedFields[] = '*';
                 } else {
                     $fullyQualifiedFieldName = explode(' as ',$optionFieldName);
-                    $fieldName = explode('.',$fullyQualifiedFieldName[0]);
-                    $securedFields[] = '`'.implode('`.`',$fieldName).'`';
+                    $securedFields[] = $fullyQualifiedFieldName[0];
                 }
             }
             $fields = array("COUNT(".implode(',',$securedFields).")");
