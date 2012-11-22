@@ -10,7 +10,7 @@
 namespace Yucca\Component\ConnectionFactory;
 
 
-class MemcacheFactory implements ConnectionFactoryInterface {
+class SphinxFactory implements ConnectionFactoryInterface {
     /**
      * @param array $params
      * @return \Memcache
@@ -19,13 +19,15 @@ class MemcacheFactory implements ConnectionFactoryInterface {
         $addServerParamsDefault = array(
             'host'=>null,
             'port'=>null,
+            'timeout'=>1,
         );
 
-        $memcache = new \Memcache();
-        foreach($params['options']['servers'] as $server){
-            $addServerParams = array_merge($addServerParamsDefault, $server);
-            $memcache->addserver($addServerParams['host'], $addServerParams['port']);
-        }
-        return $memcache;
+        $sphinx = new \SphinxClient();
+
+        $addServerParams = array_merge($addServerParamsDefault, $params['options']);
+        $sphinx->setServer($addServerParams['host'], $addServerParams['port']);
+        $sphinx->SetConnectTimeout($addServerParams['timeout']);
+
+        return $sphinx;
     }
 }

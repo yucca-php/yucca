@@ -20,6 +20,8 @@ interface SelectorSourceInterface
     const CONNECTION_NAME = 'connection_name';
     const SELECTOR_NAME = 'selector_name';
     const LIMIT = 'limit';
+    const OFFSET = 'offset';
+    const GROUPBY = 'groupBy';
     const ORDERBY = 'orderBy';
     const FORCE_FROM_MASTER = 'force_from_master';
 

@@ -144,4 +144,12 @@ class Iterator implements \Countable, \Iterator
     {
         return $this->selector->valid();
     }
+
+    /**
+     * @return \Yucca\Component\Selector\SelectorInterface
+     */
+    public function getSelector()
+    {
+        return $this->selector;
+    }
 }

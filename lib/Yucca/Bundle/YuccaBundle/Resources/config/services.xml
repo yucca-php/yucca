@@ -97,6 +97,11 @@
             <argument type="service" id="yucca.connection_manager" />
         </service>
 
+        <service id="yucca.selector.source_factory.sphinx" class="Yucca\Component\Selector\SourceFactory\SphinxFactory">
+            <tag name="yucca.selector.source_factory" alias="sphinx"/>
+            <argument type="service" id="yucca.connection_manager" />
+        </service>
+
         <service id="yucca.selector.source_factory.chain" class="Yucca\Component\Selector\SourceFactory\ChainFactory">
             <tag name="yucca.selector.source_factory" alias="chain"/>
         </service>
@@ -111,6 +116,10 @@
 
         <service id="yucca.connection_factory.memcache" class="Yucca\Component\ConnectionFactory\MemcacheFactory">
             <tag name="yucca.connection_factory" alias="memcache"/>
+        </service>
+
+        <service id="yucca.connection_factory.sphinx" class="Yucca\Component\ConnectionFactory\SphinxFactory">
+            <tag name="yucca.connection_factory" alias="sphinx"/>
         </service>
     </services>
 </container>

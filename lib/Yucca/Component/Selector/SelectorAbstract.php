@@ -26,6 +26,8 @@ abstract class SelectorAbstract implements SelectorInterface
     protected $idsArray = array();
     protected $idsCount = null;
     protected $orderBy = null;
+    protected $groupBy = null;
+    protected $offset = null;
     protected $limit = null;
 
     /**
@@ -76,7 +78,9 @@ abstract class SelectorAbstract implements SelectorInterface
             $options = array(
                 SelectorSourceInterface::RESULT => SelectorSourceInterface::RESULT_IDENTIFIERS,
                 SelectorSourceInterface::LIMIT => $this->limit,
+                SelectorSourceInterface::OFFSET => $this->offset,
                 SelectorSourceInterface::ORDERBY => $this->orderBy,
+                SelectorSourceInterface::GROUPBY => null,
             );
             $this->idsArray = $this->source->loadIds(
                 $this->criterias,
@@ -98,10 +102,10 @@ abstract class SelectorAbstract implements SelectorInterface
             $options = array(
                 SelectorSourceInterface::RESULT => SelectorSourceInterface::RESULT_COUNT,
             );
-            $this->idsCount = current(current($this->source->loadIds(
+            $this->idsCount = $this->source->loadIds(
                 $this->criterias,
                 array_merge($this->options, $options)
-            )));
+            );
         }
 
         return $this;
@@ -206,6 +210,12 @@ abstract class SelectorAbstract implements SelectorInterface
     public function orderBy($value)
     {
         $this->orderBy = $value;
+        return $this;
+    }
+
+    public function offset($value)
+    {
+        $this->offset = $value;
         return $this;
     }
 
