@@ -116,7 +116,7 @@ class Mapper {
             $isFirstSource = true;
             foreach($sources as $sourceName){
                 $source = $this->sourceManager->getSource($sourceName);
-                if($source->canHandle($field) && (false === $source->isIdentifier($field) || false === $isFirstSource)) {
+                if($source->canHandle($field) && (false===is_null($value) || false === $source->isIdentifier($field) || false === $isFirstSource)) {
                     $datasBySource[$sourceName][$field] = $value;
                 }
                 $isFirstSource = false;

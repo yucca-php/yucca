@@ -240,7 +240,11 @@ class SchemaManager
                 $deleteCriteriaValues = array_merge($deleteCriteriaValues, $criteria);
             }else {
                 $deleteCriteria[] = $columnName . ' = ?';
-                $deleteCriteriaValues[] = $criteria;
+                if($criteria instanceof \Yucca\Model\ModelInterface) {
+                    $deleteCriteriaValues[] = $criteria->getId();
+                } else {
+                    $deleteCriteriaValues[] = $criteria;
+                }
             }
         }
         $query = 'DELETE FROM ' . $tableName . ' WHERE '.implode(' AND ',$deleteCriteria);

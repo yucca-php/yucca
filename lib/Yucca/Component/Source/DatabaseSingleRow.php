@@ -67,7 +67,7 @@ class DatabaseSingleRow extends SourceAbstract{
     }
 
     /**
-     * @param DataParser\DataParser $dataParser
+     * @param DataParser $dataParser
      * @return DatabaseSingleRow
      */
     public function setDataParser(DataParser $dataParser){
@@ -133,7 +133,7 @@ class DatabaseSingleRow extends SourceAbstract{
         //find identifiers
         $identifierFieldName = null;
         foreach($this->configuration['fields'] as $field=>$fieldProperties) {
-            if(isset($fieldProperties['type']) && 'identifier' == $fieldProperties['type']) {
+            if(isset($fieldProperties['type']) && 'identifier' == $fieldProperties['type'] && false === array_key_exists($field, $datas)) {
                 $identifierFieldName = $field;
                 if(array_key_exists($field, $datas) && is_null($datas[$field])) {
                     unset($datas[$field]);
@@ -159,7 +159,6 @@ class DatabaseSingleRow extends SourceAbstract{
 
         //Parse datas
         $datas = $this->dataParser->encode($datas, $this->configuration['fields']);
-
         //check if it's an insert or update
         if($insert){
             //Insert
