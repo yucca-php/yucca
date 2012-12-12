@@ -152,4 +152,22 @@ class Iterator implements \Countable, \Iterator
     {
         return $this->selector;
     }
+
+    /**
+     * @return array
+     */
+    public function getArray()
+    {
+        $toReturn = array();
+
+        $oldWantNewModel = $this->wantNewModel;
+        $this->wantNewModel(true);
+
+        foreach($this as $object) {
+            $toReturn[] = $object;
+        }
+        $this->wantNewModel($oldWantNewModel);
+
+        return $toReturn;
+    }
 }
