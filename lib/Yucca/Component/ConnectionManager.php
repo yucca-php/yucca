@@ -58,6 +58,13 @@ class ConnectionManager
     }
 
     /**
+     *
+     */
+    public function getConnectionConfig($connectionName) {
+        return $this->connectionsConfig[$connectionName];
+    }
+
+    /**
      * Build connection
      * @param array $connectionConfig
      * @throws \InvalidArgumentException

@@ -28,18 +28,25 @@ class Memcache extends SourceAbstract
     protected $dataParser;
 
     /**
+     * @var string
+     */
+    protected $prefix;
+
+    /**
      * Constructor
      * @param $sourceName
      * @param array $configuration
+     * @param string $prefix
      * @throws \InvalidArgumentException
      */
-    public function __construct($sourceName, array $configuration=array()) {
+    public function __construct($sourceName, array $configuration=array(), $prefix='') {
         parent::__construct($sourceName, $configuration);
 
         if(false===isset($this->configuration['connection_name'])){
             throw new \InvalidArgumentException("Configuration array must contain a 'connection_name' key");
         }
         $this->connectionName = $this->configuration['connection_name'];
+        $this->prefix = $prefix;
     }
 
     /**
@@ -52,7 +59,7 @@ class Memcache extends SourceAbstract
     }
 
     /**
-     * @param DataParser\DataParser $dataParser
+     * @param DataParser $dataParser
      * @return DatabaseSingleRow
      */
     public function setDataParser(DataParser $dataParser){
@@ -65,7 +72,7 @@ class Memcache extends SourceAbstract
      * @return string
      */
     protected function getCacheKey($identifier){
-        $toReturn = $this->sourceName;
+        $toReturn = $this->prefix.'_'.$this->sourceName;
         foreach($identifier as $k=>$v) {
             if($v instanceof \Yucca\Model\ModelInterface) {
                 $v = $v->getId();
@@ -122,13 +129,14 @@ class Memcache extends SourceAbstract
     /**
      * @param $serializedCriterias
      * @param array $options
+     * @return array|string
      * @throws Exception\NoDataException
      */
     public function loadIds($serializedCriterias, array $options=array()) {
         $datas = $this->getConnection()->get($serializedCriterias);
 
         if(false === $datas) {
-            throw new NoDataException("No datas found in cache for \"{$this->sourceName}\" with identifiers ".var_export($identifier, true));
+            throw new NoDataException("No datas found in cache for \"{$this->sourceName}\" with criterias ".var_export($serializedCriterias, true));
         }
 
         return $datas;
