@@ -200,6 +200,9 @@ class SchemaManager
             $sql .= ' WHERE '.implode(" AND ",$whereCriterias);
         }
 
+        if(isset($options['groupBy'])){
+            $sql .= ' GROUP BY '.$options['groupBy'];
+        }
         if(isset($options['orderBy'])) {
             $sql .= ' ORDER BY '.$options['orderBy'];
         }
