@@ -80,7 +80,7 @@ abstract class SelectorAbstract implements SelectorInterface
                 SelectorSourceInterface::LIMIT => $this->limit,
                 SelectorSourceInterface::OFFSET => $this->offset,
                 SelectorSourceInterface::ORDERBY => $this->orderBy,
-                SelectorSourceInterface::GROUPBY => null,
+                SelectorSourceInterface::GROUPBY => $this->groupBy,
             );
             $this->idsArray = $this->source->loadIds(
                 $this->criterias,
