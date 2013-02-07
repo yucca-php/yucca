@@ -101,6 +101,7 @@ abstract class SelectorAbstract implements SelectorInterface
         if(is_null($this->idsCount)) {
             $options = array(
                 SelectorSourceInterface::RESULT => SelectorSourceInterface::RESULT_COUNT,
+                SelectorSourceInterface::GROUPBY => $this->groupBy,
             );
             $this->idsCount = $this->source->loadIds(
                 $this->criterias,
