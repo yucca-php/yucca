@@ -72,7 +72,7 @@ class Memcache extends SourceAbstract
      * @return string
      */
     protected function getCacheKey($identifier){
-        $toReturn = $this->prefix.'_'.$this->sourceName;
+        $toReturn = $this->prefix.'_'.$this->sourceName.'_'.(isset($this->configuration['version']) ? $this->configuration['version'] : 1);
         foreach($identifier as $k=>$v) {
             if($v instanceof \Yucca\Model\ModelInterface) {
                 $v = $v->getId();
