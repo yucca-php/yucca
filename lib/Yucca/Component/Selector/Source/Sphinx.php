@@ -78,7 +78,16 @@ class Sphinx implements SelectorSourceInterface{
         }
 
         if (self::RESULT_COUNT !== $options[SelectorSourceInterface::RESULT]) {
-            $sphinx->SetLimits($options[SelectorSourceInterface::OFFSET], $options[SelectorSourceInterface::LIMIT]);
+            if(!is_numeric($options[SelectorSourceInterface::OFFSET])) {
+                throw new \RuntimeException('Offset must be a numeric');
+            }
+            if(!is_numeric($options[SelectorSourceInterface::LIMIT])) {
+                throw new \RuntimeException('Limit must be a numeric');
+            }
+            $sphinx->SetLimits(
+                (int)$options[SelectorSourceInterface::OFFSET],
+                (int)$options[SelectorSourceInterface::LIMIT]
+            );
 
             $orders = $options[SelectorSourceInterface::ORDERBY];
             if(false === empty($orders) && is_array($orders) && 2 == count($orders)) {
