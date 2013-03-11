@@ -148,7 +148,7 @@ class SchemaManagerTest extends \PHPUnit_Framework_TestCase {
 
     public function test_fetchOne(){
         $result = array('id'=>1,'fakeField1'=>'ff1','fakeField2'=>'ff2');
-        $connection = $this->getMockBuilder('\Doctrine\DBAL\Connection')
+        $connection = $this->getMockBuilder('Doctrine\DBAL\Connection')
             ->disableOriginalConstructor()
             ->getMock();
         $connection->expects($this->once())

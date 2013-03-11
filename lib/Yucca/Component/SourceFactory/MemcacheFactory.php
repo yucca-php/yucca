@@ -41,6 +41,9 @@ class MemcacheFactory implements SourceFactoryInterface
      * @return \Yucca\Component\Source\Memcache
      */
     public function getSource($sourceName, array $params = array()) {
+        if(false===isset($params['connection_name'])){
+            throw new \InvalidArgumentException("Configuration array must contain a 'connection_name' key");
+        }
         $connectionConfig = $this->connectionManager->getConnectionConfig($params['connection_name']);
         $toReturn = new Memcache($sourceName, $params, isset($connectionConfig['options']['prefix']) ? $connectionConfig['options']['prefix'] : '');
         $toReturn->setConnectionManager($this->connectionManager);
