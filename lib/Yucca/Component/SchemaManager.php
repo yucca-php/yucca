@@ -168,27 +168,27 @@ class SchemaManager
                 $i = 0;
                 foreach($criteriaValue as $v){
                     if($v instanceof \Yucca\Model\ModelInterface) {
-                        $params[":$criteriaKey$i"] = $v->getId();
-                        $parametersNames[] = ":$criteriaKey$i";
+                        $params[":".str_replace('.','_',$criteriaKey)."$i"] = $v->getId();
+                        $parametersNames[] = ":".str_replace('.','_',$criteriaKey)."$i";
                         $i++;
                     } elseif(is_scalar($v)) {
-                        $params[":$criteriaKey$i"] = $v;
-                        $parametersNames[] = ":$criteriaKey$i";
+                        $params[":".str_replace('.','_',$criteriaKey)."$i"] = $v;
+                        $parametersNames[] = ":".str_replace('.','_',$criteriaKey)."$i";
                         $i++;
                     } else {
                         throw new \Exception("Don't know what to do with criteria $criteriaKey");
                     }
                 }
-                $whereCriterias[] = "`$criteriaKey` IN (".implode(',',$parametersNames).")";
+                $whereCriterias[] = "`".str_replace('.','`.`',$criteriaKey)."` IN (".implode(',',$parametersNames).")";
             } else {
                 if($criteriaValue instanceof \Yucca\Model\ModelInterface) {
-                    $whereCriterias[] = "`$criteriaKey`=:$criteriaKey";
-                    $params[":$criteriaKey"] = $criteriaValue->getId();
+                    $whereCriterias[] = "`".str_replace('.','`.`',$criteriaKey)."`=:".str_replace('.','_',$criteriaKey)."";
+                    $params[":".str_replace('.','_',$criteriaKey)] = $criteriaValue->getId();
                 } elseif(is_null($criteriaValue)) {
-                    $whereCriterias[] = "`$criteriaKey` IS NULL";
+                    $whereCriterias[] = "`".str_replace('.','`.`',$criteriaKey)."` IS NULL";
                 } elseif(is_scalar($criteriaValue)) {
-                    $whereCriterias[] = "`$criteriaKey`=:$criteriaKey";
-                    $params[":$criteriaKey"] = $criteriaValue;
+                    $whereCriterias[] = "`".str_replace('.','`.`',$criteriaKey)."`=:".str_replace('.','_',$criteriaKey)."";
+                    $params[":".str_replace('.','_',$criteriaKey)] = $criteriaValue;
                 } elseif($criteriaValue instanceof \Yucca\Component\Selector\Expression) {
                     $whereCriterias[] = $criteriaValue->toString('database');
                 } else {
