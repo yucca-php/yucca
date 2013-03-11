@@ -119,6 +119,9 @@ class SchemaManager
             $join = array();
 
             foreach($tableName as $table => $tableJoin) {
+                if(isset($tableJoin['table'])) {
+                    $table = $tableJoin['table'];
+                }
                 if($connectionName != $this->getConnectionName($table, $shardingKey, $forceFromMaster)) {
                     throw new \RuntimeException('Expected connection : '.$connectionName.', but '.$table.' use another one');
                 }
