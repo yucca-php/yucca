@@ -101,6 +101,15 @@ class Sphinx implements SelectorSourceInterface{
 
         $sphinx->AddQuery($criterias['text'], $options[SelectorSourceInterface::TABLE]);
         $rawResults = $sphinx->RunQueries();
+
+        if(false === $rawResults) {
+            if($sphinx->IsConnectError()) {
+                throw new \Yucca\Component\Selector\Exception\SphinxConnectionException($sphinx->GetLastError());
+            } else {
+                throw new \Yucca\Component\Selector\Exception\SphinxException($sphinx->GetLastError());
+            }
+        }
+
         //fields
         if (self::RESULT_COUNT === $options[SelectorSourceInterface::RESULT]) {
             return max($rawResults[0]['total'], $rawResults[0]['total_found']);
