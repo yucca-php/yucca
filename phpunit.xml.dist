@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit bootstrap="lib/Yucca/Test/initialize.php" colors="true">
+    <!-- Files containing tests -->
+    <testsuites>
+        <testsuite name="Yucca test suite">
+            <directory suffix="Test.php">./lib/Yucca/Test</directory>
+        </testsuite>
+    </testsuites>
+    <!-- Code coverage exclusion-->
+    <filter>
+        <whitelist>
+            <directory>./</directory>
+            <exclude>
+                <directory>./Resources</directory>
+                <directory>./Test</directory>
+                <directory>./vendor</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>

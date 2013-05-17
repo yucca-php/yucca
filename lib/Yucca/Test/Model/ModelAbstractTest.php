@@ -27,7 +27,7 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $model = new \Yucca\Concrete\Model\Base();
+        $model = new \Yucca\Test\Concrete\Model\Base();
         $model->setYuccaMappingManager($mappingManagerMock);
         $this->assertSame($mappingManagerMock, $model->getYuccaMappingManager());
     }
@@ -40,7 +40,7 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $model = new \Yucca\Concrete\Model\Base();
+        $model = new \Yucca\Test\Concrete\Model\Base();
         $model->setYuccaSelectorManager($selectorManagerMock);
         $this->assertSame($selectorManagerMock, $model->getYuccaSelectorManager());
     }
@@ -53,7 +53,7 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $model = new \Yucca\Concrete\Model\Base();
+        $model = new \Yucca\Test\Concrete\Model\Base();
         $model->setYuccaEntityManager($entityManagerMock);
         $this->assertSame($entityManagerMock, $model->getYuccaEntityManager());
     }
@@ -63,14 +63,14 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
      */
     public function test_setYuccaIdentifier(){
         $yuccaIdentifier = 3;
-        $model = new \Yucca\Concrete\Model\Base();
+        $model = new \Yucca\Test\Concrete\Model\Base();
         $return = $model->setYuccaIdentifier($yuccaIdentifier);
         $this->assertSame($model, $return);
         $this->assertSame($yuccaIdentifier, $return->getYuccaIdentifier());
     }
 
     public function test_reset() {
-        $model = new \Yucca\Concrete\Model\Properties();
+        $model = new \Yucca\Test\Concrete\Model\Properties();
         $model->setFirst(1)
             ->setSecond(2)
             ->setThird(3);
@@ -95,7 +95,7 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
     }
 
     public function test_save() {
-        $model = new \Yucca\Concrete\Model\Properties();
+        $model = new \Yucca\Test\Concrete\Model\Properties();
 
         try {
             $model->save();
@@ -121,7 +121,7 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $mappingManagerMock->expects($this->once())
             ->method('getMapper')
-            ->with('Yucca\Concrete\Model\Properties')
+            ->with('Yucca\Test\Concrete\Model\Properties')
             ->will($this->returnValue($mapperMock));
 
         $model->setYuccaMappingManager($mappingManagerMock);
@@ -134,7 +134,7 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
     }
 
     public function test_hydrate(){
-        $model = new \Yucca\Concrete\Model\Properties();
+        $model = new \Yucca\Test\Concrete\Model\Properties();
 
         //Assert nothing is done when no mapper set
         $return = $model->getFirst();
@@ -154,11 +154,11 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $mappingManagerMock->expects($this->once())
             ->method('getMapper')
-            ->with('Yucca\Concrete\Model\Properties')
+            ->with('Yucca\Test\Concrete\Model\Properties')
             ->will($this->returnValue($mapperMock));
 
         //
-        $model = new \Yucca\Concrete\Model\Properties();
+        $model = new \Yucca\Test\Concrete\Model\Properties();
         $model->setYuccaIdentifier(array('id'=>1))
                 ->setYuccaMappingManager($mappingManagerMock);
 
@@ -175,7 +175,7 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
      *
      */
     public function test_remove() {
-        $model = new \Yucca\Concrete\Model\Base();
+        $model = new \Yucca\Test\Concrete\Model\Base();
         try {
             $model->remove();
             $this->fail('Should raise an exception');
@@ -196,7 +196,7 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $mappingManagerMock->expects($this->once())
             ->method('getMapper')
-            ->with('Yucca\Concrete\Model\Base')
+            ->with('Yucca\Test\Concrete\Model\Base')
             ->will($this->returnValue($mapperMock));
 
         $model->setYuccaIdentifier(array('id'=>1,'sharding_key'=>129))

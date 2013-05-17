@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Yucca\Concrete\Selector;
+namespace Yucca\Test\Concrete\Selector;
 
 use \Yucca\Component\Selector\SelectorAbstract;
 use \Yucca\Component\Selector\Source\SelectorSourceInterface;

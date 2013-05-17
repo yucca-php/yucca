@@ -12,7 +12,7 @@ namespace Yucca\Test\Component;
 class MappingManagerTest extends \PHPUnit_Framework_TestCase
 {
     public function test_getMapper() {
-        $className = 'Yucca\Concrete\Model\Properties';
+        $className = 'Yucca\Test\Concrete\Model\Properties';
         $configuration = array(
             $className => array(
 

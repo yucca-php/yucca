@@ -14,7 +14,7 @@ class SelectorManagerTest extends \PHPUnit_Framework_TestCase {
 
     public function test_getSelector(){
         $selectorManager = new \Yucca\Component\SelectorManager(array(
-            'Yucca\Concrete\Selector\Base'=>array(
+            'Yucca\Test\Concrete\Selector\Base'=>array(
                 'sources'=>array(
                     'database',
                     'memcache',
@@ -24,10 +24,10 @@ class SelectorManagerTest extends \PHPUnit_Framework_TestCase {
 
         //Not configured
         try {
-            $selectorManager->getSelector('Yucca\Concrete\Selector\Fake');
+            $selectorManager->getSelector('Yucca\Test\Concrete\Selector\Fake');
             $this->fail('Should raise an exception');
         } catch (\Exception $e){
-            $this->assertContains('Yucca\Concrete\Selector\Fake', $e->getMessage());
+            $this->assertContains('Yucca\Test\Concrete\Selector\Fake', $e->getMessage());
         }
 
         //configured but missing factory
@@ -38,7 +38,7 @@ class SelectorManagerTest extends \PHPUnit_Framework_TestCase {
 
 
         try {
-            $selectorManager->getSelector('Yucca\Concrete\Selector\Base');
+            $selectorManager->getSelector('Yucca\Test\Concrete\Selector\Base');
             $this->fail('Should raise an exception');
         } catch (\Exception $e){
             $this->assertContains('memcache', $e->getMessage());
@@ -51,7 +51,7 @@ class SelectorManagerTest extends \PHPUnit_Framework_TestCase {
         $selectorManager->addSelectorSourceFactory('memcache',$memcacheFactory);
 
         try {
-            $selectorManager->getSelector('Yucca\Concrete\Selector\Base');
+            $selectorManager->getSelector('Yucca\Test\Concrete\Selector\Base');
             $this->fail('Should raise an exception');
         } catch (\Exception $e){
             $this->assertContains('chain', $e->getMessage());
@@ -63,12 +63,12 @@ class SelectorManagerTest extends \PHPUnit_Framework_TestCase {
             ->getMock();
         $selectorManager->addSelectorSourceFactory('chain',$chainFactory);
 
-        $this->assertInstanceOf('Yucca\Component\Selector\SelectorAbstract',$selectorManager->getSelector('Yucca\Concrete\Selector\Base'));
+        $this->assertInstanceOf('Yucca\Component\Selector\SelectorAbstract',$selectorManager->getSelector('Yucca\Test\Concrete\Selector\Base'));
     }
 
     public function test_getSourceSingleHandler(){
         $selectorManager = new \Yucca\Component\SelectorManager(array(
-            'Yucca\Concrete\Selector\Base'=>array(
+            'Yucca\Test\Concrete\Selector\Base'=>array(
                 'sources'=>array(
                     'database',
                 )
@@ -80,7 +80,7 @@ class SelectorManagerTest extends \PHPUnit_Framework_TestCase {
             ->getMock();
         $selectorManager->addSelectorSourceFactory('database',$databaseFactory);
 
-        $this->assertInstanceOf('Yucca\Component\Selector\SelectorAbstract',$selectorManager->getSelector('Yucca\Concrete\Selector\Base'));
+        $this->assertInstanceOf('Yucca\Component\Selector\SelectorAbstract',$selectorManager->getSelector('Yucca\Test\Concrete\Selector\Base'));
     }
 
 }

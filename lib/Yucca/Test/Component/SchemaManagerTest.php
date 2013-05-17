@@ -347,9 +347,9 @@ class SchemaManagerTest extends \PHPUnit_Framework_TestCase {
         ));
         $schemaManager->setConnectionManager($connectionManager);
 
-        $external10 = new \Yucca\Concrete\Model\Base();
-        $external11 = new \Yucca\Concrete\Model\Base();
-        $external2 = new \Yucca\Concrete\Model\Base();
+        $external10 = new \Yucca\Test\Concrete\Model\Base();
+        $external11 = new \Yucca\Test\Concrete\Model\Base();
+        $external2 = new \Yucca\Test\Concrete\Model\Base();
 
         $external10->setId(10);
         $external11->setId(11);

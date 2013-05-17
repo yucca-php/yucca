@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
-namespace Yucca\Concrete\Model;
+namespace Yucca\Test\Concrete\Model;
 
 class Properties extends Base {
     protected $yuccaProperties = array('id','first','second','third');

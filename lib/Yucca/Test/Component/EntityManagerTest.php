@@ -73,17 +73,17 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
         }
 
         //Load without sharding key
-        $model = $entityManager->load('\Yucca\Concrete\Model\Base',1);
+        $model = $entityManager->load('\Yucca\Test\Concrete\Model\Base',1);
         $this->assertSame($selectorManagerMock, $model->getYuccaSelectorManager());
         $this->assertSame($mappingManagerMock, $model->getYuccaMappingManager());
         $this->assertSame(array('strange_identifier'=>1), $model->getYuccaIdentifier());
         $this->assertSame($entityManager, $model->getYuccaEntityManager());
-        $this->assertInstanceOf('\Yucca\Concrete\Model\Base', $model);
+        $this->assertInstanceOf('\Yucca\Test\Concrete\Model\Base', $model);
 
         //Load with sharding key
-        $model = $entityManager->load('\Yucca\Concrete\Model\Base',2,4);
+        $model = $entityManager->load('\Yucca\Test\Concrete\Model\Base',2,4);
         $this->assertSame(array('strange_identifier'=>2, 'sharding_key'=>4), $model->getYuccaIdentifier());
-        $this->assertInstanceOf('\Yucca\Concrete\Model\Base', $model);
+        $this->assertInstanceOf('\Yucca\Test\Concrete\Model\Base', $model);
     }
 
     public function test_save(){
@@ -166,7 +166,7 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($return, $entityManager);
 
         //Check that new identifiers are well set
-        $model = new \Yucca\Concrete\Model\Base();
+        $model = new \Yucca\Test\Concrete\Model\Base();
         $entityManager->resetModel($model, $newIdentifier);
 
         $this->assertSame($newIdentifier, $model->getYuccaIdentifier());
