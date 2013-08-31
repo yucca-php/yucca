@@ -121,5 +121,11 @@
         <service id="yucca.connection_factory.sphinx" class="Yucca\Component\ConnectionFactory\SphinxFactory">
             <tag name="yucca.connection_factory" alias="sphinx"/>
         </service>
+
+        <service id="yucca.validator.unique" class="Yucca\Validator\Constraints\UniqueEntityValidator">
+            <argument type="service" id="yucca.selector_manager" />
+            <argument type="service" id="yucca.entity_manager" />
+            <tag name="validator.constraint_validator" alias="yucca.validator.unique" />
+        </service>
     </services>
 </container>
