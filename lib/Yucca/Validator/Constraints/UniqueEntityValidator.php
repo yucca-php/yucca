@@ -87,7 +87,7 @@ class UniqueEntityValidator extends ConstraintValidator
             $camelFieldName = str_replace(' ','',ucwords(str_replace('_',' ',$fieldName)));
             $selectorMethod = 'add'.$camelFieldName.'Criteria';
             if (false === in_array($selectorMethod,$selectorMethods)) {
-                throw new ConstraintDefinitionException(sprintf("The field '%s' is not mapped by Doctrine, so it cannot be validated for uniqueness.", $fieldName));
+                throw new ConstraintDefinitionException(sprintf("The field '%s' is not mapped", $fieldName));
             }
 
             $getterMethod = 'get'.$camelFieldName;
@@ -110,7 +110,8 @@ class UniqueEntityValidator extends ConstraintValidator
          * which is the same as the entity being validated, the criteria is
          * unique.
          */
-        if (0 === $iterator->count() || (1 === $iterator->count() && $entity->getId() === ($iterator->current()->getId()))) {
+
+        if (0 == $iterator->count() || (1 == $iterator->count() && $entity->getId() == ($iterator->current()->getId()))) {
             return;
         }
 
