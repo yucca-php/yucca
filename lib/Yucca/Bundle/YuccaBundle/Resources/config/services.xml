@@ -127,5 +127,10 @@
             <argument type="service" id="yucca.entity_manager" />
             <tag name="validator.constraint_validator" alias="yucca.validator.unique" />
         </service>
+
+        <service id="form.type.yucca_entity" class="Yucca\Form\Type\YuccaEntityType">
+            <tag name="form.type" alias="yucca_entity" />
+            <argument type="service" id="yucca.entity_manager" />
+        </service>
     </services>
 </container>
