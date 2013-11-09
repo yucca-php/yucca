@@ -215,7 +215,24 @@ class EntityChoiceList extends ObjectChoiceList
             $this->load();
         }
 
-        return parent::getValuesForChoices($entities);
+        $choices = $this->fixChoices($entities);
+        $allValues = $this->getValues();
+        $values = array();
+
+        foreach ($choices as $i => $givenChoice) {
+            foreach ($this->getChoices() as $j => $choice) {
+                if ($choice->getId() == $givenChoice->getId()) {
+                    $values[$i] = $allValues[$j];
+                    unset($choices[$i]);
+
+                    if (0 === count($choices)) {
+                        break 2;
+                    }
+                }
+            }
+        }
+
+        return $values;
     }
 
     /**
