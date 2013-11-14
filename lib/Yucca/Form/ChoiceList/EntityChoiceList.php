@@ -221,7 +221,7 @@ class EntityChoiceList extends ObjectChoiceList
 
         foreach ($choices as $i => $givenChoice) {
             foreach ($this->getChoices() as $j => $choice) {
-                if ($choice->getId() == $givenChoice->getId()) {
+                if ($choice && $givenChoice && $choice->getId() == $givenChoice->getId()) {
                     $values[$i] = $allValues[$j];
                     unset($choices[$i]);
 
