@@ -80,7 +80,7 @@ class Database implements SelectorSourceInterface{
         }
     }
 
-    public function saveIds(array $ids, array $criterias, array $options=array()){
+    public function saveIds($ids, array $criterias, array $options=array()){
         throw new \Exception("Database selector source can't save result");
     }
 

@@ -193,7 +193,10 @@ class SchemaManager
                     $whereCriterias[] = "`".str_replace('.','`.`',$criteriaKey)."`=:".str_replace('.','_',$criteriaKey)."";
                     $params[":".str_replace('.','_',$criteriaKey)] = $criteriaValue;
                 } elseif($criteriaValue instanceof \Yucca\Component\Selector\Expression) {
-                    $whereCriterias[] = $criteriaValue->toString('database');
+                    $expression = $criteriaValue->toString('database');
+                    if(false === empty($expression)) {
+                        $whereCriterias[] = $expression;
+                    }
                 } else {
                     throw new \Exception("Don't know what to do with criteria $criteriaKey");
                 }

@@ -26,6 +26,6 @@ interface SelectorSourceInterface
     const FORCE_FROM_MASTER = 'force_from_master';
 
     public function loadIds(array $criterias, array $options=array());
-    public function saveIds(array $ids, array $criterias, array $options=array());
+    public function saveIds($ids, array $criterias, array $options=array());
     public function invalidateGlobal(array $options = array());
 }

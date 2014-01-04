@@ -42,10 +42,13 @@ class Memcache implements SelectorSourceInterface{
             foreach($criteriaValue as $v){
                 if($v instanceof \Yucca\Model\ModelInterface) {
                     $cacheKey[] = $criteriaKey.'-'.$v->getId().'-'.$v->getUpdatedAt();
-                } elseif(is_scalar($v)) {
-                    $cacheKey[] = $criteriaKey.'-'.$v;
-                } elseif($criteriaValue instanceof \Yucca\Component\Selector\Expression) {
-                    $whereCriterias[] = $criteriaValue->toString('memcache');
+                } elseif(is_scalar($v) || is_null($v)) {
+                    $cacheKey[] = $criteriaKey.'-'.var_export($v, true);
+                } elseif($v instanceof \Yucca\Component\Selector\Expression) {
+                    $expression = $v->toString('memcache');
+                    if( false === empty($expression)) {
+                        $cacheKey[] = $expression;
+                    }
                 } else {
                     throw new \Exception("Can't use criteria $criteriaKey");
                 }
@@ -101,7 +104,7 @@ class Memcache implements SelectorSourceInterface{
      * @param array $options
      * @return mixed
      */
-    public function saveIds(array $ids, array $criterias, array $options = array()) {
+    public function saveIds($ids, array $criterias, array $options = array()) {
         $options = $this->mergeOptions($options);
 
         $connection = $this->connectionManager->getConnection($options[SelectorSourceInterface::CONNECTION_NAME]);

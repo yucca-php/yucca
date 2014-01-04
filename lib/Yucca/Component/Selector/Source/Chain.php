@@ -48,16 +48,14 @@ class Chain implements SelectorSourceInterface
             foreach($sourcesToFeed as $sourceKey){
                 $this->sources[$sourceKey]->saveIds($datas, $criterias, $options);
             }
-        }
-
-        if(empty($datas)) {
+        } else {
             throw new NoDataException("Chain can't load datas for selector source");
         }
 
         return $datas;
     }
 
-    public function saveIds(array $ids, array $criterias, array $options = array()){
+    public function saveIds($ids, array $criterias, array $options = array()){
         throw new \Exception("Don't know what to do in chain...");
     }
 
