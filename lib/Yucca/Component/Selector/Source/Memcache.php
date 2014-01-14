@@ -41,7 +41,7 @@ class Memcache implements SelectorSourceInterface{
 
             foreach($criteriaValue as $v){
                 if($v instanceof \Yucca\Model\ModelInterface) {
-                    $cacheKey[] = $criteriaKey.'-'.$v->getId().'-'.$v->getUpdatedAt();
+                    $cacheKey[] = $criteriaKey.'-'.$v->getId().'-'.($v->getUpdatedAt() instanceof \DateTime ? $v->getUpdatedAt()->format('c') : $v->getUpdatedAt());
                 } elseif(is_scalar($v) || is_null($v)) {
                     $cacheKey[] = $criteriaKey.'-'.var_export($v, true);
                 } elseif($v instanceof \Yucca\Component\Selector\Expression) {
@@ -55,7 +55,7 @@ class Memcache implements SelectorSourceInterface{
             }
         }
 
-        return $options[SelectorSourceInterface::SELECTOR_NAME].':'.md5(implode(':',$cacheKey)).':'.$suffix;
+        return $options[SelectorSourceInterface::SELECTOR_NAME].':'.md5(var_export($options,true)).':'.md5(implode(':',$cacheKey)).':'.$suffix;
     }
 
     protected function mergeOptions(array $options){
@@ -107,6 +107,9 @@ class Memcache implements SelectorSourceInterface{
     public function saveIds($ids, array $criterias, array $options = array()) {
         $options = $this->mergeOptions($options);
 
+        /**
+         * @var $connection \Memcache
+         */
         $connection = $this->connectionManager->getConnection($options[SelectorSourceInterface::CONNECTION_NAME]);
         return $connection->set( $this->getCacheKey($criterias, $options) , $ids, null, 0);
     }
