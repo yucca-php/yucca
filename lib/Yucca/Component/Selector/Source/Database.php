@@ -74,6 +74,9 @@ class Database implements SelectorSourceInterface{
         $result = $this->schemaManager->fetchIds($options[SelectorSourceInterface::TABLE], $criterias, $fields, $options[SelectorSourceInterface::FORCE_FROM_MASTER], $options);
 
         if (self::RESULT_COUNT === $options[SelectorSourceInterface::RESULT]) {
+            if(false === is_array($result) || false === is_array(current($result))) {
+                return 0;
+            }
             return current(current($result));
         } else {
             return $result;
