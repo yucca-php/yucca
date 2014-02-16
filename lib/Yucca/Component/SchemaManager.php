@@ -169,11 +169,14 @@ class SchemaManager
             if(is_array($criteriaValue)){
                 $parametersNames = array();
                 $i = 0;
+                $addIsNull=false;
                 foreach($criteriaValue as $v){
                     if($v instanceof \Yucca\Model\ModelInterface) {
                         $params[":".str_replace('.','_',$criteriaKey)."$i"] = $v->getId();
                         $parametersNames[] = ":".str_replace('.','_',$criteriaKey)."$i";
                         $i++;
+                    } elseif(is_null($v)) {
+                        $addIsNull = true;
                     } elseif(is_scalar($v)) {
                         $params[":".str_replace('.','_',$criteriaKey)."$i"] = $v;
                         $parametersNames[] = ":".str_replace('.','_',$criteriaKey)."$i";
@@ -182,7 +185,12 @@ class SchemaManager
                         throw new \Exception("Don't know what to do with criteria $criteriaKey");
                     }
                 }
-                $whereCriterias[] = "`".str_replace('.','`.`',$criteriaKey)."` IN (".implode(',',$parametersNames).")";
+                $in = "`".str_replace('.','`.`',$criteriaKey)."` IN (".implode(',',$parametersNames).")";
+                if($addIsNull) {
+                    $whereCriterias[] = "(`".str_replace('.','`.`',$criteriaKey)."` IS NULL OR $in)";
+                } else {
+                    $whereCriterias[] = $in;
+                }
             } else {
                 if($criteriaValue instanceof \Yucca\Model\ModelInterface) {
                     $whereCriterias[] = "`".str_replace('.','`.`',$criteriaKey)."`=:".str_replace('.','_',$criteriaKey)."";
