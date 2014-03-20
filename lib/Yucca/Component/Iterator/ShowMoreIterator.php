@@ -31,6 +31,14 @@ class ShowMoreIterator extends \LimitIterator {
     }
 
     /**
+     * @return mixed
+     */
+    public function getNextOffset()
+    {
+        return $this->offset + $this->limit;
+    }
+
+    /**
      * @param Iterator $iterator
      * @param $offset
      * @param $limit
@@ -38,13 +46,13 @@ class ShowMoreIterator extends \LimitIterator {
     public function __construct(Iterator $iterator, $offset, $limit) {
         $this->offset = $offset;
         $this->limit = $limit;
-        parent::__construct($iterator, $offset, $limit);
+        parent::__construct($iterator, 0, $limit);
     }
 
     /**
      * @return bool
      */
     public function canShowMore() {
-        return $this->getInnerIterator()->count() > $this->limit;
+        return $this->getInnerIterator()->count() > ($this->offset + $this->limit);
     }
 } 
