@@ -132,5 +132,10 @@
             <tag name="form.type" alias="yucca_entity" />
             <argument type="service" id="yucca.entity_manager" />
         </service>
+
+        <service id="form.type.yucca_entity" class="Yucca\Form\Type\YuccaEntityIdType">
+            <tag name="form.type" alias="yucca_entity_id" />
+            <argument type="service" id="yucca.entity_manager" />
+        </service>
     </services>
 </container>
