@@ -21,10 +21,20 @@ class YuccaEntityIdType extends AbstractType
      * @var EntityManager
      */
     protected $entityManager;
+    /**
+     * @var string
+     */
+    protected $parent;
+    /**
+     * @var string
+     */
+    protected $name;
 
-    public function __construct(EntityManager $entityManager)
+    public function __construct(EntityManager $entityManager, $name = 'yucca_entity_id', $parent='text')
     {
         $this->entityManager = $entityManager;
+        $this->name = $name;
+        $this->parent = $parent;
     }
 
 
@@ -61,11 +71,11 @@ class YuccaEntityIdType extends AbstractType
     }
     public function getName()
     {
-        return 'yucca_entity_id';
+        return $this->name;
     }
 
     public function getParent()
     {
-        return 'text';
+        return $this->parent;
     }
 }
