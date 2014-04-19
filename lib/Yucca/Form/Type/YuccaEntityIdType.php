@@ -53,13 +53,13 @@ class YuccaEntityIdType extends AbstractType
             ->addViewTransformer(
                 new CallbackTransformer(
                     function ($data) {
-                        if(is_null($data)) {
+                        if(empty($data)) {
                             return null;
                         }
                         return $data->getId();
                     },
                     function ($data) use ($entityManager, $options) {
-                        if(is_null($data)) {
+                        if(empty($data)) {
                             return null;
                         }
                         return $entityManager->load($options['model_class_name'], $data);
