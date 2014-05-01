@@ -24,6 +24,9 @@ interface SelectorSourceInterface
     const GROUPBY = 'groupBy';
     const ORDERBY = 'orderBy';
     const FORCE_FROM_MASTER = 'force_from_master';
+    const ELASTIC_SEARCHABLE = 'elastic_searchable';
+    const ELASTIC_QUERY = 'elastic_query';
+    const FACETS = 'facets';
 
     public function loadIds(array $criterias, array $options=array());
     public function saveIds($ids, array $criterias, array $options=array());

@@ -102,6 +102,10 @@
             <argument type="service" id="yucca.connection_manager" />
         </service>
 
+        <service id="yucca.selector.source_factory.elastic_search" class="Yucca\Component\Selector\SourceFactory\ElasticSearchFactory">
+            <tag name="yucca.selector.source_factory" alias="elastic_search"/>
+        </service>
+
         <service id="yucca.selector.source_factory.chain" class="Yucca\Component\Selector\SourceFactory\ChainFactory">
             <tag name="yucca.selector.source_factory" alias="chain"/>
         </service>
