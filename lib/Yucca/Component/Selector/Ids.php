@@ -75,7 +75,7 @@ class Ids implements SelectorInterface {
      */
     public function count()
     {
-        count($this->ids);
+        return count($this->ids);
     }
 
     /**
