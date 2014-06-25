@@ -12,6 +12,10 @@ namespace Yucca\Component\Iterator;
 use Yucca\Component\Selector\SelectorInterface;
 use Yucca\Component\EntityManager;
 
+/**
+ * Class Iterator
+ * @package Yucca\Component\Iterator
+ */
 class Iterator implements \Countable, \Iterator
 {
     /**
@@ -43,9 +47,9 @@ class Iterator implements \Countable, \Iterator
 
     /**
      * Constructor
-     * @param \Yucca\Component\Selector\SelectorInterface $selector
-     * @param \Yucca\Component\EntityManager $entityManager
-     * @param string $modelClassName
+     * @param \Yucca\Component\Selector\SelectorInterface   $selector
+     * @param \Yucca\Component\EntityManager                $entityManager
+     * @param string                                        $modelClassName
      */
     public function __construct(SelectorInterface $selector, EntityManager $entityManager, $modelClassName)
     {
@@ -57,11 +61,13 @@ class Iterator implements \Countable, \Iterator
     /**
      * Set whether we want new object or a single one to iterate over
      * @param boolean $value
+     *
      * @return \Yucca\Component\Iterator\Iterator
      */
     public function wantNewModel($value = true)
     {
         $this->wantNewModel = ($value ? true : false);
+
         return $this;
     }
 
@@ -69,14 +75,15 @@ class Iterator implements \Countable, \Iterator
      * initialize the unique model
      * @param mixed $id
      * @param mixed $shardingKey
+     *
      * @return self
      */
     protected function initializeModel($id, $shardingKey=null)
     {
-        if(is_null($this->model))
-        {
+        if (is_null($this->model)) {
             $this->model = $this->entityManager->load($this->modelClassName, $id, $shardingKey);
         }
+
         return $this;
     }
 
@@ -95,13 +102,10 @@ class Iterator implements \Countable, \Iterator
      */
     public function current()
     {
-        if( true === $this->wantNewModel)
-        {
+        if (true === $this->wantNewModel) {
             return $this->entityManager->load($this->modelClassName, $this->selector->current());
-        }
-        else
-        {
-            $this->initializeModel($this->selector->current() , $this->selector->currentShardingKey());
+        } else {
+            $this->initializeModel($this->selector->current(), $this->selector->currentShardingKey());
 
             $this->entityManager->resetModel($this->model, $this->selector->current());
 
@@ -133,6 +137,7 @@ class Iterator implements \Countable, \Iterator
     public function rewind()
     {
         $this->selector->rewind();
+
         return $this;
     }
 
@@ -163,7 +168,7 @@ class Iterator implements \Countable, \Iterator
         $oldWantNewModel = $this->wantNewModel;
         $this->wantNewModel(true);
 
-        foreach($this as $object) {
+        foreach ($this as $object) {
             $toReturn[] = $object;
         }
         $this->wantNewModel($oldWantNewModel);

@@ -19,6 +19,7 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
+use Yucca\Form\DataTransformer\IteratorToArrayTransformer;
 
 /**
  * Unique Entity Validator checks if one or a set of fields contain unique values.
@@ -41,22 +42,32 @@ class YuccaEntityType extends AbstractType
      */
     private $propertyAccessor;
 
+    /**
+     * @param EntityManager $entityManager
+     * @param PropertyAccessorInterface $propertyAccessor
+     */
     public function __construct(EntityManager $entityManager, PropertyAccessorInterface $propertyAccessor = null)
     {
         $this->entityManager = $entityManager;
         $this->propertyAccessor = $propertyAccessor ?: PropertyAccess::getPropertyAccessor();
     }
 
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        /*if ($options['multiple']) {
+        if ($options['multiple']) {
             $builder
-                ->addEventSubscriber(new MergeDoctrineCollectionListener())
-                ->addViewTransformer(new CollectionToArrayTransformer(), true)
+                ->addViewTransformer(new IteratorToArrayTransformer(), true)
             ;
-        }*/
+        }
     }
 
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $choiceListCache =& $this->choiceListCache;
