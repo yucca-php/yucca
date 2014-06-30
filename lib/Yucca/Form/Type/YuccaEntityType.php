@@ -43,7 +43,7 @@ class YuccaEntityType extends AbstractType
     private $propertyAccessor;
 
     /**
-     * @param EntityManager $entityManager
+     * @param EntityManager             $entityManager
      * @param PropertyAccessorInterface $propertyAccessor
      */
     public function __construct(EntityManager $entityManager, PropertyAccessorInterface $propertyAccessor = null)
@@ -54,19 +54,19 @@ class YuccaEntityType extends AbstractType
 
     /**
      * @param FormBuilderInterface $builder
-     * @param array $options
+     * @param array                $options
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         if ($options['multiple']) {
-            $builder
-                ->addViewTransformer(new IteratorToArrayTransformer(), true)
-            ;
+            $builder->addModelTransformer(new IteratorToArrayTransformer(), true);
         }
     }
 
     /**
      * @param OptionsResolverInterface $resolver
+     *
+     * @return mixed
      */
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
@@ -151,11 +151,17 @@ class YuccaEntityType extends AbstractType
         ));
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return 'yucca_entity';
     }
 
+    /**
+     * @return null|string|\Symfony\Component\Form\FormTypeInterface
+     */
     public function getParent()
     {
         return 'choice';
