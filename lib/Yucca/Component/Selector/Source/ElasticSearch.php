@@ -19,8 +19,6 @@ class ElasticSearch implements SelectorSourceInterface{
      */
     protected $connectionManager;
 
-    protected $resultSets;
-
     public function setConnectionManager(ConnectionManager $connectionManager){
         $this->connectionManager = $connectionManager;
     }
@@ -70,81 +68,60 @@ class ElasticSearch implements SelectorSourceInterface{
             $options[SelectorSourceInterface::FACETS]
         );
 
-        if(false === isset($this->resultSets[$resultSetKey])) {
-            //Check options
-            if(empty($options[SelectorSourceInterface::ELASTIC_SEARCHABLE])){
-                throw new \Exception('Elastic searchable index or type must be set for selector source');
-            }
-            if(false === $options[SelectorSourceInterface::ELASTIC_SEARCHABLE] instanceof \Elastica\SearchableInterface){
-                throw new \Exception('Elastic searchable must be an instance of \Elastica\SearchableInterface');
-            }
-            if(empty($options[SelectorSourceInterface::ID_FIELD])){
-                throw new \Exception('Id Field must be set for selector source');
-            }
-
-            /**
-             * @var $index \Elastica\SearchableInterface
-             */
-            $index = $options[SelectorSourceInterface::ELASTIC_SEARCHABLE];
-            $query = $options[SelectorSourceInterface::ELASTIC_QUERY];
-            $query = Query::create($query);
-
-            if (self::RESULT_COUNT !== $options[SelectorSourceInterface::RESULT]) {
-                if(is_numeric($options[SelectorSourceInterface::LIMIT])) {
-                    $query->setSize(
-                        (int)$options[SelectorSourceInterface::LIMIT]
-                    );
-                }
-                if(is_numeric($options[SelectorSourceInterface::OFFSET])) {
-                    $query->setFrom(
-                        (int)$options[SelectorSourceInterface::OFFSET]
-                    );
-                }
-
-                $orders = $options[SelectorSourceInterface::ORDERBY];
-                if(false === empty($orders) && is_array($orders)) {
-                    foreach($orders as $order) {
-                        $query->addSort($order);
-                    }
-                }
-            }
-
-            if(false===empty($options[self::GROUPBY])) {
-                throw new \Exception('Not implemented yet');
-            }
-
-            if(false===empty($options[self::FACETS])) {
-                foreach($options[self::FACETS] as $facet) {
-                    $query->addFacet($facet);
-                }
-            }
-            $this->resultSets[$resultSetKey] = $index->search($query);
+        //Check options
+        if(empty($options[SelectorSourceInterface::ELASTIC_SEARCHABLE])){
+            throw new \Exception('Elastic searchable index or type must be set for selector source');
         }
+        if(false === $options[SelectorSourceInterface::ELASTIC_SEARCHABLE] instanceof \Elastica\SearchableInterface){
+            throw new \Exception('Elastic searchable must be an instance of \Elastica\SearchableInterface');
+        }
+        if(empty($options[SelectorSourceInterface::ID_FIELD])){
+            throw new \Exception('Id Field must be set for selector source');
+        }
+
+        /**
+         * @var $index \Elastica\SearchableInterface
+         */
+        $index = $options[SelectorSourceInterface::ELASTIC_SEARCHABLE];
+        $query = $options[SelectorSourceInterface::ELASTIC_QUERY];
+        $query = Query::create($query);
+
+        if (self::RESULT_COUNT !== $options[SelectorSourceInterface::RESULT]) {
+            if(is_numeric($options[SelectorSourceInterface::LIMIT])) {
+                $query->setSize(
+                    (int)$options[SelectorSourceInterface::LIMIT]
+                );
+            }
+            if(is_numeric($options[SelectorSourceInterface::OFFSET])) {
+                $query->setFrom(
+                    (int)$options[SelectorSourceInterface::OFFSET]
+                );
+            }
+
+            $orders = $options[SelectorSourceInterface::ORDERBY];
+            if(false === empty($orders) && is_array($orders)) {
+                foreach($orders as $order) {
+                    $query->addSort($order);
+                }
+            }
+        }
+
+        if(false===empty($options[self::GROUPBY])) {
+            throw new \Exception('Not implemented yet');
+        }
+
+        if(false===empty($options[self::FACETS])) {
+            foreach($options[self::FACETS] as $facet) {
+                $query->addFacet($facet);
+            }
+        }
+        $resultSet = $index->search($query);
 
         //fields
         if (self::RESULT_COUNT === $options[SelectorSourceInterface::RESULT]) {
-            return $this->resultSets[$resultSetKey]->getTotalHits();
+            return $resultSet->getTotalHits();
         } elseif (self::RESULT_IDENTIFIERS === $options[SelectorSourceInterface::RESULT]) {
-            $toReturn = array();
-            $ids = array();
-            foreach ($options[SelectorSourceInterface::ID_FIELD] as $idField) {
-                $idField = explode(' as ',$idField);
-                $ids[$idField[0]] = isset($idField[1]) ? $idField[1] : $idField[0];
-            }
-            if(empty($ids)) {
-                throw new \RuntimeException('No id to get back');
-            }
-
-            foreach($this->resultSets[$resultSetKey]->getResults() as $result) {
-                $row = array();
-                $data = $result->getData();
-                foreach ($ids as $idOriginal => $idAlias) {
-                    $row[$idAlias] = $data[$idOriginal];//Doesn't handle id placed in a nested array
-                }
-                $toReturn[] = $row;
-            }
-
-            return $toReturn;
+            return $resultSet;
         } else {
             throw new \Exception('Unknown result type');
         }
@@ -156,9 +133,5 @@ class ElasticSearch implements SelectorSourceInterface{
 
     public function invalidateGlobal(array $options = array()){
 
-    }
-
-    public function getResultSet($query, $limit, $offset, $orderBy, $facets) {
-        return $this->resultSets[$this->getResultSetKey($query, $limit, $offset, $orderBy, $facets)];
     }
 }
