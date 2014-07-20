@@ -82,14 +82,26 @@ abstract class SelectorAbstract implements SelectorInterface
                 SelectorSourceInterface::ORDERBY => $this->orderBy,
                 SelectorSourceInterface::GROUPBY => $this->groupBy,
             );
-            $this->idsArray = $this->source->loadIds(
-                $this->criterias,
+            $this->setIdsArray(
+                $this->source->loadIds(
+                    $this->criterias,
+                    array_merge($this->options, $options)
+                ),
                 array_merge($this->options, $options)
             );
             $this->isQueryPrepared = true;
         }
 
         return $this;
+    }
+
+    /**
+     * @param array $ids
+     * @param array $options
+     */
+    public function setIdsArray($ids, $options)
+    {
+        $this->idsArray = $ids;
     }
 
     /**
