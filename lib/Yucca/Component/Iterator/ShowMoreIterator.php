@@ -10,7 +10,7 @@
 namespace Yucca\Component\Iterator;
 
 
-class ShowMoreIterator extends \LimitIterator {
+class ShowMoreIterator extends \LimitIterator implements \Countable {
     protected $offset;
     protected $limit;
 
@@ -55,4 +55,13 @@ class ShowMoreIterator extends \LimitIterator {
     public function canShowMore() {
         return $this->getInnerIterator()->count() > ($this->offset + $this->limit);
     }
-} 
+
+    /**
+     * give model count
+     * @return int
+     */
+    public function count()
+    {
+        return $this->getInnerIterator()->count();
+    }
+}
