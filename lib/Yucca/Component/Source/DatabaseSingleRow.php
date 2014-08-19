@@ -118,7 +118,7 @@ class DatabaseSingleRow extends SourceAbstract{
      * @throws \Exception
      * @return int
      */
-    public function save($datas, array $identifier=array(), &$affectedRows=null){
+    public function save($datas, array $identifier=array(), &$affectedRows=null, $replace=false){
         //Extract sharding key from identifier
         $originalIdentifier = $identifier;
         $shardingKey = null;
@@ -173,9 +173,30 @@ class DatabaseSingleRow extends SourceAbstract{
                 return $identifier;
             }
         } else {
-            //Update
-            $affectedRows = $connection->update($tableName, $datas, $identifier);
-            return $originalIdentifier;
+            if ($replace) {
+                //Replace
+                $connection->connect();
+                $set = array();
+                foreach ($datas as $columnName => $value) {
+                    $set[] = $columnName . ' = ?';
+                }
+                foreach ($identifier as $columnName => $value) {
+                    $set[] = $columnName . ' = ?';
+                }
+
+                $params = array_merge(array_values($datas), array_values($identifier));
+
+                $sql  = 'REPLACE INTO ' . $tableName . ' SET ' . implode(', ', $set);
+
+                $affectedRows = $connection->executeUpdate($sql, $params);
+
+                return $originalIdentifier;
+            } else {
+                //Update
+                $affectedRows = $connection->update($tableName, $datas, $identifier);
+
+                return $originalIdentifier;
+            }
         }
     }
 
@@ -187,6 +208,6 @@ class DatabaseSingleRow extends SourceAbstract{
      * @return int
      */
     public function saveAfterLoading($datas, array $identifier=array(), &$affectedRows=null){
-        return $this->save($datas, $identifier, $affectedRows);
+        return $this->save($datas, $identifier, $affectedRows, true);
     }
 }
