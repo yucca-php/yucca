@@ -85,4 +85,14 @@ class Ids implements SelectorInterface {
     {
         return null;
     }
+
+    /**
+     * @param array $criteria
+     *
+     * @throws \RuntimeException
+     */
+    public function setCriteria(array $criteria)
+    {
+        throw new \RuntimeException();
+    }
 }

@@ -11,4 +11,5 @@ namespace Yucca\Component\Selector;
 
 interface SelectorInterface extends \Countable, \Iterator{
     function currentShardingKey();
+    function setCriteria(array $criteria);
 }

@@ -240,4 +240,14 @@ abstract class SelectorAbstract implements SelectorInterface
         $this->limit = $value;
         return $this;
     }
+
+    /**
+     * @param array $criteria
+     */
+    public function setCriteria(array $criteria)
+    {
+        foreach ($criteria as $field => $value) {
+            $this->criterias[$field][] = $value;
+        }
+    }
 }
