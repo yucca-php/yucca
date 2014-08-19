@@ -61,6 +61,9 @@ class DataParser
                             $toReturn[$dataKey] = new \DateTime($dataValue);
                         }
                         break;
+                    case 'boolean':
+                        $toReturn[$dataKey] = $dataValue ? true : false;
+                        break;
                     case 'json':
                         $toReturn[$dataKey] = json_decode($dataValue);
                         break;
@@ -153,6 +156,9 @@ class DataParser
                         } else {
                             $toReturn[$dataKey] = $dataValue;
                         }
+                        break;
+                    case 'boolean':
+                        $toReturn[$dataKey] = ($dataValue ? 1 : 0);
                         break;
                     case 'json':
                     case 'json_assoc':
