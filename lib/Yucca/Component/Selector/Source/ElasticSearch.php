@@ -84,7 +84,9 @@ class ElasticSearch implements SelectorSourceInterface{
          */
         $index = $options[SelectorSourceInterface::ELASTIC_SEARCHABLE];
         $query = $options[SelectorSourceInterface::ELASTIC_QUERY];
-        $query = Query::create($query);
+        if (false === ($query instanceof Query)) {
+            $query = Query::create($query);
+        }
 
         if (self::RESULT_COUNT !== $options[SelectorSourceInterface::RESULT]) {
             if(is_numeric($options[SelectorSourceInterface::LIMIT])) {
