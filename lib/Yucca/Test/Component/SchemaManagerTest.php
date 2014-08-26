@@ -217,7 +217,7 @@ class SchemaManagerTest extends \PHPUnit_Framework_TestCase {
 
         $schemaManager->addShardingStrategy('moduloReturn1',$shardingStrategy);
 
-        $this->assertSame($result , $schemaManager->fetchOne('table1', array('id'=>1,'sharding_key'=>1)));
+        $this->assertSame($result , $schemaManager->fetchOne('table1', array('id'=>1), 1));
     }
 
     public function test_fetchAllOneCriteriaOneValue(){
@@ -414,6 +414,6 @@ class SchemaManagerTest extends \PHPUnit_Framework_TestCase {
 
         $schemaManager->addShardingStrategy('moduloReturn0',$shardingStrategy);
 
-        $this->assertSame($schemaManager, $schemaManager->remove('table0', array('id'=>1,'sharding_key'=>2)));
+        $this->assertSame($schemaManager, $schemaManager->remove('table0', array('id'=>1), 2));
     }
 }

@@ -42,6 +42,7 @@ Create your connections
                     user:     %database_order2_user%
                     password: %database_order2_password%
                     charset:  UTF8
+```
 
 Create your schema
 ------------------
@@ -90,7 +91,7 @@ To retrieve an entity, the third argument is the sharding key:
 
 ```php
     $order = $this->container->get('yucca.entity_manager')->load('Acme\Bundle\YuccaDemoBundle\Entity\Order', $order_id, $user_id);
-
+```
 To loop on entity on sharded tables, you have to specify it in the selector criteria:
 
 ```php

@@ -32,6 +32,10 @@ class Base extends \Yucca\Model\ModelAbstract {
         return $this->yuccaIdentifier;
     }
 
+    public function getYuccaShardingKey(){
+        return $this->yuccaShardingKey;
+    }
+
     public function getYuccaSelectorManager(){
         return $this->yuccaSelectorManager;
     }

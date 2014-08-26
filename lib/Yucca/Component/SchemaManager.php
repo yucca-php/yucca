@@ -238,7 +238,7 @@ class SchemaManager
      * @param array $criterias
      * @return int
      */
-    public function remove($tableName, array $criterias, $shardingKey) {
+    public function remove($tableName, array $criterias, $shardingKey=null) {
         $connection = $this->connectionManager->getConnection(
             $this->getConnectionName($tableName, $shardingKey, true),
             true
@@ -278,7 +278,7 @@ class SchemaManager
      * @throws \Exception
      * @return mixed
      */
-    public function fetchOne($tableName, array $identifier, $shardingKey, $forceFromMaster = true) {
+    public function fetchOne($tableName, array $identifier, $shardingKey=null, $forceFromMaster = true) {
         return $this->fetch($tableName, $identifier, $shardingKey, array('*'), false, $forceFromMaster);
     }
 

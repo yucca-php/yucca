@@ -82,7 +82,8 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
 
         //Load with sharding key
         $model = $entityManager->load('\Yucca\Test\Concrete\Model\Base',2,4);
-        $this->assertSame(array('strange_identifier'=>2, 'sharding_key'=>4), $model->getYuccaIdentifier());
+        $this->assertSame(array('strange_identifier'=>2), $model->getYuccaIdentifier());
+        $this->assertSame(4, $model->getYuccaShardingKey());
         $this->assertInstanceOf('\Yucca\Test\Concrete\Model\Base', $model);
     }
 
