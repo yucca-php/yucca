@@ -489,3 +489,7 @@ yucca:
                     type: database_single_row
                     table_name: user
 ```
+My application has grown up, I want to shard some tables:
+======================================================
+
+[Read the Documentation for master](https://github.com/rjanot/yucca/blob/master/doc/sharding.md)
