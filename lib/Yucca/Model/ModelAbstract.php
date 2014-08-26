@@ -31,6 +31,7 @@ abstract class ModelAbstract implements ModelInterface{
     protected $yuccaEntityManager;
 
     protected $yuccaIdentifier;
+    protected $yuccaShardingKey;
 
     // For old PHP 5.3 (like 5.3.3) compatibility
     //abstract public function getId();
@@ -70,8 +71,9 @@ abstract class ModelAbstract implements ModelInterface{
      * @param $identifier
      * @return ModelAbstract
      */
-    public function setYuccaIdentifier($identifier) {
+    public function setYuccaIdentifier($identifier, $shardingKey=null) {
         $this->yuccaIdentifier = $identifier;
+        $this->yuccaShardingKey = $shardingKey;
 
         return $this;
     }
@@ -106,8 +108,9 @@ abstract class ModelAbstract implements ModelInterface{
      * @return ModelAbstract
      */
     protected function hydrate($propertyName) {
-        if(isset($this->yuccaMappingManager) && (false === isset($this->yuccaInitialized[$propertyName])) && false===empty($this->yuccaIdentifier)){
-            $values = $this->yuccaMappingManager->getMapper(get_class($this))->load($this->yuccaIdentifier, $propertyName);
+
+        if (isset($this->yuccaMappingManager) && (false === isset($this->yuccaInitialized[$propertyName])) && (false===empty($this->yuccaIdentifier))) {
+            $values = $this->yuccaMappingManager->getMapper(get_class($this))->load($this->yuccaIdentifier, $propertyName, $this->yuccaShardingKey);
             foreach($values as $property=>$value) {
                 $this->$property = $value;
                 $this->yuccaInitialized[$property] = true;
@@ -161,7 +164,7 @@ abstract class ModelAbstract implements ModelInterface{
         }
 
         //Save
-        $this->yuccaIdentifier = $this->yuccaMappingManager->getMapper(get_class($this))->save($this->yuccaIdentifier, $toSave);
+        $this->yuccaIdentifier = $this->yuccaMappingManager->getMapper(get_class($this))->save($this->yuccaIdentifier, $toSave, $this->yuccaShardingKey);
 
         //Set identifier to properties
         foreach($this->yuccaIdentifier as $property=>$value) {
@@ -179,7 +182,7 @@ abstract class ModelAbstract implements ModelInterface{
         }
 
         //Remove
-        $this->yuccaMappingManager->getMapper(get_class($this))->remove($this->yuccaIdentifier);
+        $this->yuccaMappingManager->getMapper(get_class($this))->remove($this->yuccaIdentifier, $this->yuccaShardingKey);
 
         $this->reset(array());
 
@@ -188,7 +191,7 @@ abstract class ModelAbstract implements ModelInterface{
 
     public function __sleep() {
         return array_merge(
-            array('yuccaInitialized', 'yuccaProperties', 'yuccaIdentifier'),
+            array('yuccaInitialized', 'yuccaProperties', 'yuccaIdentifier', 'yuccaShardingKey'),
             $this->yuccaProperties
         );
     }

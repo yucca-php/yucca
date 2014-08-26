@@ -71,7 +71,14 @@ class Database implements SelectorSourceInterface{
             throw new \Exception('Unknown result type');
         }
 
-        $result = $this->schemaManager->fetchIds($options[SelectorSourceInterface::TABLE], $criterias, $fields, $options[SelectorSourceInterface::FORCE_FROM_MASTER], $options);
+        $result = $this->schemaManager->fetchIds(
+            $options[SelectorSourceInterface::TABLE],
+            $criterias,
+            $fields,
+            isset($options[SelectorSourceInterface::SHARDING_KEY]) ? $options[SelectorSourceInterface::SHARDING_KEY] : null,
+            $options[SelectorSourceInterface::FORCE_FROM_MASTER],
+            $options
+        );
 
         if (self::RESULT_COUNT === $options[SelectorSourceInterface::RESULT]) {
             if(false === is_array($result) || false === is_array(current($result))) {

@@ -13,6 +13,7 @@ interface SelectorSourceInterface
 {
     const ID_FIELD = 'idField';
     const SHARDING_KEY_FIELD = 'shardingKeyField';
+    const SHARDING_KEY = 'sharding_key';
     const TABLE = 'table';
     const RESULT = 'result';
     const RESULT_COUNT = 'count';

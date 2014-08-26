@@ -96,12 +96,7 @@ class SchemaManager
         );
     }
 
-    protected function fetch($tableName, array $criterias, array $fields, $allowEmptyCriterias, $forceFromMaster, array $options=array()) {
-        $shardingKey = null;
-        if(isset($criterias['sharding_key'])) {
-            $shardingKey = $criterias['sharding_key'];
-            unset($criterias['sharding_key']);
-        }
+    protected function fetch($tableName, array $criterias, $shardingKey, array $fields, $allowEmptyCriterias, $forceFromMaster, array $options=array()) {
 
         if((false === $allowEmptyCriterias) && empty($criterias)){
             if(is_array($tableName)){
@@ -243,13 +238,7 @@ class SchemaManager
      * @param array $criterias
      * @return int
      */
-    public function remove($tableName, array $criterias) {
-        $shardingKey = null;
-        if(isset($criterias['sharding_key'])) {
-            $shardingKey = $criterias['sharding_key'];
-            unset($criterias['sharding_key']);
-        }
-
+    public function remove($tableName, array $criterias, $shardingKey) {
         $connection = $this->connectionManager->getConnection(
             $this->getConnectionName($tableName, $shardingKey, true),
             true
@@ -289,11 +278,11 @@ class SchemaManager
      * @throws \Exception
      * @return mixed
      */
-    public function fetchOne($tableName, array $identifier, $forceFromMaster = true) {
-        return $this->fetch($tableName, $identifier, array('*'), false, $forceFromMaster);
+    public function fetchOne($tableName, array $identifier, $shardingKey, $forceFromMaster = true) {
+        return $this->fetch($tableName, $identifier, $shardingKey, array('*'), false, $forceFromMaster);
     }
 
-    public function fetchIds($tableName, array $criterias, array $identifiersFields=array('id'), $forceFromMaster = false, array $options=array()) {
-        return $this->fetch($tableName, $criterias, $identifiersFields, true, $forceFromMaster, $options);
+    public function fetchIds($tableName, array $criterias, array $identifiersFields=array('id'), $shardingKey=null, $forceFromMaster = false, array $options=array()) {
+        return $this->fetch($tableName, $criterias, $shardingKey, $identifiersFields, true, $forceFromMaster, $options);
     }
 }

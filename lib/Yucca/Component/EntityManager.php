@@ -78,11 +78,6 @@ class EntityManager
             $identifier = array($this->defaultIdKey=>$identifier);
         }
 
-        //if we have a sharding key, add it to the identifier array
-        if(false === is_null($shardingKey)) {
-            $identifier['sharding_key'] = $shardingKey;
-        }
-
         //create object
         if(false === class_exists($entityClassName)){
             throw new \Exception("Entity class $entityClassName not found.");
@@ -99,7 +94,7 @@ class EntityManager
         }
 
         $this->initModel($toReturn);
-        $toReturn->setYuccaIdentifier($identifier);
+        $toReturn->setYuccaIdentifier($identifier, $shardingKey);
 
         return $toReturn;
     }

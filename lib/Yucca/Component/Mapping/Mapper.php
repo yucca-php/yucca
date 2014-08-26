@@ -58,7 +58,7 @@ class Mapper {
      * @throws \RuntimeException
      * @return array
      */
-    public function load(array $identifier, $propertyName){
+    public function load(array $identifier, $propertyName, $shardingKey=null){
         if(isset($identifier[$propertyName])){
             return array($propertyName=>$identifier[$propertyName]);
         }
@@ -78,7 +78,7 @@ class Mapper {
                     }
                 }
 
-                $datas = $source->load($mappedIdentifiers);
+                $datas = $source->load($mappedIdentifiers, false, $shardingKey);
 
                 $mappedDatas = $this->mapFieldsToProperties($datas, $sourceName);
 
@@ -98,7 +98,7 @@ class Mapper {
         return $mappedDatas;
     }
 
-    public function save($identifier, array $propertyValues){
+    public function save($identifier, array $propertyValues, $shardingKey=null){
         if(false == is_array($identifier)){
             $identifier = array();
         }
@@ -162,7 +162,7 @@ class Mapper {
                     $newIdentifiers[$field] = $value;
                 }
             }
-            $justCreatedFieldValues = $source->save(array_merge($datas,$newIdentifiers), isset($mappedIdentifiers[$sourceName]) ? $mappedIdentifiers[$sourceName] : array());
+            $justCreatedFieldValues = $source->save(array_merge($datas,$newIdentifiers), isset($mappedIdentifiers[$sourceName]) ? $mappedIdentifiers[$sourceName] : array(), $shardingKey);
             $createdFieldValues = array_merge($createdFieldValues, $justCreatedFieldValues);
             $mappedNewFields = array_merge($this->mapFieldsToProperties($justCreatedFieldValues, $sourceName),$mappedNewFields);
         }
@@ -170,7 +170,7 @@ class Mapper {
         return $mappedNewFields;
     }
 
-    public function remove($identifier){
+    public function remove($identifier, $shardingKey){
         $sources = array();
         foreach($this->configuration['properties'] as $properties) {
             if(isset($properties['sources'])) {
@@ -193,7 +193,7 @@ class Mapper {
         }
 
         foreach($sources as $source) {
-            $source->remove($mappedIdentifiers);
+            $source->remove($mappedIdentifiers, $shardingKey);
         }
 
         return $this;

@@ -82,8 +82,8 @@ class DatabaseSingleRow extends SourceAbstract{
      * @throws Exception\NoDataException
      * @return array
      */
-    public function load(array $identifier, $rawData=false){
-        $datas = $this->schemaManager->fetchOne($this->tableName, $identifier);
+    public function load(array $identifier, $rawData, $shardingKey){
+        $datas = $this->schemaManager->fetchOne($this->tableName, $identifier, $shardingKey);
         if(empty($datas) || 1 != count($datas)) {
             if(count($datas)){
                 throw new NoDataException("Too much datas for $this->tableName with ids : ".var_export($identifier,true));
@@ -104,8 +104,8 @@ class DatabaseSingleRow extends SourceAbstract{
      * @param array $identifier
      * @return DatabaseSingleRow
      */
-    public function remove(array $identifier){
-        $this->schemaManager->remove($this->tableName, $identifier);
+    public function remove(array $identifier, $shardingKey=null){
+        $this->schemaManager->remove($this->tableName, $identifier, $shardingKey);
 
         return $this;
     }
@@ -118,14 +118,9 @@ class DatabaseSingleRow extends SourceAbstract{
      * @throws \Exception
      * @return int
      */
-    public function save($datas, array $identifier=array(), &$affectedRows=null, $replace=false){
+    public function save($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null, $replace=false){
         //Extract sharding key from identifier
         $originalIdentifier = $identifier;
-        $shardingKey = null;
-        if(isset($identifier['sharding_key'])) {
-            $shardingKey = $identifier['sharding_key'];
-            unset($identifier['sharding_key']);
-        }
 
         //Check if we have to insert or update
         $insert =empty($identifier);
@@ -207,7 +202,7 @@ class DatabaseSingleRow extends SourceAbstract{
      * @param array $affectedRows
      * @return int
      */
-    public function saveAfterLoading($datas, array $identifier=array(), &$affectedRows=null){
-        return $this->save($datas, $identifier, $affectedRows, true);
+    public function saveAfterLoading($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null){
+        return $this->save($datas, $identifier, $shardingKey, $affectedRows, true);
     }
 }

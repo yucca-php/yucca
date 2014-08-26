@@ -32,7 +32,7 @@ interface ModelInterface {
      * @param $identifier
      * @return ModelInterface
      */
-    public function setYuccaIdentifier($identifier);
+    public function setYuccaIdentifier($identifier, $shardingKey=null);
 
     /**
      * @param $identifier

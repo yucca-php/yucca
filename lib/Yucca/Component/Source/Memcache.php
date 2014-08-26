@@ -101,7 +101,7 @@ class Memcache extends SourceAbstract
      * @return array
      * @throws Exception\NoDataException
      */
-    public function load(array $identifier, $rawData=false) {
+    public function load(array $identifier, $rawData, $shardingKey) {
         $datas = $this->getConnection()->get($this->getCacheKey($identifier));
 
         if(false === $datas) {
@@ -120,7 +120,7 @@ class Memcache extends SourceAbstract
      * @param array $identifier
      * @return Memcache
      */
-    public function remove(array $identifier) {
+    public function remove(array $identifier, $shardingKey=null) {
         $this->getConnection()->delete($this->getCacheKey($identifier));
 
         return $this;
@@ -142,11 +142,11 @@ class Memcache extends SourceAbstract
         return $datas;
     }
 
-    public function save($datas, array $identifier=array(), &$affectedRows=null) {
+    public function save($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null) {
         $this->getConnection()->delete($this->getCacheKey($identifier));
     }
 
-    public function saveAfterLoading($datas, array $identifier=array(), &$affectedRows=null) {
+    public function saveAfterLoading($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null) {
         $this->getConnection()->set($this->getCacheKey($identifier), $datas, 0, 0);
     }
 }

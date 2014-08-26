@@ -144,9 +144,9 @@ class DatabaseMultipleRow extends SourceAbstract{
      * @throws Exception\NoDataException
      * @return array
      */
-    public function load(array $identifier){
+    public function load(array $identifier, $rawData, $shardingKey){
         $mappedIdentifier = $this->mapIdentifier($identifier);
-        $datas = $this->schemaManager->fetchIds($this->tableName, $mappedIdentifier, array($this->nameField, $this->valueField));
+        $datas = $this->schemaManager->fetchIds($this->tableName, $mappedIdentifier, array($this->nameField, $this->valueField), $shardingKey);
         $toReturn = array();
         foreach($datas as $row) {
             $toReturn[$row[$this->nameField]] = $row[$this->valueField];
@@ -159,13 +159,14 @@ class DatabaseMultipleRow extends SourceAbstract{
      * @param array $identifier
      * @return \Yucca\Component\Source\DatabaseMultipleRow
      */
-    public function remove(array $identifier){
+    public function remove(array $identifier, $shardingKey=null){
         $this->schemaManager->remove(
             $this->tableName,
             array_merge(
                 $this->mapIdentifier($identifier),
                 array($this->nameField=>array_keys($this->fields))
-            )
+            ),
+            $shardingKey
         );
 
         return $this;
@@ -179,7 +180,7 @@ class DatabaseMultipleRow extends SourceAbstract{
      * @throws \Exception
      * @return int
      */
-    public function save($datas, array $identifier=array(), &$affectedRows=null){
+    public function save($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null){
         $datasWithoutIdentifiers=array();
         foreach($datas as $key=>$value){
             if(isset($this->mapping[$key])) {
@@ -243,7 +244,7 @@ class DatabaseMultipleRow extends SourceAbstract{
      * @param array $affectedRows
      * @return int
      */
-    public function saveAfterLoading($datas, array $identifier=array(), &$affectedRows=null){
-        return $this->save($datas, $identifier, $affectedRows);
+    public function saveAfterLoading($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null){
+        return $this->save($datas, $identifier, $shardingKey, $affectedRows);
     }
 }

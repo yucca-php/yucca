@@ -179,7 +179,7 @@ abstract class SelectorAbstract implements SelectorInterface
      */
     public function currentShardingKey()
     {
-        return null;
+        return isset($this->options[SelectorSourceInterface::SHARDING_KEY]) ? $this->options[SelectorSourceInterface::SHARDING_KEY] : null;
     }
 
     /**

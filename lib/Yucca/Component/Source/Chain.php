@@ -64,12 +64,12 @@ class Chain extends SourceAbstract
      * @throws Exception\NoDataException
      * @return array
      */
-    public function load(array $identifier){
+    public function load(array $identifier, $rawData, $shardingKey){
         $sourcesToFeed = array();
         $datas = null;
         foreach($this->sources as $sourceKey=>$source){
             try {
-                $datas = $source->load($identifier, true);
+                $datas = $source->load($identifier, true, $shardingKey);
                 break;
             } catch (NoDataException $exception) {
                 $sourcesToFeed[] = $sourceKey;
@@ -78,7 +78,7 @@ class Chain extends SourceAbstract
 
         if(isset($datas)){
             foreach($sourcesToFeed as $sourceKey){
-                $this->sources[$sourceKey]->saveAfterLoading($datas, $identifier);
+                $this->sources[$sourceKey]->saveAfterLoading($datas, $identifier, $shardingKey);
             }
 
             return $this->dataParser->decode($datas, $this->configuration['fields']);
@@ -91,17 +91,17 @@ class Chain extends SourceAbstract
      * @param array $identifier
      * @return array
      */
-    public function remove(array $identifier){
+    public function remove(array $identifier, $shardingKey=null){
         try {
             foreach($this->sources as $source){
-                $source->remove($identifier);
+                $source->remove($identifier, $shardingKey);
             }
         } catch(BreakRemoveChainException $e) {
 
         }
     }
 
-    public function saveAfterLoading($datas, array $identifier=array(), &$affectedRows=null){
+    public function saveAfterLoading($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null){
         throw new \Exception("Don't know what to do in chain {$this->sourceName}...");
     }
 
@@ -112,11 +112,11 @@ class Chain extends SourceAbstract
      * @param array $affectedRows
      * @return int
      */
-    public function save($datas, array $identifier=array(), &$affectedRows=null){
+    public function save($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null){
         $toReturn = array();
         try {
             foreach($this->sources as $source){
-                $justCreated = $source->save($datas, $identifier, $affectedRows);
+                $justCreated = $source->save($datas, $identifier, $shardingKey, $affectedRows);
                 if(is_array($justCreated)) {
                     $toReturn = array_merge($toReturn, $justCreated);
                 }

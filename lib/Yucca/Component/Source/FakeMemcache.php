@@ -21,7 +21,7 @@ class FakeMemcache extends SourceAbstract
      * @return array
      * @throws Exception\NoDataException
      */
-    public function load(array $identifier, $rawData=false) {
+    public function load(array $identifier, $rawData, $shardingKey) {
         throw new NoDataException("No datas found in fake cache");
     }
 
@@ -29,7 +29,7 @@ class FakeMemcache extends SourceAbstract
      * @param array $identifier
      * @return Memcache
      */
-    public function remove(array $identifier) {
+    public function remove(array $identifier, $shardingKey=null) {
         return $this;
     }
 
@@ -42,11 +42,11 @@ class FakeMemcache extends SourceAbstract
         throw new NoDataException("No datas found in fake cache");
     }
 
-    public function save($datas, array $identifier=array(), &$affectedRows=null) {
+    public function save($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null) {
 
     }
 
-    public function saveAfterLoading($datas, array $identifier=array(), &$affectedRows=null) {
+    public function saveAfterLoading($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null) {
 
     }
 }
