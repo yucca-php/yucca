@@ -120,7 +120,7 @@ class DatabaseSingleRow extends SourceAbstract{
      * @throws \Exception
      * @return int
      */
-    public function save($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null, $replace=false){
+    public function save($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null, $replace=false, $rawData=false){
         if ($this->breakChainOnSave) {
             throw new BreakSaveChainException('Source configured to break chain on save');
         }
@@ -159,7 +159,9 @@ class DatabaseSingleRow extends SourceAbstract{
         }
 
         //Parse datas
-        $datas = $this->dataParser->encode($datas, $this->configuration['fields']);
+        if(false === $rawData) {
+            $datas = $this->dataParser->encode($datas, $this->configuration['fields']);
+        }
         //check if it's an insert or update
         if($insert){
             //Insert
@@ -178,23 +180,24 @@ class DatabaseSingleRow extends SourceAbstract{
                 //Replace
                 $connection->connect();
                 $set = array();
+                $params = array();
                 foreach ($datas as $columnName => $value) {
-                    $set[] = $columnName . ' = ?';
+                    $set[$columnName] = $columnName . ' = ?';
+                    $params[$columnName] = $value;
                 }
                 foreach ($identifier as $columnName => $value) {
-                    $set[] = $columnName . ' = ?';
+                    $set[$columnName] = $columnName . ' = ?';
+                    $params[$columnName] = $value;
                 }
 
-                $params = array_merge(array_values($datas), array_values($identifier));
+                $sql  = 'REPLACE INTO `' . $tableName . '` SET ' . implode(', ', $set);
 
-                $sql  = 'REPLACE INTO ' . $tableName . ' SET ' . implode(', ', $set);
-
-                $affectedRows = $connection->executeUpdate($sql, $params);
+                $affectedRows = $connection->executeUpdate($sql, array_values($params));
 
                 return $originalIdentifier;
             } else {
                 //Update
-                $affectedRows = $connection->update($tableName, $datas, $identifier);
+                $affectedRows = $connection->update('`'.$tableName.'`', $datas, $identifier);
 
                 return $originalIdentifier;
             }
@@ -209,6 +212,6 @@ class DatabaseSingleRow extends SourceAbstract{
      * @return int
      */
     public function saveAfterLoading($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null){
-        return $this->save($datas, $identifier, $shardingKey, $affectedRows, true);
+        return $this->save($datas, $identifier, $shardingKey, $affectedRows, true, true);
     }
 }
