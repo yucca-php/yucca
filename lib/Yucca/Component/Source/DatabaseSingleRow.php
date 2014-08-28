@@ -11,6 +11,7 @@ namespace Yucca\Component\Source;
 
 use Yucca\Component\ConnectionManager;
 use Yucca\Component\SchemaManager;
+use Yucca\Component\Source\Exception\BreakSaveChainException;
 use Yucca\Component\Source\Exception\NoDataException;
 use Yucca\Component\Source\DataParser\DataParser;
 
@@ -46,6 +47,7 @@ class DatabaseSingleRow extends SourceAbstract{
             throw new \InvalidArgumentException("Configuration array must contain a 'table_name' key");
         }
         $this->tableName = $this->configuration['table_name'];
+        $this->breakChainOnSave = isset($this->configuration['break_chain_on_save']) ? $this->configuration['break_chain_on_save'] : null;
     }
 
     /**
@@ -119,6 +121,10 @@ class DatabaseSingleRow extends SourceAbstract{
      * @return int
      */
     public function save($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null, $replace=false){
+        if ($this->breakChainOnSave) {
+            throw new BreakSaveChainException('Source configured to break chain on save');
+        }
+
         //Extract sharding key from identifier
         $originalIdentifier = $identifier;
 
