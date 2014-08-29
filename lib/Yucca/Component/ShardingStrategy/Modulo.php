@@ -9,12 +9,30 @@
  */
 namespace Yucca\Component\ShardingStrategy;
 
-class Modulo implements ShardingStrategyInterface{
-    public function getShardingIdentifier(array $tableConfig, $shardingKey) {
-        if(is_array($tableConfig['shards']) && count($tableConfig['shards'])) {
-            return $shardingKey % count($tableConfig['shards']);
+class Modulo implements ShardingStrategyInterface
+{
+    public function getShardingIdentifier(array $tableConfig, $shardingKey)
+    {
+        is_array($tableConfig['shards']) or $tableConfig['shards'] = array();
+
+        $count = count($tableConfig['shards']);
+
+        $toReturn = null;
+
+        switch($count) {
+            case 0:
+                throw new \Exception("No shards defined : can't compute modulo");
+                break;
+            case 1:
+                return null;
+                break;
+
+            default:
+                $toReturn = $shardingKey % count($tableConfig['shards']);
+                break;
         }
 
-        throw new \Exception("No shards defined : can't compute modulo");
+        return $toReturn;
+
     }
 }

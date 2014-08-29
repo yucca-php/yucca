@@ -207,7 +207,7 @@ class DatabaseMultipleRow extends SourceAbstract{
         );
         $shardingIdentifier = $this->schemaManager->getShardingIdentifier($this->tableName,$shardingKey);
         $tableName = $this->tableName;
-        if($shardingIdentifier) {
+        if(isset($shardingIdentifier)) {
             $tableName = sprintf('%1$s_%2$s', $this->tableName, $shardingIdentifier);
         }
 

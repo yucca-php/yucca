@@ -122,7 +122,7 @@ class SchemaManager
                 }
 
                 $shardingIdentifier = $this->getShardingIdentifier($table,$shardingKey);
-                if($shardingIdentifier) {
+                if(isset($shardingIdentifier)) {
                     $table = sprintf('%1$s_%2$s', $table, $shardingIdentifier);
                 }
 
@@ -145,7 +145,7 @@ class SchemaManager
             );
 
             $shardingIdentifier = $this->getShardingIdentifier($tableName,$shardingKey);
-            if($shardingIdentifier) {
+            if(isset($shardingIdentifier)) {
                 $tableName = sprintf('%1$s_%2$s', $tableName, $shardingIdentifier);
             }
 
