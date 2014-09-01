@@ -48,7 +48,11 @@ class DataParser
                             } else {
                                 $id = $dataValue;
                             }
-                            $toReturn[$dataKey] = $this->entityManager->load($fieldsConfiguration[$dataKey]['class_name'], $id);
+                            $shardingKey = null;
+                            if(isset($fieldsConfiguration[$dataKey]['sharding_key'])) {
+                                $shardingKey = $datas[$fieldsConfiguration[$dataKey]['sharding_key']];
+                            }
+                            $toReturn[$dataKey] = $this->entityManager->load($fieldsConfiguration[$dataKey]['class_name'], $id, $shardingKey);
                         }
 
                         break;
