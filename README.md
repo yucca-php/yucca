@@ -489,6 +489,19 @@ yucca:
                     type: database_single_row
                     table_name: user
 ```
+
+I just retrieve my model from session
+-------------------------------------
+
+The goal of the below code is to set back in models the entityManager, selectorManager, and mappingManager
+
+```php
+$session = $this->container->get('session');
+$user = $session->get('user');
+
+$this->container->get('yucca.entity_manager')->refresh($user);
+```
+
 My application has grown up, I want to shard some tables:
 ======================================================
 
