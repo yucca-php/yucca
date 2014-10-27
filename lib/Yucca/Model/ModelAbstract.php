@@ -68,6 +68,28 @@ abstract class ModelAbstract implements ModelInterface{
     }
 
     /**
+     * @param MappingManager    $mappingManager
+     * @param SelectorManager   $selectorManager
+     * @param EntityManager     $entityManager
+     *
+     * @return mixed
+     */
+    public function refresh(MappingManager $mappingManager, SelectorManager $selectorManager, EntityManager $entityManager)
+    {
+        $this->yuccaMappingManager = $mappingManager;
+        $this->yuccaSelectorManager = $selectorManager;
+        $this->yuccaEntityManager = $entityManager;
+
+        foreach (array_keys($this->yuccaInitialized) as $propertyName) {
+            if ($this->$propertyName instanceof ModelInterface) {
+                $this->yuccaEntityManager->refresh($this->$propertyName);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @param $identifier
      * @return ModelAbstract
      */

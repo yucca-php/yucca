@@ -55,14 +55,18 @@ class DataParser
                     case 'date':
                     case 'datetime':
                     case 'time':
-                        if(is_null($dataValue)) {
+                        if (is_null($dataValue)) {
                             $toReturn[$dataKey] = null;
                         } else {
                             $toReturn[$dataKey] = new \DateTime($dataValue);
                         }
                         break;
                     case 'boolean':
-                        $toReturn[$dataKey] = $dataValue ? true : false;
+                        if (is_null($dataValue)) {
+                            $toReturn[$dataKey] = null;
+                        } else {
+                            $toReturn[$dataKey] = $dataValue ? true : false;
+                        }
                         break;
                     case 'json':
                         $toReturn[$dataKey] = json_decode($dataValue);
@@ -151,14 +155,18 @@ class DataParser
                         }
                         break;
                     case 'time':
-                        if($dataValue instanceof \DateTime){
+                        if ($dataValue instanceof \DateTime) {
                             $toReturn[$dataKey] = $dataValue->format('H:i:s');
                         } else {
                             $toReturn[$dataKey] = $dataValue;
                         }
                         break;
                     case 'boolean':
-                        $toReturn[$dataKey] = ($dataValue ? 1 : 0);
+                        if (is_null($dataValue)) {
+                            $toReturn[$dataKey] = null;
+                        } else {
+                            $toReturn[$dataKey] = ($dataValue ? 1 : 0);
+                        }
                         break;
                     case 'json':
                     case 'json_assoc':

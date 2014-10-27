@@ -29,6 +29,15 @@ interface ModelInterface {
     public function setYuccaSelectorManager(SelectorManager $selectorManager);
 
     /**
+     * @param MappingManager    $mappingManager
+     * @param SelectorManager   $selectorManager
+     * @param EntityManager     $entityManager
+     *
+     * @return mixed
+     */
+    public function refresh(MappingManager $mappingManager, SelectorManager $selectorManager, EntityManager $entityManager);
+
+    /**
      * @param $identifier
      * @return ModelInterface
      */

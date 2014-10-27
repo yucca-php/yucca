@@ -9,6 +9,7 @@
  */
 namespace Yucca\Component;
 
+use Wlz\Bundle\CarBundle\Entity\Rent;
 use Yucca\Model\ModelInterface;
 
 class EntityManager
@@ -63,6 +64,19 @@ class EntityManager
                 ->setYuccaEntityManager($this);
 
         return $this;
+    }
+
+    /**
+     * Use this when retrieving a serialized object (from session, for example)
+     * It bounds yucca's manager into the object
+     *
+     * @param ModelInterface $model
+     *
+     * @return EntityManager
+     */
+    public function refresh(ModelInterface $model)
+    {
+        return $model->refresh($this->mappingManager, $this->selectorManager, $this);
     }
 
     /**
