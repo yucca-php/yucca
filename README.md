@@ -516,6 +516,13 @@ $this->container->get('yucca.entity_manager')->refresh($user);
 ```
 
 My application has grown up, I want to shard some tables:
-======================================================
+---------------------------------------------------------
 
-[Read the Documentation for master](https://github.com/rjanot/yucca/blob/master/doc/sharding.md)
+[Read the Sharding documentation for master](https://github.com/rjanot/yucca/blob/master/doc/sharding.md)
+
+Seems good, but I've a large database to migrate. How can I autogenerate config and models:
+-------------------------------------------------------------------------------------------
+
+There is a bunch of existing commands. To know how you can pre generate your yaml and php files, [read the Commands documentation for master](https://github.com/rjanot/yucca/blob/master/doc/commands.md)
+
+
