@@ -133,6 +133,8 @@ require 'vendor/autoload.php';
 Configuration
 =============
 
+If you feel depressed when you look at this YAML configuration, feel free to look at the [Commands section](https://github.com/rjanot/yucca/blob/master/doc/commands.md), and pay attention to the config generator command :) 
+
 Connection
 ----------
 ```yaml
