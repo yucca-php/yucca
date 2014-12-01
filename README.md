@@ -83,9 +83,9 @@ An iterator use a selector to get Ids and a SINGLE model (by default) which is h
 Getting started
 ===============
 
-The recommended way to install Yucca is through composer.
+The recommended way to install Yucca is through composer. If you don't know this tool, please look at [its documentation](https://getcomposer.org/)
 
-Just create a `composer.json` file for your project:
+Just create a `composer.json` file for your project, or update yours with this require statement:
 
 ``` json
 {
@@ -105,7 +105,22 @@ $ curl -sS https://getcomposer.org/installer | php
 $ composer install
 ```
 
-Require the autoloader, and here you are:
+When using Symfony2, you just have to register the bundle in the AppKernel:
+``` php
+// app/AppKernel.php
+
+public function registerbundles()
+{
+    $bundles = array(
+        //...
+        new Yucca\Bundle\YuccaBundle\YuccaBundle(),
+        //...
+    );
+}
+```
+
+**Protip:** Yucca is mostly intended to be use with Symfony2 and it's dependency injection. If you are not using
+Symfony2, you'll have to emulate the Yucca Bundle feature to be run in your application. In addition you will have to require the composer autoloader:
 
 ``` php
 <?php
@@ -113,8 +128,6 @@ Require the autoloader, and here you are:
 require 'vendor/autoload.php';
 ```
 
-**Protip:** Yucca is mostly intended to be use with Symfony2 and it's dependency injection. If you are not using
-Symfony2, you'll have to emulate the Yucca Bundle feature to be run in your application.
 
 
 Configuration
