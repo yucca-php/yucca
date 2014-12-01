@@ -312,7 +312,7 @@ I've an id, I want to get the object
 ------------------------------------
 
 ```php
-$this->get('yucca.entity_manager')->load('YuccaDemo\\Model\\User', $user_id);
+$user = $this->get('yucca.entity_manager')->load('YuccaDemo\\Model\\User', $user_id);
 ```
 Note that in this case, no call to the underlying DBs are made.
 
