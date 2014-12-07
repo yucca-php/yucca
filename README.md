@@ -83,9 +83,9 @@ An iterator use a selector to get Ids and a SINGLE model (by default) which is h
 Getting started
 ===============
 
-The recommended way to install Yucca is through composer.
+The recommended way to install Yucca is through composer. If you don't know this tool, please look at [its documentation](https://getcomposer.org/)
 
-Just create a `composer.json` file for your project:
+Just create a `composer.json` file for your project, or update yours with this require statement:
 
 ``` json
 {
@@ -105,7 +105,22 @@ $ curl -sS https://getcomposer.org/installer | php
 $ composer install
 ```
 
-Require the autoloader, and here you are:
+When using Symfony2, you just have to register the bundle in the AppKernel:
+``` php
+// app/AppKernel.php
+
+public function registerbundles()
+{
+    $bundles = array(
+        //...
+        new Yucca\Bundle\YuccaBundle\YuccaBundle(),
+        //...
+    );
+}
+```
+
+**Protip:** Yucca is mostly intended to be use with Symfony2 and it's dependency injection. If you are not using
+Symfony2, you'll have to emulate the Yucca Bundle feature to be run in your application. In addition you will have to require the composer autoloader:
 
 ``` php
 <?php
@@ -113,12 +128,12 @@ Require the autoloader, and here you are:
 require 'vendor/autoload.php';
 ```
 
-**Protip:** Yucca is mostly intended to be use with Symfony2 and it's dependency injection. If you are not using
-Symfony2, you'll have to emulate the Yucca Bundle feature to be run in your application.
 
 
 Configuration
 =============
+
+If you feel depressed when you look at this YAML configuration, feel free to look at the [Commands section](https://github.com/rjanot/yucca/blob/master/doc/commands.md), and pay attention to the config generator command :) 
 
 Connection
 ----------
@@ -299,7 +314,7 @@ I've an id, I want to get the object
 ------------------------------------
 
 ```php
-$this->get('yucca.entity_manager')->load('YuccaDemo\\Model\\User', $user_id);
+$user = $this->get('yucca.entity_manager')->load('YuccaDemo\\Model\\User', $user_id);
 ```
 Note that in this case, no call to the underlying DBs are made.
 
@@ -503,6 +518,13 @@ $this->container->get('yucca.entity_manager')->refresh($user);
 ```
 
 My application has grown up, I want to shard some tables:
-======================================================
+---------------------------------------------------------
 
-[Read the Documentation for master](https://github.com/rjanot/yucca/blob/master/doc/sharding.md)
+[Read the Sharding documentation for master](https://github.com/rjanot/yucca/blob/master/doc/sharding.md)
+
+Seems good, but I've a large database to migrate. How can I autogenerate config and models:
+-------------------------------------------------------------------------------------------
+
+There is a bunch of existing commands. To know how you can pre generate your yaml and php files, [read the Commands documentation for master](https://github.com/rjanot/yucca/blob/master/doc/commands.md)
+
+
