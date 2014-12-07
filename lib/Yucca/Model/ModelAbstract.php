@@ -211,7 +211,11 @@ abstract class ModelAbstract implements ModelInterface{
         return $this;
     }
 
-    public function __sleep() {
+    /**
+     * @return array
+     */
+    public function __sleep()
+    {
         return array_merge(
             array('yuccaInitialized', 'yuccaProperties', 'yuccaIdentifier', 'yuccaShardingKey'),
             $this->yuccaProperties

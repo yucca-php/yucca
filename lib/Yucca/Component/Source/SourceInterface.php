@@ -15,6 +15,6 @@ interface SourceInterface
     public function isIdentifier($field);
     public function load(array $identifier, $rawData, $shardingKey);
     public function remove(array $identifier, $shardingKey);
-    public function save($datas, array $identifier=array(), $shardingKey, &$affectedRows=null);
+    public function save($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null);
     public function saveAfterLoading($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null);
 }
