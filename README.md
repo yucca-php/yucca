@@ -473,16 +473,38 @@ I've the name's first letter (user autocompletion field, for example), and I wan
 
     /**
      * @param $criteria
-     * @return \Fdf\Selector\User
+     * @return \MyProject\Selector\User
      */
     public function addDisplayNameLikeCriteria($criteria){
-        $this->criterias['u.display_name'][] = new Expression(array(
-            'database'=>'(u.display_name LIKE \'%'.addslashes($criteria).'%\')'
-        ));
+        $this->criterias['u.display_name'][] = new Expression(
+            array(
+                'database'=>'(u.display_name LIKE :display_name)'
+            ),
+            array(
+                'display_name'=>$criteria
+            ),
+        );
     }
     ...
+    
+    //OR
+    
+    /**
+     * @param $criteria
+     * @return \MyProject\Selector\User
+     */
+    public function addDisplayNameLikeCriteria($criteria){
+        $index = count($this->criterias['u.display_name']);
+        $this->criterias['u.display_name'][] = new Expression(
+            array(
+                'database'=>'(u.display_name LIKE :display_name'.$index.')'
+            ),
+            array(
+                'display_name'.$index =>$criteria
+            ),
+        );
+    }
 ```
-**Note:** This is going to be improved to use query parameters
 
 
 I want to memcache my user models

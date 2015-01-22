@@ -18,11 +18,18 @@ class Expression
     protected $texts;
 
     /**
-     * @param array $text
+     * @var array
      */
-    public function __construct(array $text)
+    protected $params;
+
+    /**
+     * @param array $text
+     * @param array $params
+     */
+    public function __construct(array $text, array $params=array())
     {
         $this->text = $text;
+        $this->params = $params;
     }
 
     /**
@@ -33,9 +40,17 @@ class Expression
     public function toString($handler)
     {
         if(false === isset($this->text[$handler])){
-            throw new \Exception('Missing handler '.$handler.' for expression : '.var_export($handler));
+            throw new \Exception('Missing handler '.$handler.' for expression : '.var_export($handler, true));
         }
 
         return $this->text[$handler];
+    }
+
+    /**
+     * @return array
+     */
+    public function getParams()
+    {
+        return $this->params;
     }
 }

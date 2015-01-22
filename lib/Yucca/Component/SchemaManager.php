@@ -181,6 +181,9 @@ class SchemaManager
                         $expression = $v->toString('database');
                         if(false === empty($expression)) {
                             $orCriteria[] = $expression;
+                            foreach($v->getParams() as $paramName => $paramValue) {
+                                $params[":".$paramName] = $paramValue;
+                            }
                         }
                     } else {
                         throw new \Exception("Don't know what to do with criteria $criteriaKey");
@@ -209,6 +212,9 @@ class SchemaManager
                     $expression = $criteriaValue->toString('database');
                     if(false === empty($expression)) {
                         $whereCriterias[] = $expression;
+                        foreach($criteriaValue->getParams() as $paramName => $paramValue) {
+                            $params[":".$paramName] = $paramValue;
+                        }
                     }
                 } else {
                     throw new \Exception("Don't know what to do with criteria $criteriaKey");

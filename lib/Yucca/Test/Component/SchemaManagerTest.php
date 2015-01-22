@@ -10,6 +10,8 @@
 
 namespace Yucca\Test\Component;
 
+use Yucca\Component\Selector\Expression;
+
 class SchemaManagerTest extends \PHPUnit_Framework_TestCase {
     public function test_init(){
         $schemaManager = new \Yucca\Component\SchemaManager(array());
@@ -320,6 +322,170 @@ class SchemaManagerTest extends \PHPUnit_Framework_TestCase {
         $schemaManager->setConnectionManager($connectionManager);
 
         $this->assertSame($result , $schemaManager->fetchIds('table0', array('firstName'=>array('Bill','Bob'),'lastName'=>'Jobs')));
+    }
+
+    public function test_fetchAllMultipleExpressionCriteria(){
+        $result = array(array('id'=>1),array('id'=>2));
+        $connection = $this->getMockBuilder('\Doctrine\DBAL\Connection')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $connection->expects($this->once())
+            ->method('fetchAll')
+            ->with('SELECT id FROM `table0` WHERE (`firstName` LIKE :firstName0 OR `firstName` LIKE :firstName1)',array(':firstName0'=>'Bill',':firstName1'=>'Bob'))
+            ->will($this->returnValue($result));
+        $connectionManager = $this->getMockBuilder('Yucca\Component\ConnectionManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $connectionManager->expects($this->once())
+            ->method('getConnection')
+            ->with('default0')
+            ->will($this->returnValue($connection));
+
+        $schemaManager = new \Yucca\Component\SchemaManager(array(
+            'table0' => array(
+                'sharding_strategy'=> 'moduloReturn0',
+                'shards' => array('default0')
+            ),
+        ));
+        $schemaManager->setConnectionManager($connectionManager);
+
+
+        $exp0 = $this->getMockBuilder('Yucca\Component\Selector\Expression')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $exp0->expects($this->once())
+            ->method('getParams')
+            ->will($this->returnValue(array('firstName0'=>'Bill')));
+        $exp0->expects($this->once())
+            ->method('toString')
+            ->with('database')
+            ->will($this->returnValue('`firstName` LIKE :firstName0'));
+
+
+        $exp1 = $this->getMockBuilder('Yucca\Component\Selector\Expression')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $exp1->expects($this->once())
+            ->method('getParams')
+            ->will($this->returnValue(array('firstName1'=>'Bob')));
+        $exp1->expects($this->once())
+            ->method('toString')
+            ->with('database')
+            ->will($this->returnValue('`firstName` LIKE :firstName1'));
+
+        $this->assertSame(
+            $result ,
+            $schemaManager->fetchIds(
+                'table0',
+                array(
+                    'firstName'=>array(
+                        $exp0,
+                        $exp1
+                    )
+                )
+            )
+        );
+    }
+
+    public function test_fetchAllOneExpressionCriteria(){
+        $result = array(array('id'=>1),array('id'=>2));
+        $connection = $this->getMockBuilder('\Doctrine\DBAL\Connection')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $connection->expects($this->once())
+            ->method('fetchAll')
+            ->with('SELECT id FROM `table0` WHERE `firstName` LIKE :firstName0',array(':firstName0'=>'Bill'))
+            ->will($this->returnValue($result));
+        $connectionManager = $this->getMockBuilder('Yucca\Component\ConnectionManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $connectionManager->expects($this->once())
+            ->method('getConnection')
+            ->with('default0')
+            ->will($this->returnValue($connection));
+
+        $schemaManager = new \Yucca\Component\SchemaManager(array(
+            'table0' => array(
+                'sharding_strategy'=> 'moduloReturn0',
+                'shards' => array('default0')
+            ),
+        ));
+        $schemaManager->setConnectionManager($connectionManager);
+
+
+        $exp0 = $this->getMockBuilder('Yucca\Component\Selector\Expression')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $exp0->expects($this->once())
+            ->method('getParams')
+            ->will($this->returnValue(array('firstName0'=>'Bill')));
+        $exp0->expects($this->once())
+            ->method('toString')
+            ->with('database')
+            ->will($this->returnValue('`firstName` LIKE :firstName0'));
+
+        $this->assertSame(
+            $result ,
+            $schemaManager->fetchIds(
+                'table0',
+                array(
+                    'firstName'=>array(
+                        $exp0
+                    )
+                )
+            )
+        );
+    }
+
+    public function test_fetchAllOneExpressionOneScalarCriteria(){
+        $result = array(array('id'=>1),array('id'=>2));
+        $connection = $this->getMockBuilder('\Doctrine\DBAL\Connection')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $connection->expects($this->once())
+            ->method('fetchAll')
+            ->with('SELECT id FROM `table0` WHERE `firstName` LIKE :firstName0 AND `lastName`=:lastName',array(':firstName0'=>'Bill',':lastName'=>'Jobs'))
+            ->will($this->returnValue($result));
+        $connectionManager = $this->getMockBuilder('Yucca\Component\ConnectionManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $connectionManager->expects($this->once())
+            ->method('getConnection')
+            ->with('default0')
+            ->will($this->returnValue($connection));
+
+        $schemaManager = new \Yucca\Component\SchemaManager(array(
+            'table0' => array(
+                'sharding_strategy'=> 'moduloReturn0',
+                'shards' => array('default0')
+            ),
+        ));
+        $schemaManager->setConnectionManager($connectionManager);
+
+
+        $exp0 = $this->getMockBuilder('Yucca\Component\Selector\Expression')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $exp0->expects($this->once())
+            ->method('getParams')
+            ->will($this->returnValue(array('firstName0'=>'Bill')));
+        $exp0->expects($this->once())
+            ->method('toString')
+            ->with('database')
+            ->will($this->returnValue('`firstName` LIKE :firstName0'));
+
+        $this->assertSame(
+            $result ,
+            $schemaManager->fetchIds(
+                'table0',
+                array(
+                    'firstName'=>array(
+                        $exp0
+                    ),
+                    'lastName'=>array('Jobs')
+                )
+            )
+        );
     }
 
     public function test_fetchAllEntitiesCriterias(){
