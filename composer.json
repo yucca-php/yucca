@@ -3,13 +3,13 @@
     "type": "library",
     "description": "simple multi-sources ORM for PHP 5.3",
     "keywords": ["orm","cache","sharding"],
-    "homepage": "http://github.com/rjanot/yucca",
+    "homepage": "http://github.com/yucca-php/yucca",
     "license": "MIT",
     "authors": [
         {
             "name": "Rémi JANOT",
             "email": "r.janot@gmail.com",
-            "homepage": "http://github.com/rjanot/yucca",
+            "homepage": "http://rjanot.github.io",
             "role": "Developer"
         }
     ],
