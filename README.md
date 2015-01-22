@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/rjanot/yucca.png?branch=master)](https://travis-ci.org/rjanot/yucca)
+[![Build Status](https://travis-ci.org/yucca-php/yucca.png?branch=master)](https://travis-ci.org/yucca-php/yucca)
 
 Yucca
 =====
