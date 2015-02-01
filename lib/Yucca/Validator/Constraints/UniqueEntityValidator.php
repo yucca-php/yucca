@@ -99,7 +99,7 @@ class UniqueEntityValidator extends ConstraintValidator
 
             $selector->$selectorMethod($value);
         }
-        
+
         $iterator = new \Yucca\Component\Iterator\Iterator(
             $selector,
             $this->entityManager,
@@ -117,6 +117,9 @@ class UniqueEntityValidator extends ConstraintValidator
 
         $errorPath = null !== $constraint->errorPath ? $constraint->errorPath : $fields[0];
 
-        $this->context->addViolationAt($errorPath, $constraint->message, array(), $value);
+        //$this->context->addViolationAt($errorPath, $constraint->message, array(), $value);
+        $this->context->buildViolation($constraint->message)
+            ->atPath($errorPath)
+            ->addViolation();
     }
 }
