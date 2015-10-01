@@ -28,7 +28,7 @@ class EditableIterator extends Iterator implements \ArrayAccess
      * @param \Yucca\Component\EntityManager $entityManager
      * @param string $modelClassName
      */
-    public function __construct(SelectorInterface $selector, EntityManager $entityManager, $modelClassName)
+    public function __construct(SelectorInterface $selector, EntityManager $entityManager = null, $modelClassName)
     {
         parent::__construct($selector, $entityManager, $modelClassName);
         $this->wantNewModel();
