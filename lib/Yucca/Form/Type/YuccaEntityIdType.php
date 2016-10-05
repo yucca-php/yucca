@@ -62,7 +62,7 @@ class YuccaEntityIdType extends AbstractType
                         if(empty($data)) {
                             return null;
                         }
-                        return $entityManager->load($options['model_class_name'], $data);
+                        return $entityManager->load($options['model_class_name'], $data)->ensureExist();
                     }
                 ),
                 true
