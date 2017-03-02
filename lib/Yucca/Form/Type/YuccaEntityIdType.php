@@ -11,7 +11,7 @@ namespace Yucca\Form\Type;
 
 use Symfony\Component\Form\CallbackTransformer;
 use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Yucca\Component\EntityManager;
 use Symfony\Component\Form\AbstractType;
 
@@ -38,7 +38,7 @@ class YuccaEntityIdType extends AbstractType
     }
 
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
             'model_class_name'  => null,

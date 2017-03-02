@@ -16,7 +16,7 @@ use Yucca\Form\ChoiceList\EntityChoiceList;
 use Symfony\Bridge\Doctrine\Form\DataTransformer\CollectionToArrayTransformer;*/
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Yucca\Form\DataTransformer\IteratorToArrayTransformer;
@@ -64,11 +64,11 @@ class YuccaEntityType extends AbstractType
     }
 
     /**
-     * @param OptionsResolverInterface $resolver
+     * @param OptionsResolver $resolver
      *
      * @return mixed
      */
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
         $choiceListCache =& $this->choiceListCache;
         $propertyAccessor = $this->propertyAccessor;
