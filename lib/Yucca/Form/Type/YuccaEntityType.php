@@ -9,11 +9,11 @@
  */
 namespace Yucca\Form\Type;
 
+use Symfony\Component\Form\ChoiceList\Factory\DefaultChoiceListFactory;
+use Symfony\Component\Form\ChoiceList\Factory\PropertyAccessDecorator;
 use Symfony\Component\Form\FormBuilderInterface;
 use Yucca\Component\EntityManager;
-use Yucca\Form\ChoiceList\EntityChoiceList;
-/*use Symfony\Bridge\Doctrine\Form\EventListener\MergeDoctrineCollectionListener;
-use Symfony\Bridge\Doctrine\Form\DataTransformer\CollectionToArrayTransformer;*/
+use Yucca\Form\ChoiceList\ChoiceLoader;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -38,9 +38,9 @@ class YuccaEntityType extends AbstractType
     private $choiceListCache = array();
 
     /**
-     * @var PropertyAccessorInterface
+     * @var PropertyAccessDecorator
      */
-    private $propertyAccessor;
+    private $choiceListFactory;
 
     /**
      * @param EntityManager             $entityManager
@@ -49,7 +49,7 @@ class YuccaEntityType extends AbstractType
     public function __construct(EntityManager $entityManager, PropertyAccessorInterface $propertyAccessor = null)
     {
         $this->entityManager = $entityManager;
-        $this->propertyAccessor = $propertyAccessor ?: PropertyAccess::getPropertyAccessor();
+        $this->choiceListFactory = $propertyAccessor ?: new PropertyAccessDecorator(new DefaultChoiceListFactory(), $propertyAccessor);
     }
 
     /**
@@ -71,14 +71,14 @@ class YuccaEntityType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $choiceListCache =& $this->choiceListCache;
-        $propertyAccessor = $this->propertyAccessor;
+        $choiceListFactory = $this->choiceListFactory;
         $entityManager = $this->entityManager;
 
-        $choiceList = function (Options $options) use (&$choiceListCache, $propertyAccessor, $entityManager) {
+        $choiceLoader = function (Options $options) use (&$choiceListCache, $choiceListFactory, $entityManager) {
             // Support for closures
-            $propertyHash = is_object($options['property'])
-                ? spl_object_hash($options['property'])
-                : $options['property'];
+            $propertyHash = is_object($options['choice_label'])
+                ? spl_object_hash($options['choice_label'])
+                : $options['choice_label'];
 
             $choiceHashes = $options['choices'];
 
@@ -116,16 +116,16 @@ class YuccaEntityType extends AbstractType
             )));
 
             if (!isset($choiceListCache[$hash])) {
-                $choiceListCache[$hash] = new EntityChoiceList(
+                $choiceListCache[$hash] = new ChoiceLoader(
                     $entityManager,
                     $options['model_class_name'],
                     $options['selector_class_name'],
-                    $options['property'],
+                    $options['choice_label'],
                     $options['iterator'],
                     $options['choices'],
                     $options['preferred_choices'],
                     $options['group_by'],
-                    $propertyAccessor
+                    $choiceListFactory
                 );
             }
 
@@ -134,14 +134,14 @@ class YuccaEntityType extends AbstractType
 
         $resolver->setDefaults(array(
             'em'                => null,
-            'property'          => null,
             'query_builder'     => null,
             'choices'           => null,
-            'choice_list'       => $choiceList,
+            'choice_loader'     => $choiceLoader,
             'group_by'          => null,
             'iterator'          => null,
             'model_class_name'  => null,
             'selector_class_name' => null,
+            //'choices_as_values' => true,
         ));
 
         $resolver->setRequired(array('model_class_name'));
