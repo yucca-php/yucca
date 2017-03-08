@@ -135,7 +135,7 @@ class YuccaEntityType extends AbstractType
         $resolver->setDefaults(array(
             'em'                => null,
             'query_builder'     => null,
-            'choices'           => null,
+            'choices'           => array(),
             'choice_loader'     => $choiceLoader,
             'group_by'          => null,
             'iterator'          => null,
