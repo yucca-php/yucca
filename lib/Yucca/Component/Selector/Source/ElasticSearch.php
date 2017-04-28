@@ -117,6 +117,7 @@ class ElasticSearch implements SelectorSourceInterface{
                 $query->addFacet($facet);
             }
         }
+
         $resultSet = $index->search($query);
 
         //fields

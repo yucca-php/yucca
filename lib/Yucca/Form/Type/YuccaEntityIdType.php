@@ -10,6 +10,7 @@
 namespace Yucca\Form\Type;
 
 use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Yucca\Component\EntityManager;
@@ -21,20 +22,10 @@ class YuccaEntityIdType extends AbstractType
      * @var EntityManager
      */
     protected $entityManager;
-    /**
-     * @var string
-     */
-    protected $parent;
-    /**
-     * @var string
-     */
-    protected $name;
 
-    public function __construct(EntityManager $entityManager, $name = 'yucca_entity_id', $parent='text')
+    public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
-        $this->name = $name;
-        $this->parent = $parent;
     }
 
 
@@ -69,13 +60,13 @@ class YuccaEntityIdType extends AbstractType
             )
         ;
     }
-    public function getName()
+    public function getBlockPrefix()
     {
-        return $this->name;
+        return 'yucca_entity_id';
     }
 
     public function getParent()
     {
-        return $this->parent;
+        return TextType::class;
     }
 }

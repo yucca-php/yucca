@@ -30,13 +30,6 @@ class ChoiceLoader implements ChoiceLoaderInterface
     private $iterator;
 
     /**
-     * Whether the entities have already been loaded.
-     *
-     * @var Boolean
-     */
-    private $loaded = false;
-
-    /**
      * The preferred entities.
      *
      * @var array
@@ -64,13 +57,12 @@ class ChoiceLoader implements ChoiceLoaderInterface
      *                                                     the choices are given as flat array.
      * @param PropertyAccessorInterface $propertyAccessor The reflection graph for reading property paths.
      */
-    public function __construct(EntityManager $manager, $modelClassName, $selectorClassName, $labelPath = null, Iterator $iterator = null, $entities = null,  array $preferredEntities = array(), $groupPath = null, ChoiceListFactoryInterface $factory)
+    public function __construct(EntityManager $manager, $modelClassName, $selectorClassName, $labelPath = null, Iterator $iterator = null, array $preferredEntities = array(), $groupPath = null, ChoiceListFactoryInterface $factory)
     {
         $this->entityManager = $manager;
         $this->modelClassName = $modelClassName;
         $this->selectorClassName = $selectorClassName;
         $this->iterator = $iterator;
-        $this->loaded = is_array($entities) || $entities instanceof \Traversable;
         $this->preferredEntities = $preferredEntities;
         $this->factory = $factory;
     }

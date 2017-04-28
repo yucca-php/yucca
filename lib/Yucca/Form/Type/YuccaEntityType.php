@@ -11,6 +11,7 @@ namespace Yucca\Form\Type;
 
 use Symfony\Component\Form\ChoiceList\Factory\DefaultChoiceListFactory;
 use Symfony\Component\Form\ChoiceList\Factory\PropertyAccessDecorator;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Yucca\Component\EntityManager;
 use Yucca\Form\ChoiceList\ChoiceLoader;
@@ -80,18 +81,6 @@ class YuccaEntityType extends AbstractType
                 ? spl_object_hash($options['choice_label'])
                 : $options['choice_label'];
 
-            $choiceHashes = $options['choices'];
-
-            // Support for recursive arrays
-            if (is_array($choiceHashes)) {
-                // A second parameter ($key) is passed, so we cannot use
-                // spl_object_hash() directly (which strictly requires
-                // one parameter)
-                array_walk_recursive($choiceHashes, function (&$value) {
-                    $value = spl_object_hash($value);
-                });
-            }
-
             $preferredChoiceHashes = $options['preferred_choices'];
 
             if (is_array($preferredChoiceHashes)) {
@@ -110,7 +99,6 @@ class YuccaEntityType extends AbstractType
                 $options['model_class_name'],
                 $options['selector_class_name'],
                 $propertyHash,
-                $choiceHashes,
                 $preferredChoiceHashes,
                 $groupByHash
             )));
@@ -122,7 +110,6 @@ class YuccaEntityType extends AbstractType
                     $options['selector_class_name'],
                     $options['choice_label'],
                     $options['iterator'],
-                    $options['choices'],
                     $options['preferred_choices'],
                     $options['group_by'],
                     $choiceListFactory
@@ -146,15 +133,13 @@ class YuccaEntityType extends AbstractType
 
         $resolver->setRequired(array('model_class_name'));
 
-        $resolver->setAllowedTypes(array(
-            'iterator' => array('null', 'Yucca\Component\Iterator\Iterator'),
-        ));
+        $resolver->setAllowedTypes('iterator', array('null', 'Yucca\Component\Iterator\Iterator'));
     }
 
     /**
      * @return string
      */
-    public function getName()
+    public function getBlockPrefix()
     {
         return 'yucca_entity';
     }
@@ -164,6 +149,6 @@ class YuccaEntityType extends AbstractType
      */
     public function getParent()
     {
-        return 'choice';
+        return ChoiceType::class;
     }
 }

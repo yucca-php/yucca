@@ -2,7 +2,7 @@ Configuration Generator
 -----------------------
 Here is the help of the `yucca:generate-configuration` command:
 ```bash
-php app/console yucca:generate-configuration --help
+php bin/console yucca:generate-configuration --help
 Usage:
  yucca:generate-configuration path namespace dbname [user] [password] [host] [driver] [port]
 
@@ -20,7 +20,7 @@ Options:
 ....
 ```
 
-Example : `php app/console yucca:generate-configuration app/config \Your\Project\Namespace your_db_name db_user db_pass localhost pdo_mysql 3306`
+Example : `php bin/console yucca:generate-configuration app/config \Your\Project\Namespace your_db_name db_user db_pass localhost pdo_mysql 3306`
 
 This will create the `app/config/yucca.yml` config file.
 Import it in your current configuration:
@@ -39,7 +39,7 @@ When confident, you can use the second command: Model Generator
 Model Generator
 ---------------
 ```bash
-php app/console yucca:generate-models --help
+php bin/console yucca:generate-models --help
 Usage:
  yucca:generate-models path
 
@@ -50,7 +50,7 @@ Options:
 ....
 ```
 
-Example : `php app/console yucca:generate-models src
+Example : `php bin/console yucca:generate-models src
 
 This will use your configuration file, especially the mapping section, to create models.
 If you have a `\Your\Project\Namespace\Entity\User` declaration, it will create the `src/Your/Project/Namespace/Model/User.php` file.

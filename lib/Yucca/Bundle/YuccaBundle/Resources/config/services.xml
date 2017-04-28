@@ -133,13 +133,17 @@
         </service>
 
         <service id="form.type.yucca_entity" class="Yucca\Form\Type\YuccaEntityType">
-            <tag name="form.type" alias="yucca_entity" />
+            <tag name="form.type"/>
             <argument type="service" id="yucca.entity_manager" />
         </service>
 
         <service id="form.type.yucca_entity_id" class="Yucca\Form\Type\YuccaEntityIdType">
-            <tag name="form.type" alias="yucca_entity_id" />
+            <tag name="form.type" />
             <argument type="service" id="yucca.entity_manager" />
+        </service>
+
+        <service id="wlz_home.form.type.hidden_yucca_entity_id" class="Yucca\Form\Type\YuccaEntityIdHiddenType" parent="form.type.yucca_entity_id">
+            <tag name="form.type" />
         </service>
     </services>
 </container>
