@@ -73,6 +73,12 @@
             <argument type="service" id="yucca.source.data_parser" />
         </service>
 
+        <service id="yucca.source_factory.memcached" class="Yucca\Component\SourceFactory\MemcachedFactory">
+            <tag name="yucca.source_factory" alias="memcached"/>
+            <argument type="service" id="yucca.connection_manager" />
+            <argument type="service" id="yucca.source.data_parser" />
+        </service>
+
         <service id="yucca.source_factory.chain" class="Yucca\Component\SourceFactory\ChainFactory">
             <tag name="yucca.source_factory" alias="chain"/>
             <argument type="service" id="yucca.source.data_parser" />
@@ -94,6 +100,11 @@
 
         <service id="yucca.selector.source_factory.memcache" class="Yucca\Component\Selector\SourceFactory\MemcacheFactory">
             <tag name="yucca.selector.source_factory" alias="memcache"/>
+            <argument type="service" id="yucca.connection_manager" />
+        </service>
+
+        <service id="yucca.selector.source_factory.memcached" class="Yucca\Component\Selector\SourceFactory\MemcachedFactory">
+            <tag name="yucca.selector.source_factory" alias="memcached"/>
             <argument type="service" id="yucca.connection_manager" />
         </service>
 
@@ -120,6 +131,10 @@
 
         <service id="yucca.connection_factory.memcache" class="Yucca\Component\ConnectionFactory\MemcacheFactory">
             <tag name="yucca.connection_factory" alias="memcache"/>
+        </service>
+
+        <service id="yucca.connection_factory.memcached" class="Yucca\Component\ConnectionFactory\MemcachedFactory">
+            <tag name="yucca.connection_factory" alias="memcached"/>
         </service>
 
         <service id="yucca.connection_factory.sphinx" class="Yucca\Component\ConnectionFactory\SphinxFactory">
