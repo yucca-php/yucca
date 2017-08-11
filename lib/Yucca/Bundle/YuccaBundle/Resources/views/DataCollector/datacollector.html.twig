@@ -1,0 +1,124 @@
+{% extends '@WebProfiler/Profiler/layout.html.twig' %}
+{% block iconsvg %}
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1000 1000" enable-background="new 0 0 1000 1000" xml:space="preserve">
+        <g>
+            <path fill="#aaaaaa" d="M766.1,563.6l-8.1,4.7v85l8.1-4.7c39.1-22.8,58.6-39.3,58.6-74.9C824.8,537.2,806,540.3,766.1,563.6z"/>
+            <path fill="#aaaaaa" d="M949.9,345.9L569.5,532.4c-22.1,10.8-40.1,37.1-40.1,58.6v370.5c0,21.5,17.9,30.2,40.1,19.4l380.5-186.4c22.1-10.8,40.1-37.1,40.1-58.6V365.3C990,343.8,972.1,335.1,949.9,345.9z M851.6,768.8l-91.2-79.4l-5,2.9V825l-41.8,24.4V552.9l62.1-36.3c29.5-17.2,51.4-27.5,68.2-23.3c16.5,4.5,26.4,21.9,26.4,49.7c0,47.7-21.5,87.2-62.8,116.8l94.3,79.7L851.6,768.8z"/>
+            <path fill="#aaaaaa" d="M967.5,275.4c22.5-11.1,22.5-29.2,0-40.4L540.7,22.9c-22.5-11.2-58.9-11.2-81.3,0L32.5,235c-22.5,11.2-22.5,29.3,0,40.4l426.9,212.2c22.4,11.2,58.8,11.2,81.3,0L967.5,275.4z M440.5,228c-5.1-9.7-9.3-19.6-12.2-30c-1,11.1-3.6,22-7,32.7l-40.5,128h-45.9l88-249.6L499,250.5c2.4,4.5,7.5,15.7,15.7,34.2c5.7-14.3,12.1-25.5,16.5-34.2l74.2-141.4l89.5,249.6h-46.3l-41.3-128.3c-1.4-4.4-3.2-15-6.9-32.3c-1.8,11.1-5.6,21.6-11.3,32.7l-74.3,139.4L440.5,228z"/>
+            <path fill="#aaaaaa" d="M221.6,544.4c-21.9-5.8-42.8-0.7-58.6,15.3c-15.8,16-24.1,40.4-24.1,68.9c0,28.6,8.2,56.9,24.1,81.4c15.8,24.4,36.4,40.6,58.6,46.5c22.1,5.9,42.4,0.6,58.3-15.4c15.8-16,24.4-39.9,24.4-68.4c0-28.5-8.5-57.4-24.4-81.9C264.3,566.5,243.4,550.2,221.6,544.4z"/>
+            <path fill="#aaaaaa" d="M430.5,532.4L50.1,345.9C27.9,335.1,10,343.8,10,365.3v370.5c0,21.5,17.9,47.8,40.1,58.6l380.5,186.4c22.1,10.8,40.1,2.1,40.1-19.4V591C470.6,569.4,452.6,543.2,430.5,532.4z M307.1,778.6c-23.2,22-53.2,29.5-85.5,20.9c-32.3-8.6-63.1-32.3-85.9-66.5c-23.1-34.3-35.2-74-35.2-114.5c0-40.4,12-73.7,35.2-96.1c23.1-22,53.2-29.1,85.9-20.3c32.6,8.7,62.4,31.7,85.5,66c23.1,34.7,35.5,74.9,35.5,114.9C342.6,723.4,330.2,756.6,307.1,778.6z"/>
+        </g>
+    </svg>
+{% endblock %}
+
+{% block toolbar %}
+    {% set icon %}
+        {# this is the content displayed as a panel in the toolbar #}
+        <span class="icon">
+            {{ block('iconsvg') }}
+        </span>
+        <span class="sf-toolbar-status">{{ collector.callsCount }}</span>
+    {% endset %}
+
+    {% set text %}
+        {# this is the content displayed when hovering the mouse over
+           the toolbar panel #}
+        <div class="sf-toolbar-info-piece">
+            <b>TOTAL</b>
+            <span>{{ collector.totalDuration }}ms</span>
+        </div>
+
+        {% for handlerName, actions in collector.getCalls %}
+            <div class="sf-toolbar-info-piece">
+                <b>{{ handlerName }}</b>
+                <span>{{ collector.totalDuration(handlerName) }}ms</span>
+            </div>
+        {% endfor %}
+    {% endset %}
+
+    {# the 'link' value set to 'false' means that this panel doesn't
+       show a section in the web profiler #}
+    {{ include('@WebProfiler/Profiler/toolbar_item.html.twig') }}
+{% endblock %}
+
+{% block menu %}
+    {# This left-hand menu appears when using the full-screen profiler. #}
+    <span class="label {{ collector.callsCount > 50 ? 'label-status-error' : collector.callsCount > 20 ? 'label-status-warning' : ''}}">
+        <span class="icon">
+            {{ block('iconsvg') }}
+        </span>
+        <strong>Yucca</strong>
+        <span class="count">
+            <span>{{ collector.callsCount }}</span>
+        </span>
+    </span>
+{% endblock %}
+
+{% block panel %}
+    {# Optional, for showing the most details. #}
+
+    <h2>Querys</h2>
+    <div class="metrics">
+        {% for handlerName, actions in collector.getCalls %}
+            {% for actionName, results in actions %}
+                {% for result, events in results %}
+                    <div class="metric">
+                        <span class="value"><a href="#{{ handlerName }}-{{ actionName }}">{{ events | length }}</a></span>
+                        <span class="label {{ (result == 'hit') ? 'status-success' : ((result == 'miss') ? 'status-error') }}">{{ handlerName }} - {{ actionName }}</span>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+    <h2>Duration</h2>
+    <div class="metrics">
+        {% for handlerName, actions in collector.getCalls %}
+            {% for actionName, results in actions %}
+                {% for result, events in results %}
+                    <div class="metric">
+                        <span class="value">{{ collector.totalDuration(handlerName,actionName) }}<span class="unit">ms</span></span>
+                        <span class="label {{ (result == 'hit') ? 'status-success' : ((result == 'miss') ? 'status-error') }}">{{ handlerName }} - {{ actionName }}</span>
+                    </div>
+                {% endfor %}
+            {% endfor %}
+        {% endfor %}
+    </div>
+
+
+    {% for handlerName, actions in collector.getCalls %}
+        {% for actionName, results in actions%}
+            {% for result, events in results %}
+                <h2 id="{{ handlerName }}-{{ actionName }}">
+                    {{ handlerName }} - {{ actionName }}
+                    <span class="count">
+                        <span>{{ events|length }}</span>
+                    </span>
+                </h2>
+                <table>
+                    <tr>
+                        <th>Duration</th>
+                        <th>Context</th>
+                    </tr>
+                    {% for event in events %}
+                        <tr onclick="this.querySelectorAll('pre')[0].style.height = (this.querySelectorAll('pre')[0].style.height=='auto' ? '50px' : 'auto')" style="cursor: pointer">
+                            <td>{{ event.duration }}ms</td>
+                            <td>
+                                <pre style="height:50px">{{ event.context | json_encode(constant('JSON_PRETTY_PRINT')) | raw }}</pre>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% endfor %}
+        {% endfor %}
+    {% endfor %}
+{% endblock %}
+
+{% block head %}
+    {{ parent() }}
+    <style>
+        .metrics .label.status-success { background: #4F805D; color: #FFF; }
+        .metrics .label.status-warning { background: #A46A1F; color: #FFF; }
+        .metrics .label.status-error   { background: #B0413E; color: #FFF; }
+    </style>
+{% endblock %}

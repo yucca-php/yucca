@@ -4,6 +4,10 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
+    <parameters>
+        <parameter key="yucca.source_manager.class">Yucca\Component\SourceManager</parameter>
+        <parameter key="yucca.selector_manager.class">Yucca\Component\SelectorManager</parameter>
+    </parameters>
     <services>
         <service id="yucca.entity_manager" class="Yucca\Component\EntityManager">
             <call method="setMappingManager">
@@ -38,8 +42,10 @@
             Source
 
         -->
-        <service id="yucca.source_manager" class="Yucca\Component\SourceManager">
+        <service id="yucca.source_manager" class="%yucca.source_manager.class%">
             <argument>%yucca.sources%</argument>
+            <argument type="service" id="debug.stopwatch" on-invalid="null" />
+            <argument type="service" id="yucca.data_collector.logger" on-invalid="null" />
         </service>
 
         <service id="yucca.source.data_parser" class="Yucca\Component\Source\DataParser\DataParser">
@@ -79,6 +85,11 @@
             <argument type="service" id="yucca.source.data_parser" />
         </service>
 
+        <service id="yucca.source_factory.php_array" class="Yucca\Component\SourceFactory\PhpArrayFactory">
+            <tag name="yucca.source_factory" alias="php_array"/>
+            <argument type="service" id="yucca.source.data_parser" />
+        </service>
+
         <service id="yucca.source_factory.chain" class="Yucca\Component\SourceFactory\ChainFactory">
             <tag name="yucca.source_factory" alias="chain"/>
             <argument type="service" id="yucca.source.data_parser" />
@@ -89,8 +100,10 @@
             Selector
 
         -->
-        <service id="yucca.selector_manager" class="Yucca\Component\SelectorManager">
+        <service id="yucca.selector_manager" class="%yucca.selector_manager.class%">
             <argument>%yucca.selectors%</argument>
+            <argument type="service" id="debug.stopwatch" on-invalid="null" />
+            <argument type="service" id="yucca.data_collector.logger" on-invalid="null" />
         </service>
 
         <service id="yucca.selector.source_factory.database" class="Yucca\Component\Selector\SourceFactory\DatabaseFactory">
@@ -159,6 +172,14 @@
 
         <service id="wlz_home.form.type.hidden_yucca_entity_id" class="Yucca\Form\Type\YuccaEntityIdHiddenType" parent="form.type.yucca_entity_id">
             <tag name="form.type" />
+        </service>
+
+        <service id="yucca.data_collector.collector" class="Yucca\Bundle\YuccaBundle\DataCollector\YuccaDataCollector">
+            <tag name="data_collector" template="YuccaBundle:DataCollector:datacollector.html.twig" id="yucca"/>
+            <argument type="service" id="yucca.data_collector.logger"/>
+        </service>
+
+        <service id="yucca.data_collector.logger" class="Yucca\Bundle\YuccaBundle\DataCollector\Logger">
         </service>
     </services>
 </container>

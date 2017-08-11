@@ -21,7 +21,7 @@ class SelectorManager
     protected $selectorSourceConfig;
 
     /**
-     * @var SourceFactoryInterface[]
+     * @var SelectorSourceFactoryInterface[]
      */
     protected $selectorSourceFactories;
 
