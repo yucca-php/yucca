@@ -57,7 +57,7 @@ class ChoiceLoader implements ChoiceLoaderInterface
      *                                                     the choices are given as flat array.
      * @param PropertyAccessorInterface $propertyAccessor The reflection graph for reading property paths.
      */
-    public function __construct(EntityManager $manager, $modelClassName, $selectorClassName, $labelPath = null, Iterator $iterator = null, array $preferredEntities = array(), $groupPath = null, ChoiceListFactoryInterface $factory)
+    public function __construct(EntityManager $manager, $modelClassName, $selectorClassName, $labelPath = null, $iterator = null, array $preferredEntities = array(), $groupPath = null, ChoiceListFactoryInterface $factory)
     {
         $this->entityManager = $manager;
         $this->modelClassName = $modelClassName;
@@ -87,7 +87,11 @@ class ChoiceLoader implements ChoiceLoaderInterface
         }
 
         if ($this->iterator) {
-            $entities = $this->iterator->getArray();
+            if(is_array($this->iterator)) {
+                $entities = $this->iterator;
+            } else {
+                $entities = $this->iterator->getArray();
+            }
         } else {
             $selector = $this->entityManager->getSelectorManager()->getSelector($this->selectorClassName);
             $iterator = new Iterator(

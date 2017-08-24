@@ -80,6 +80,9 @@ class YuccaEntityType extends AbstractType
             $propertyHash = is_object($options['choice_label'])
                 ? spl_object_hash($options['choice_label'])
                 : $options['choice_label'];
+            $iteratorHash = is_object($options['iterator'])
+                ? spl_object_hash($options['iterator'])
+                : $options['iterator'];
 
             $preferredChoiceHashes = $options['preferred_choices'];
 
@@ -100,7 +103,8 @@ class YuccaEntityType extends AbstractType
                 $options['selector_class_name'],
                 $propertyHash,
                 $preferredChoiceHashes,
-                $groupByHash
+                $groupByHash,
+                $iteratorHash
             )));
 
             if (!isset($choiceListCache[$hash])) {
@@ -133,7 +137,7 @@ class YuccaEntityType extends AbstractType
 
         $resolver->setRequired(array('model_class_name'));
 
-        $resolver->setAllowedTypes('iterator', array('null', 'Yucca\Component\Iterator\Iterator'));
+        $resolver->setAllowedTypes('iterator', array('null', 'Yucca\Component\Iterator\Iterator', 'array'));
     }
 
     /**
