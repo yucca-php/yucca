@@ -14,13 +14,13 @@ class ConnectionManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @return mixed
      */
-    public function test_construct(){
+    public function test_construct()
+    {
         //Loop on invalid types
-        foreach(array(1,'1',true,null) as $type) {
+        foreach (array(1,'1',true,null) as $type) {
             try {
                 new \Yucca\Component\ConnectionManager($type);
-            }
-            catch (\PHPUnit_Framework_Error $exception) {
+            } catch (\TypeError $exception) {
                 continue;
             }
 
@@ -34,7 +34,8 @@ class ConnectionManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @return mixed
      */
-    public function test_addConnectionFactory(){
+    public function test_addConnectionFactory()
+    {
         $connectionManager = new \Yucca\Component\ConnectionManager(array());
 
         try {
@@ -43,12 +44,11 @@ class ConnectionManagerTest extends \PHPUnit_Framework_TestCase
 
             $method->invokeArgs($connectionManager, array('fake'));
             $this->fail('\Yucca\Component\ConnectionManager::getConnectionFactory should raise an exception');
-        }
-        catch (\InvalidArgumentException $exception) {
+        } catch (\InvalidArgumentException $exception) {
             $this->assertContains('fake', $exception->getMessage());
         }
 
-        $connectionFactoryMock = $this->getMock('\Yucca\Component\ConnectionFactory\ConnectionFactoryInterface');
+        $connectionFactoryMock = $this->createMock('\Yucca\Component\ConnectionFactory\ConnectionFactoryInterface');
 
         $this->assertSame(
             $connectionManager,
@@ -67,7 +67,8 @@ class ConnectionManagerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function test_getConnection(){
+    public function test_getConnection()
+    {
         //Connection not configured
         $connectionsConfig = array();
         $connectionManager = new \Yucca\Component\ConnectionManager($connectionsConfig);
@@ -75,8 +76,7 @@ class ConnectionManagerTest extends \PHPUnit_Framework_TestCase
         try {
             $connectionManager->getConnection('fake');
             $this->fail('Should raise an exception');
-        }
-        catch (\InvalidArgumentException $exception) {
+        } catch (\InvalidArgumentException $exception) {
             $this->assertContains('fake', $exception->getMessage());
         }
 
@@ -88,8 +88,7 @@ class ConnectionManagerTest extends \PHPUnit_Framework_TestCase
         try {
             $connectionManager->getConnection('fake');
             $this->fail('Should raise an exception');
-        }
-        catch (\InvalidArgumentException $exception) {
+        } catch (\InvalidArgumentException $exception) {
             $this->assertNotContains('fake', $exception->getMessage());
         }
 
@@ -103,8 +102,7 @@ class ConnectionManagerTest extends \PHPUnit_Framework_TestCase
         try {
             $connectionManager->getConnection('fake');
             $this->fail('Should raise an exception');
-        }
-        catch (\InvalidArgumentException $exception) {
+        } catch (\InvalidArgumentException $exception) {
             $this->assertContains('unknown', $exception->getMessage());
         }
 
@@ -116,8 +114,8 @@ class ConnectionManagerTest extends \PHPUnit_Framework_TestCase
             'param3'=>3,
         );
 
-        $connectionMock = $this->getMock('\Memcache');
-        $connectionFactoryMock = $this->getMock('\Yucca\Component\ConnectionFactory\ConnectionFactoryInterface');
+        $connectionMock = $this->createMock('\Memcache');
+        $connectionFactoryMock = $this->createMock('\Yucca\Component\ConnectionFactory\ConnectionFactoryInterface');
         $connectionFactoryMock->expects($this->once())
             ->method('getConnection')
             ->with($this->equalTo($fakeConfiguration))

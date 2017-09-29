@@ -9,7 +9,8 @@
  */
 namespace Yucca\Test\Concrete\Model;
 
-class Properties extends Base {
+class Properties extends Base
+{
     protected $yuccaProperties = array('id','first','second','third');
 
     protected $id;
@@ -21,14 +22,16 @@ class Properties extends Base {
     /**
      * @param array $properties
      */
-    public function setYuccaProperties(array $properties){
+    public function setYuccaProperties(array $properties)
+    {
         parent::setYuccaProperties($properties);
     }
 
     /**
      * @return mixed
      */
-    public function getId() {
+    public function getId()
+    {
         $this->hydrate('id');
         return $this->id;
     }
@@ -36,7 +39,8 @@ class Properties extends Base {
     /**
      * @return mixed
      */
-    public function getFirst() {
+    public function getFirst()
+    {
         $this->hydrate('first');
         return $this->first;
     }
@@ -45,7 +49,8 @@ class Properties extends Base {
      * @param $first
      * @return Properties
      */
-    public function setFirst($first) {
+    public function setFirst($first)
+    {
         $this->hydrate('first');
         $this->first = $first;
 
@@ -55,7 +60,8 @@ class Properties extends Base {
     /**
      * @return mixed
      */
-    public function getSecond() {
+    public function getSecond()
+    {
         $this->hydrate('second');
         return $this->second;
     }
@@ -63,7 +69,8 @@ class Properties extends Base {
      * @param $second
      * @return Properties
      */
-    public function setSecond($second) {
+    public function setSecond($second)
+    {
         $this->hydrate('second');
         $this->second = $second;
 
@@ -73,7 +80,8 @@ class Properties extends Base {
     /**
      * @return mixed
      */
-    public function getThird() {
+    public function getThird()
+    {
         $this->hydrate('third');
         return $this->third;
     }
@@ -81,7 +89,8 @@ class Properties extends Base {
      * @param $third
      * @return Properties
      */
-    public function setThird($third) {
+    public function setThird($third)
+    {
         $this->hydrate('third');
         $this->third = $third;
 

@@ -34,7 +34,7 @@ class UniqueEntityValidator extends ConstraintValidator
     private $entityManager;
 
     /**
-     * @param SelectorManager $selectorManager
+     * @param SelectorManager                $selectorManager
      * @param \Yucca\Component\EntityManager $entityManager
      */
     public function __construct(SelectorManager $selectorManager, EntityManager $entityManager)
@@ -45,14 +45,14 @@ class UniqueEntityValidator extends ConstraintValidator
 
     /**
      * @param ModelAbstract $entity
-     * @param Constraint $constraint
+     * @param Constraint    $constraint
      *
      * @throws UnexpectedTypeException
      * @throws ConstraintDefinitionException
      */
     public function validate($entity, Constraint $constraint)
     {
-        if(false === ($entity instanceof ModelAbstract )) {
+        if (false === ($entity instanceof ModelAbstract )) {
             throw new UnexpectedTypeException($entity, 'ModelAbstract');
         }
         /**
@@ -73,8 +73,8 @@ class UniqueEntityValidator extends ConstraintValidator
             throw new ConstraintDefinitionException('At least one field has to be specified.');
         }
 
-        if(!$constraint->selector){
-            $selectorName = str_replace('Model','Selector',get_class($entity));
+        if (!$constraint->selector) {
+            $selectorName = str_replace('Model', 'Selector', get_class($entity));
         } else {
             $selectorName = $constraint->selector;
         }
@@ -84,9 +84,9 @@ class UniqueEntityValidator extends ConstraintValidator
 
         $criteria = array();
         foreach ($fields as $fieldName) {
-            $camelFieldName = str_replace(' ','',ucwords(str_replace('_',' ',$fieldName)));
+            $camelFieldName = str_replace(' ', '', ucwords(str_replace('_', ' ', $fieldName)));
             $selectorMethod = 'add'.$camelFieldName.'Criteria';
-            if (false === in_array($selectorMethod,$selectorMethods)) {
+            if (false === in_array($selectorMethod, $selectorMethods)) {
                 throw new ConstraintDefinitionException(sprintf("The field '%s' is not mapped", $fieldName));
             }
 

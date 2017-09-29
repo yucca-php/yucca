@@ -10,8 +10,11 @@
 namespace Yucca\Component\Selector\Source;
 
 use \Yucca\Component\Selector\Exception\NoDataException;
-use \Yucca\Component\Selector\Exception\BreakSaveChainException;
 
+/**
+ * Class Chain
+ * @package Yucca\Component\Selector\Source
+ */
 class Chain implements SelectorSourceInterface
 {
     /**
@@ -19,8 +22,14 @@ class Chain implements SelectorSourceInterface
      */
     protected $sources;
 
-    public function __construct($sources=array()) {
-        if(empty($sources)){
+    /**
+     * Chain constructor.
+     *
+     * @param array $sources
+     */
+    public function __construct($sources = array())
+    {
+        if (empty($sources)) {
             throw new \InvalidArgumentException("\"sources\" must be a non empty array");
         }
         $this->sources = $sources;
@@ -32,10 +41,11 @@ class Chain implements SelectorSourceInterface
      * @throws \Yucca\Component\Selector\Exception\NoDataException
      * @return array
      */
-    public function loadIds(array $criterias, array $options=array()){
+    public function loadIds(array $criterias, array $options = array())
+    {
         $sourcesToFeed = array();
         $datas = null;
-        foreach($this->sources as $sourceKey=>$source){
+        foreach ($this->sources as $sourceKey => $source) {
             try {
                 $datas = $source->loadIds($criterias, $options);
                 break;
@@ -44,8 +54,8 @@ class Chain implements SelectorSourceInterface
             }
         }
 
-        if(isset($datas)){
-            foreach($sourcesToFeed as $sourceKey){
+        if (isset($datas)) {
+            foreach ($sourcesToFeed as $sourceKey) {
                 $this->sources[$sourceKey]->saveIds($datas, $criterias, $options);
             }
         } else {
@@ -55,12 +65,24 @@ class Chain implements SelectorSourceInterface
         return $datas;
     }
 
-    public function saveIds($ids, array $criterias, array $options = array()){
+    /**
+     * @param array $ids
+     * @param array $criterias
+     * @param array $options
+     *
+     * @throws \Exception
+     */
+    public function saveIds($ids, array $criterias, array $options = array())
+    {
         throw new \Exception("Don't know what to do in chain...");
     }
 
-    public function invalidateGlobal(array $options = array()){
-        foreach($this->sources as $source){
+    /**
+     * @param array $options
+     */
+    public function invalidateGlobal(array $options = array())
+    {
+        foreach ($this->sources as $source) {
             $source->invalidateGlobal($options);
         }
     }

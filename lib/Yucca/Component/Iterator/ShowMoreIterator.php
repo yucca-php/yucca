@@ -9,8 +9,12 @@
  */
 namespace Yucca\Component\Iterator;
 
-
-class ShowMoreIterator extends \LimitIterator implements \Countable {
+/**
+ * Class ShowMoreIterator
+ * @package Yucca\Component\Iterator
+ */
+class ShowMoreIterator extends \LimitIterator implements \Countable
+{
     protected $offset;
     protected $limit;
 
@@ -39,11 +43,14 @@ class ShowMoreIterator extends \LimitIterator implements \Countable {
     }
 
     /**
+     * ShowMoreIterator constructor.
+     *
      * @param Iterator $iterator
-     * @param $offset
-     * @param $limit
+     * @param mixed    $offset
+     * @param mixed    $limit
      */
-    public function __construct(Iterator $iterator, $offset, $limit) {
+    public function __construct(Iterator $iterator, $offset, $limit)
+    {
         $this->offset = $offset;
         $this->limit = $limit;
         parent::__construct($iterator, 0, $limit);
@@ -52,7 +59,8 @@ class ShowMoreIterator extends \LimitIterator implements \Countable {
     /**
      * @return bool
      */
-    public function canShowMore() {
+    public function canShowMore()
+    {
         return $this->getInnerIterator()->count() > ($this->offset + $this->limit);
     }
 

@@ -11,7 +11,8 @@ namespace Yucca\Test\Component;
 
 class MappingManagerTest extends \PHPUnit_Framework_TestCase
 {
-    public function test_getMapper() {
+    public function test_getMapper()
+    {
         $className = 'Yucca\Test\Concrete\Model\Properties';
         $configuration = array(
             $className => array(
@@ -26,7 +27,7 @@ class MappingManagerTest extends \PHPUnit_Framework_TestCase
             $unknownClass = '\Unknown\model';
             $mappingManager->getMapper($unknownClass);
             $this->fail('Should raise an exception');
-        } catch ( \RuntimeException $exception ){
+        } catch (\RuntimeException $exception) {
             $this->assertContains($unknownClass, $exception->getMessage());
         }
 
@@ -35,7 +36,7 @@ class MappingManagerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $mappingManager = new \Yucca\Component\MappingManager($configuration);
-        $mappingManager->setSourceManager( $sourceManagerMock );
+        $mappingManager->setSourceManager($sourceManagerMock);
         $mapper1 = $mappingManager->getMapper($className);
 
         $this->assertInstanceOf('Yucca\Component\Mapping\Mapper', $mapper1);

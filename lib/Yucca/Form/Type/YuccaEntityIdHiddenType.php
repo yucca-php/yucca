@@ -11,8 +11,15 @@ namespace Yucca\Form\Type;
 
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 
+/**
+ * Class YuccaEntityIdHiddenType
+ * @package Yucca\Form\Type
+ */
 class YuccaEntityIdHiddenType extends YuccaEntityIdType
 {
+    /**
+     * @return mixed
+     */
     public function getParent()
     {
         return HiddenType::class;

@@ -9,9 +9,12 @@
  */
 namespace Yucca\Component;
 
-use Wlz\Bundle\CarBundle\Entity\Rent;
 use Yucca\Model\ModelInterface;
 
+/**
+ * Class EntityManager
+ * @package Yucca\Component
+ */
 class EntityManager
 {
     protected $defaultIdKey;
@@ -29,41 +32,33 @@ class EntityManager
     /**
      * @param string $defaultIdKey
      */
-    public function __construct($defaultIdKey = 'id') {
+    public function __construct($defaultIdKey = 'id')
+    {
         $this->defaultIdKey = $defaultIdKey;
     }
 
     /**
      * @param \Yucca\Component\MappingManager $mappingManager
      */
-    public function setMappingManager(MappingManager $mappingManager) {
+    public function setMappingManager(MappingManager $mappingManager)
+    {
         $this->mappingManager = $mappingManager;
     }
 
     /**
      * @param \Yucca\Component\SelectorManager $selectorManager
      */
-    public function setSelectorManager(SelectorManager $selectorManager) {
+    public function setSelectorManager(SelectorManager $selectorManager)
+    {
         $this->selectorManager = $selectorManager;
     }
 
     /**
      * @return \Yucca\Component\SelectorManager
      */
-    public function getSelectorManager() {
+    public function getSelectorManager()
+    {
         return $this->selectorManager;
-    }
-
-    /**
-     * @param \Yucca\Model\ModelInterface $model
-     * @return EntityManager
-     */
-    protected function initModel(ModelInterface $model){
-        $model->setYuccaMappingManager($this->mappingManager)
-                ->setYuccaSelectorManager($this->selectorManager)
-                ->setYuccaEntityManager($this);
-
-        return $this;
     }
 
     /**
@@ -80,20 +75,21 @@ class EntityManager
     }
 
     /**
-     * @param $entityClassName
-     * @param $identifier
-     * @param mixed $shardingKey
+     * @param string      $entityClassName
+     * @param array|mixed $identifier
+     * @param mixed       $shardingKey
      * @throws \Exception
      * @return \Yucca\Model\ModelInterface
      */
-    public function load($entityClassName, $identifier, $shardingKey=null){
+    public function load($entityClassName, $identifier, $shardingKey = null)
+    {
         //If $identifier isn't an array, assumed it's the id value
-        if(false === is_array($identifier)) {
+        if (false === is_array($identifier)) {
             $identifier = array($this->defaultIdKey=>$identifier);
         }
 
         //create object
-        if(false === class_exists($entityClassName)){
+        if (false === class_exists($entityClassName)) {
             throw new \Exception("Entity class $entityClassName not found.");
         }
 
@@ -103,8 +99,8 @@ class EntityManager
         $toReturn = new $entityClassName();
 
         //@Fixme : generate proxy like doctrine
-        if(false === ($toReturn instanceof ModelInterface)) {
-            throw new \Exception("Entity class $entityClassName must implement \Yucca\Model\ModelInterface.");
+        if (false === ($toReturn instanceof ModelInterface)) {
+            throw new \Exception('Entity class '.$entityClassName.' must implement \Yucca\Model\ModelInterface.');
         }
 
         $this->initModel($toReturn);
@@ -113,7 +109,13 @@ class EntityManager
         return $toReturn;
     }
 
-    public function save(ModelInterface $model){
+    /**
+     * @param ModelInterface $model
+     *
+     * @return $this
+     */
+    public function save(ModelInterface $model)
+    {
         $this->initModel($model);
 
         $model->save();
@@ -121,7 +123,13 @@ class EntityManager
         return $this;
     }
 
-    public function remove(ModelInterface $model){
+    /**
+     * @param ModelInterface $model
+     *
+     * @return $this
+     */
+    public function remove(ModelInterface $model)
+    {
         $this->initModel($model);
 
         $model->remove();
@@ -129,8 +137,28 @@ class EntityManager
         return $this;
     }
 
-    public function resetModel(ModelInterface $model, $identifier) {
+    /**
+     * @param ModelInterface $model
+     * @param array|mixed    $identifier
+     *
+     * @return $this
+     */
+    public function resetModel(ModelInterface $model, $identifier)
+    {
         $model->reset($identifier);
+
+        return $this;
+    }
+
+    /**
+     * @param \Yucca\Model\ModelInterface $model
+     * @return EntityManager
+     */
+    protected function initModel(ModelInterface $model)
+    {
+        $model->setYuccaMappingManager($this->mappingManager)
+            ->setYuccaSelectorManager($this->selectorManager)
+            ->setYuccaEntityManager($this);
 
         return $this;
     }

@@ -9,9 +9,12 @@
  */
 namespace Yucca\Component;
 
-use Yucca\Component\Source\Chain;
 use Yucca\Component\SourceFactory\SourceFactoryInterface;
 
+/**
+ * Class SourceManager
+ * @package Yucca\Component
+ */
 class SourceManager
 {
     /**
@@ -37,19 +40,51 @@ class SourceManager
     /**
      * @param array $sourceConfig
      */
-    public function __construct(array $sourceConfig) {
+    public function __construct(array $sourceConfig)
+    {
         $this->sourceConfig = $sourceConfig;
     }
 
     /**
      * Add a source factory to the pool
-     * @param string $sourceFactoryName
+     * @param string                                                $sourceFactoryName
      * @param \Yucca\Component\SourceFactory\SourceFactoryInterface $sourceFactory
      * @return \Yucca\Component\SourceManager
      */
-    public function addSourceFactory($sourceFactoryName, SourceFactoryInterface $sourceFactory) {
+    public function addSourceFactory($sourceFactoryName, SourceFactoryInterface $sourceFactory)
+    {
         $this->sourceFactories[$sourceFactoryName] = $sourceFactory;
+
         return $this;
+    }
+
+    /**
+     * Get a source by it's name
+     * @param string $sourceName
+     * @return \Yucca\Component\Source\SourceInterface
+     * @throws \InvalidArgumentException
+     */
+    public function getSource($sourceName)
+    {
+        if (false === isset($this->sources[$sourceName])) {
+            if (false === isset($this->sourceConfig[$sourceName]['handlers'])) {
+                throw new \InvalidArgumentException("\"$sourceName\" name has not been configured");
+            }
+
+            $sources = array();
+            foreach ($this->sourceConfig[$sourceName]['handlers'] as $sourceConfig) {
+                $params = array_merge($this->sourceConfig[$sourceName]['default_params'], $sourceConfig);
+                $sources[] = $this->getFactory($sourceConfig['type'])->getSource($sourceName, $params);
+            }
+
+            if (1 === count($sources)) {
+                $this->sources[$sourceName] = current($sources);
+            } else {
+                $this->sources[$sourceName] = $this->getFactory('chain')->getSource($sourceName, $this->sourceConfig[$sourceName]['default_params'], $sources);
+            }
+        }
+
+        return $this->sources[$sourceName];
     }
 
     /**
@@ -58,39 +93,12 @@ class SourceManager
      * @return SourceFactory\SourceFactoryInterface
      * @throws \Exception
      */
-    protected function getFactory($type){
-        if(isset($this->sourceFactories[$type])){
+    protected function getFactory($type)
+    {
+        if (isset($this->sourceFactories[$type])) {
             return $this->sourceFactories[$type];
         } else {
             throw new \Exception("Factory \"$type\" not foud");
         }
-    }
-
-    /**
-     * Get a source by it's name
-     * @param $sourceName
-     * @return \Yucca\Component\Source\SourceInterface
-     * @throws \InvalidArgumentException
-     */
-    public function getSource($sourceName){
-        if(false === isset($this->sources[$sourceName])){
-            if(false === isset($this->sourceConfig[$sourceName]['handlers'])){
-                throw new \InvalidArgumentException("\"$sourceName\" name has not been configured");
-            }
-
-            $sources = array();
-            foreach($this->sourceConfig[$sourceName]['handlers'] as $sourceConfig){
-                $params = array_merge($this->sourceConfig[$sourceName]['default_params'], $sourceConfig);
-                $sources[] = $this->getFactory($sourceConfig['type'])->getSource($sourceName, $params);
-            }
-
-            if(1 === count($sources)){
-                $this->sources[$sourceName] = current($sources);
-            } else {
-                $this->sources[$sourceName] = $this->getFactory('chain')->getSource($sourceName, $this->sourceConfig[$sourceName]['default_params'], $sources);
-            }
-        }
-
-        return $this->sources[$sourceName];
     }
 }

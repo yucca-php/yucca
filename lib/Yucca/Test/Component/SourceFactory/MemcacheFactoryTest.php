@@ -11,7 +11,8 @@ namespace Yucca\Test\Component\SourceFactory;
 
 class MemcacheFactoryTest extends \PHPUnit_Framework_TestCase
 {
-    public function test_getSource() {
+    public function test_getSource()
+    {
         //Test with properties
         $dataParserMock = $this->getMockBuilder('\Yucca\Component\Source\DataParser\DataParser')
             ->disableOriginalConstructor()
@@ -19,12 +20,12 @@ class MemcacheFactoryTest extends \PHPUnit_Framework_TestCase
         $connectionManager = $this->getMockBuilder('\Yucca\Component\ConnectionManager')
                                 ->disableOriginalConstructor()
                                 ->getMock();
-        $factory = new \Yucca\Component\SourceFactory\MemcacheFactory($connectionManager,$dataParserMock);
+        $factory = new \Yucca\Component\SourceFactory\MemcacheFactory($connectionManager, $dataParserMock);
 
         try {
             $factory->getSource('sourceName', array());
             $this->fail('Should raise an exception');
-        } catch(\Exception $exception) {
+        } catch (\Exception $exception) {
             $this->assertContains('Configuration array must contain a \'connection_name\' key', $exception->getMessage());
         }
 

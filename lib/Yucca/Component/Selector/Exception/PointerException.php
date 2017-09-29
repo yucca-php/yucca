@@ -10,6 +10,11 @@
 
 namespace Yucca\Component\Selector\Exception;
 
-class PointerException extends \Exception{
+/**
+ * Class PointerException
+ * @package Yucca\Component\Selector\Exception
+ */
+class PointerException extends \Exception
+{
 
 }

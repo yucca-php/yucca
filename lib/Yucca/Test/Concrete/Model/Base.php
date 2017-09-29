@@ -9,34 +9,42 @@
  */
 namespace Yucca\Test\Concrete\Model;
 
-class Base extends \Yucca\Model\ModelAbstract {
+class Base extends \Yucca\Model\ModelAbstract
+{
     protected $fakeId;
 
-    public function getId() {
+    public function getId()
+    {
         return $this->fakeId;
     }
 
-    public function setId($id) {
+    public function setId($id)
+    {
         $this->fakeId = $id;
     }
 
-    public function getYuccaMappingManager() {
+    public function getYuccaMappingManager()
+    {
         return $this->yuccaMappingManager;
     }
 
-    public function getYuccaEntityManager() {
+    public function getYuccaEntityManager()
+    {
         return $this->yuccaEntityManager;
     }
 
-    public function getYuccaIdentifier(){
+    public function getYuccaIdentifier()
+    {
         return $this->yuccaIdentifier;
     }
 
-    public function getYuccaShardingKey(){
+    public function getYuccaShardingKey()
+    {
         return $this->yuccaShardingKey;
     }
 
-    public function getYuccaSelectorManager(){
+    public function getYuccaSelectorManager()
+    {
         return $this->yuccaSelectorManager;
     }
 }

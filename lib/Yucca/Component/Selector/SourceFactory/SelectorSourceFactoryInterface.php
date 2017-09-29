@@ -9,11 +9,16 @@
  */
 namespace Yucca\Component\Selector\SourceFactory;
 
-interface SelectorSourceFactoryInterface {
+/**
+ * Interface SelectorSourceFactoryInterface
+ * @package Yucca\Component\Selector\SourceFactory
+ */
+interface SelectorSourceFactoryInterface
+{
     /**
      * build factory
      * @abstract
      * @return \Yucca\Component\Selector\Source\SelectorSourceInterface
      */
-    function getSource();
+    public function getSource();
 }

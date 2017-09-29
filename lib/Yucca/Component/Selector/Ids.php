@@ -9,7 +9,12 @@
  */
 namespace Yucca\Component\Selector;
 
-class Ids implements SelectorInterface {
+/**
+ * Class Ids
+ * @package Yucca\Component\Selector
+ */
+class Ids implements SelectorInterface
+{
     /**
      * @var array
      */
@@ -18,10 +23,11 @@ class Ids implements SelectorInterface {
     protected $keyName;
 
     /**
-     * @param array $ids
+     * @param array  $ids
      * @param string $keyName
      */
-    public function __construct(array $ids, $keyName = null) {
+    public function __construct(array $ids, $keyName = null)
+    {
         $this->ids = $ids;
         $this->keyName = $keyName ;
     }
@@ -31,7 +37,7 @@ class Ids implements SelectorInterface {
      */
     public function current()
     {
-        if(isset($this->keyName)) {
+        if (isset($this->keyName)) {
             return array($this->keyName => current($this->ids));
         } else {
             return current($this->ids);
@@ -47,7 +53,7 @@ class Ids implements SelectorInterface {
     }
 
     /**
-     *
+     * @return mixed
      */
     public function key()
     {
@@ -55,7 +61,7 @@ class Ids implements SelectorInterface {
     }
 
     /**
-     *
+     * @return bool
      */
     public function valid()
     {
@@ -71,7 +77,7 @@ class Ids implements SelectorInterface {
     }
 
     /**
-     *
+     * @return int
      */
     public function count()
     {

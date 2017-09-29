@@ -13,6 +13,10 @@ use Yucca\Component\Source\Exception\NoDataException;
 use Yucca\Component\ConnectionManager;
 use Yucca\Component\Source\DataParser\DataParser;
 
+/**
+ * Class PhpArray
+ * @package Yucca\Component\Source
+ */
 class PhpArray extends SourceAbstract
 {
     static protected $datas;
@@ -24,51 +28,44 @@ class PhpArray extends SourceAbstract
 
     /**
      * Constructor
-     * @param $sourceName
-     * @param array $configuration
+     * @param string $sourceName
+     * @param array  $configuration
      * @param string $prefix
      * @throws \InvalidArgumentException
      */
-    public function __construct($sourceName, array $configuration=array(), $prefix='') {
+    public function __construct($sourceName, array $configuration = array(), $prefix = '')
+    {
         parent::__construct($sourceName, $configuration);
     }
 
     /**
-     * @param $identifier
-     * @return string
-     */
-    protected function getCacheKey($identifier){
-        $toReturn = $this->sourceName.'_'.(isset($this->configuration['version']) ? $this->configuration['version'] : 1);
-        foreach($identifier as $k=>$v) {
-            if($v instanceof \Yucca\Model\ModelInterface) {
-                $v = $v->getId();
-            }
-            $toReturn .= ':'.$k.'='.$v;
-        }
-        return $toReturn;
-    }
-
-    /**
      * @param DataParser $dataParser
-     * @return DatabaseSingleRow
+     *
+     * @return $this
      */
-    public function setDataParser(DataParser $dataParser){
+    public function setDataParser(DataParser $dataParser)
+    {
         $this->dataParser = $dataParser;
+
         return $this;
     }
 
     /**
      * @param array $identifier
-     * @param bool $rawData
+     * @param bool  $rawData
+     * @param mixed $shardingKey
+     *
      * @return array
-     * @throws Exception\NoDataException
+     * @throws NoDataException
+     * @throws \Exception
      */
-    public function load(array $identifier, $rawData, $shardingKey) {
+    public function load(array $identifier, $rawData, $shardingKey)
+    {
         $cacheKey = $this->getCacheKey($identifier);
-        if(isset(static::$datas[$cacheKey])) {
+        if (isset(static::$datas[$cacheKey])) {
             $datas = static::$datas[$cacheKey];
 
-            if($rawData) {
+            if ($rawData) {
                 return $datas;
             } else {
                 return $this->dataParser->decode($datas, $this->configuration['fields']);
@@ -80,9 +77,11 @@ class PhpArray extends SourceAbstract
 
     /**
      * @param array $identifier
-     * @return Memcache
+     * @param null  $shardingKey
+     *
+     * @return $this
      */
-    public function remove(array $identifier, $shardingKey=null)
+    public function remove(array $identifier, $shardingKey = null)
     {
         unset(static::$datas[$this->getCacheKey($identifier)]);
 
@@ -90,14 +89,14 @@ class PhpArray extends SourceAbstract
     }
 
     /**
-     * @param $serializedCriterias
+     * @param mixed $serializedCriterias
      * @param array $options
      * @return array|string
      * @throws Exception\NoDataException
      */
-    public function loadIds($serializedCriterias, array $options=array())
+    public function loadIds($serializedCriterias, array $options = array())
     {
-        if(isset(static::$datas[$serializedCriterias])) {
+        if (isset(static::$datas[$serializedCriterias])) {
             return static::$datas[$serializedCriterias];
         }
 
@@ -105,24 +104,43 @@ class PhpArray extends SourceAbstract
     }
 
     /**
-     * @param $datas
+     * @param mixed $datas
      * @param array $identifier
-     * @param null $shardingKey
-     * @param null $affectedRows
+     * @param null  $shardingKey
+     * @param null  $affectedRows
+     *
+     * @return mixed|void
      */
-    public function save($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null)
+    public function save($datas, array $identifier = array(), $shardingKey = null, &$affectedRows = null)
     {
         unset(static::$datas[$this->getCacheKey($identifier)]);
     }
 
     /**
-     * @param $datas
+     * @param mixed $datas
      * @param array $identifier
-     * @param null $shardingKey
-     * @param null $affectedRows
+     * @param null  $shardingKey
+     * @param null  $affectedRows
      */
-    public function saveAfterLoading($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null)
+    public function saveAfterLoading($datas, array $identifier = array(), $shardingKey = null, &$affectedRows = null)
     {
         static::$datas[$this->getCacheKey($identifier)] = $datas;
+    }
+
+    /**
+     * @param $identifier
+     * @return string
+     */
+    protected function getCacheKey($identifier)
+    {
+        $toReturn = $this->sourceName.'_'.(isset($this->configuration['version']) ? $this->configuration['version'] : 1);
+        foreach ($identifier as $k => $v) {
+            if ($v instanceof \Yucca\Model\ModelInterface) {
+                $v = $v->getId();
+            }
+            $toReturn .= ':'.$k.'='.$v;
+        }
+
+        return $toReturn;
     }
 }

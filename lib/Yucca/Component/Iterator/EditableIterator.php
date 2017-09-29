@@ -8,9 +8,9 @@
  * file that was distributed with this source code.
  */
 namespace Yucca\Component\Iterator;
+
 use Yucca\Component\Selector\SelectorInterface;
 use Yucca\Component\EntityManager;
-
 
 /**
  * Class Iterator
@@ -25,8 +25,8 @@ class EditableIterator extends Iterator implements \ArrayAccess
 
     /**
      * @param \Yucca\Component\Selector\SelectorInterface $selector
-     * @param \Yucca\Component\EntityManager $entityManager
-     * @param string $modelClassName
+     * @param \Yucca\Component\EntityManager              $entityManager
+     * @param string                                      $modelClassName
      */
     public function __construct(SelectorInterface $selector, EntityManager $entityManager = null, $modelClassName)
     {
@@ -40,7 +40,7 @@ class EditableIterator extends Iterator implements \ArrayAccess
      */
     public function count()
     {
-        if($this->retrieved) {
+        if ($this->retrieved) {
             return count($this->updatedDatas);
         } else {
             return parent::count();
@@ -53,7 +53,7 @@ class EditableIterator extends Iterator implements \ArrayAccess
      */
     public function current()
     {
-        if($this->retrieved) {
+        if ($this->retrieved) {
             return current($this->updatedDatas);
         } else {
             return parent::current();
@@ -66,7 +66,7 @@ class EditableIterator extends Iterator implements \ArrayAccess
      */
     public function key()
     {
-        if($this->retrieved) {
+        if ($this->retrieved) {
             return key($this->updatedDatas);
         } else {
             return parent::key();
@@ -74,11 +74,11 @@ class EditableIterator extends Iterator implements \ArrayAccess
     }
 
     /**
-     * Next
+     * @return $this|void
      */
     public function next()
     {
-        if($this->retrieved) {
+        if ($this->retrieved) {
             next($this->updatedDatas);
 
             return $this;
@@ -93,7 +93,7 @@ class EditableIterator extends Iterator implements \ArrayAccess
      */
     public function rewind()
     {
-        if($this->retrieved) {
+        if ($this->retrieved) {
             reset($this->updatedDatas);
 
             return $this;
@@ -108,7 +108,7 @@ class EditableIterator extends Iterator implements \ArrayAccess
      */
     public function valid()
     {
-        if($this->retrieved) {
+        if ($this->retrieved) {
             return false !== current($this->updatedDatas);
         } else {
             return parent::valid();
@@ -120,9 +120,10 @@ class EditableIterator extends Iterator implements \ArrayAccess
      */
     public function getSelector()
     {
-        if($this->retrieved) {
+        if ($this->retrieved) {
             error_log('Try to '.__METHOD__.' on a retrieved iterator. The selector is no more in sync with the iterator');
         }
+
         return parent::getSelector();
     }
 
@@ -131,34 +132,23 @@ class EditableIterator extends Iterator implements \ArrayAccess
      */
     public function getArray()
     {
-        if($this->retrieved) {
+        if ($this->retrieved) {
             return $this->updatedDatas;
         } else {
             return parent::getArray();
         }
     }
 
-
-    /**
-     * When an update come to the iterator, retrieve the original dataset, only once
-     */
-    protected function retrieve()
-    {
-        if(false === $this->retrieved) {
-            $this->updatedDatas = $this->getArray();
-            $this->retrieved = true;
-        }
-    }
-
     /**
      * @param mixed $offset
+     *
      * @return $this
      */
     public function offsetUnset($offset)
     {
         $this->retrieve();
         $this->deletedDatas[] = $this->updatedDatas[$offset];
-        if(isset($this->updatedDatas[$offset])) {
+        if (isset($this->updatedDatas[$offset])) {
             unset($this->updatedDatas[$offset]);
         }
 
@@ -172,6 +162,7 @@ class EditableIterator extends Iterator implements \ArrayAccess
     public function offsetExists($offset)
     {
         $this->retrieve();
+
         return isset($this->updatedDatas[$offset]);
     }
 
@@ -184,10 +175,10 @@ class EditableIterator extends Iterator implements \ArrayAccess
     {
         $this->retrieve();
 
-        if(isset($this->updatedDatas[$offset])) {
+        if (isset($this->updatedDatas[$offset])) {
             return $this->updatedDatas[$offset];
         } else {
-            throw new \RuntimeException('Offset does not exists : ' . $offset.'. Available offsets:'.implode(',',array_keys($this->updatedDatas)));
+            throw new \RuntimeException('Offset does not exists : '.$offset.'. Available offsets:'.implode(',', array_keys($this->updatedDatas)));
         }
     }
 
@@ -204,8 +195,23 @@ class EditableIterator extends Iterator implements \ArrayAccess
         return $this;
     }
 
+    /**
+     * @return array
+     */
     public function getUnsetData()
     {
         return $this->deletedDatas;
+    }
+
+
+    /**
+     * When an update come to the iterator, retrieve the original dataset, only once
+     */
+    protected function retrieve()
+    {
+        if (false === $this->retrieved) {
+            $this->updatedDatas = $this->getArray();
+            $this->retrieved = true;
+        }
     }
 }

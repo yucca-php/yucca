@@ -9,6 +9,10 @@
  */
 namespace Yucca\Component\Selector\Source;
 
+/**
+ * Interface SelectorSourceInterface
+ * @package Yucca\Component\Selector\Source
+ */
 interface SelectorSourceInterface
 {
     const ID_FIELD = 'idField';
@@ -29,7 +33,27 @@ interface SelectorSourceInterface
     const ELASTIC_QUERY = 'elastic_query';
     const FACETS = 'facets';
 
-    public function loadIds(array $criterias, array $options=array());
-    public function saveIds($ids, array $criterias, array $options=array());
+    /**
+     * @param array $criterias
+     * @param array $options
+     *
+     * @return mixed
+     */
+    public function loadIds(array $criterias, array $options = array());
+
+    /**
+     * @param array $ids
+     * @param array $criterias
+     * @param array $options
+     *
+     * @return mixed
+     */
+    public function saveIds($ids, array $criterias, array $options = array());
+
+    /**
+     * @param array $options
+     *
+     * @return mixed
+     */
     public function invalidateGlobal(array $options = array());
 }

@@ -13,10 +13,13 @@ namespace Yucca\Bundle\YuccaBundle\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class GenerateConfigurationCommand
+ * @package Yucca\Bundle\YuccaBundle\Command
+ */
 class GenerateConfigurationCommand extends ContainerAwareCommand
 {
     protected function configure()
@@ -27,8 +30,8 @@ class GenerateConfigurationCommand extends ContainerAwareCommand
             ->addArgument('path', InputArgument::REQUIRED, 'Path into wich put config')
             ->addArgument('namespace', InputArgument::REQUIRED, 'Model namespace')
             ->addArgument('dbname', InputArgument::REQUIRED, 'Database name')
-            ->addArgument('user', InputArgument::OPTIONAL, 'Database user','root')
-            ->addArgument('password', InputArgument::OPTIONAL, 'Database password','')
+            ->addArgument('user', InputArgument::OPTIONAL, 'Database user', 'root')
+            ->addArgument('password', InputArgument::OPTIONAL, 'Database password', '')
             ->addArgument('host', InputArgument::OPTIONAL, 'Database Host', 'localhost')
             ->addArgument('driver', InputArgument::OPTIONAL, 'Database driver', 'pdo_mysql')
             ->addArgument('port', InputArgument::OPTIONAL, 'Database port', '');
@@ -44,10 +47,10 @@ class GenerateConfigurationCommand extends ContainerAwareCommand
     {
         //Get File Path
         $realPath = array(
-            rtrim($input->getArgument('path'),DIRECTORY_SEPARATOR)
+            rtrim($input->getArgument('path'), DIRECTORY_SEPARATOR),
         );
-        $realPath = implode('/',$realPath).'/yucca.yml';
-        if(file_exists($realPath)) {
+        $realPath = implode('/', $realPath).'/yucca.yml';
+        if (file_exists($realPath)) {
             throw new \Exception("File $realPath already exists");
         }
 
@@ -58,7 +61,7 @@ class GenerateConfigurationCommand extends ContainerAwareCommand
             'dbname' => $input->getArgument('dbname'),
             'user' => $input->getArgument('user'),
             'password' => $input->getArgument('password'),
-            'charset' => 'UTF8'
+            'charset' => 'UTF8',
         );
         $connection = \Doctrine\DBAL\DriverManager::getConnection($connectionOptions);
         $config = $this->getConnectionConfiguration($connectionOptions);
@@ -70,8 +73,9 @@ class GenerateConfigurationCommand extends ContainerAwareCommand
         file_put_contents($realPath, $config);
     }
 
-    protected function getConnectionConfiguration(array $connectionOptions) {
-return <<<EOT
+    protected function getConnectionConfiguration(array $connectionOptions)
+    {
+        return <<<EOT
 #Yucca configuration
 yucca:
     #DB connections
@@ -97,11 +101,12 @@ yucca:
 EOT;
     }
 
-    protected function getSchema(\Doctrine\DBAL\Connection $connection) {
+    protected function getSchema(\Doctrine\DBAL\Connection $connection)
+    {
         $tables = array();
-        foreach($connection->fetchAll('SHOW TABLES') as $table) {
+        foreach ($connection->fetchAll('SHOW TABLES') as $table) {
             $table = current($table);
-            $tables [] = <<<EOT
+            $tables[] = <<<EOT
         $table:
             sharding_strategy: modulo
             shards:
@@ -109,7 +114,8 @@ EOT;
 EOT;
         }
 
-        $tables  = implode("\n",$tables);
+        $tables  = implode("\n", $tables);
+
         return <<<EOT
     #DB Schema
     schema:
@@ -125,24 +131,25 @@ EOT;
      * @param \Doctrine\DBAL\Connection $connection
      * @return string
      */
-    protected function getSources(\Doctrine\DBAL\Connection $connection) {
+    protected function getSources(\Doctrine\DBAL\Connection $connection)
+    {
         $tables = array();
-        foreach($connection->fetchAll('SHOW TABLES') as $table) {
+        foreach ($connection->fetchAll('SHOW TABLES') as $table) {
             $table = current($table);
             $fields = array();
-            foreach($connection->fetchAll('DESC '.$table) as $field) {
-                if('date' == strtolower($field['Type'])) {
+            foreach ($connection->fetchAll('DESC '.$table) as $field) {
+                if ('date' == strtolower($field['Type'])) {
                     $fields[] = $field['Field'].': {type: \'date\'}';
-                } elseif('datetime' == strtolower($field['Type'])) {
+                } elseif ('datetime' == strtolower($field['Type'])) {
                     $fields[] = $field['Field'].': {type: \'datetime\'}';
-                } elseif('pri' == strtolower($field['Key'])) {
+                } elseif ('pri' == strtolower($field['Key'])) {
                     $fields[] = $field['Field'].': {type: \'identifier\'}';
                 } else {
                     $fields[] = $field['Field'].': ~';
                 }
             }
-            $fields = implode(', ',$fields);
-            $tables [] = <<<EOT
+            $fields = implode(', ', $fields);
+            $tables[] = <<<EOT
         $table:
             default_params:
                 fields: { $fields }
@@ -156,7 +163,8 @@ EOT;
 EOT;
         }
 
-        $tables  = implode("\n",$tables);
+        $tables  = implode("\n", $tables);
+
         return <<<EOT
     #Sources
     sources:
@@ -173,12 +181,14 @@ EOT;
      * @param bool $ucFirst
      * @return string
      */
-    protected function underscoreToCamelcase($string, $ucFirst) {
+    protected function underscoreToCamelcase($string, $ucFirst)
+    {
 
         $parts = explode('_', $string);
         $parts = $parts ? array_map('strtolower', $parts) : array($string);
         $parts = $parts ? array_map('ucfirst', $parts) : array($string);
         $parts[0] = $ucFirst ? ucfirst($parts[0]) : lcfirst($parts[0]);
+
         return implode('', $parts);
     }
 
@@ -187,25 +197,25 @@ EOT;
      * @param $namespace
      * @return string
      */
-    protected function getMapping(\Doctrine\DBAL\Connection $connection, $namespace) {
+    protected function getMapping(\Doctrine\DBAL\Connection $connection, $namespace)
+    {
         $models = array();
-        foreach($connection->fetchAll('SHOW TABLES') as $table) {
+        foreach ($connection->fetchAll('SHOW TABLES') as $table) {
             $table = current($table);
             $mappings = array();
-            foreach($connection->fetchAll('DESC '.$table) as $field) {
-                if(false !== strpos($field['Field'], '_id')) {
+            foreach ($connection->fetchAll('DESC '.$table) as $field) {
+                if (false !== strpos($field['Field'], '_id')) {
                     $fieldName = $field['Field'];
-                    $propertyName = str_replace('_id','',$field['Field']);
+                    $propertyName = str_replace('_id', '', $field['Field']);
                     $mappings[] = <<<EOT
                 $propertyName:
                     field: $fieldName
 EOT;
-
                 }
             }
-            $mappings = implode("\n",$mappings);
-            $modelName = $namespace.'\\Model\\'.$this->underscoreToCamelcase($table,true);
-            $models [] = <<<EOT
+            $mappings = implode("\n", $mappings);
+            $modelName = $namespace.'\\Model\\'.$this->underscoreToCamelcase($table, true);
+            $models[] = <<<EOT
         $modelName:
             mapper_class_name: ~
             properties:
@@ -215,7 +225,8 @@ $mappings
 EOT;
         }
 
-        $models  = implode("\n",$models);
+        $models  = implode("\n", $models);
+
         return <<<EOT
     #Sources
     mapping:
@@ -227,19 +238,21 @@ $models
 EOT;
     }
 
-    protected function getSelectors(\Doctrine\DBAL\Connection $connection, $namespace) {
+    protected function getSelectors(\Doctrine\DBAL\Connection $connection, $namespace)
+    {
         $tables = array();
-        foreach($connection->fetchAll('SHOW TABLES') as $table) {
+        foreach ($connection->fetchAll('SHOW TABLES') as $table) {
             $table = current($table);
-            $selectorName = $namespace.'\\Selector\\'.$this->underscoreToCamelcase($table,true);
-            $tables [] = <<<EOT
+            $selectorName = $namespace.'\\Selector\\'.$this->underscoreToCamelcase($table, true);
+            $tables[] = <<<EOT
         $selectorName:
             sources:
                 - database
 EOT;
         }
 
-        $tables  = implode("\n",$tables);
+        $tables  = implode("\n", $tables);
+
         return <<<EOT
     #Selectors
     selectors:

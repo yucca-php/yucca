@@ -10,9 +10,11 @@
 
 namespace Yucca\Test\Component;
 
-class SourceManagerTest extends \PHPUnit_Framework_TestCase {
+class SourceManagerTest extends \PHPUnit_Framework_TestCase
+{
 
-    public function test_getSource(){
+    public function test_getSource()
+    {
         $sourceManager = new \Yucca\Component\SourceManager(array(
             'source1'=>array(
                 'default_params'=>array('id'=>array('type'=>'identifier'), 'firstName'=>null),
@@ -27,7 +29,7 @@ class SourceManagerTest extends \PHPUnit_Framework_TestCase {
         try {
             $sourceManager->getSource('fake1');
             $this->fail('Should raise an exception');
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->assertContains('fake1', $e->getMessage());
         }
 
@@ -35,13 +37,13 @@ class SourceManagerTest extends \PHPUnit_Framework_TestCase {
         $databaseSingleRowFactory = $this->getMockBuilder('\Yucca\Component\SourceFactory\DatabaseSingleRowFactory')
             ->disableOriginalConstructor()
             ->getMock();
-        $sourceManager->addSourceFactory('database_single_row',$databaseSingleRowFactory);
+        $sourceManager->addSourceFactory('database_single_row', $databaseSingleRowFactory);
 
 
         try {
             $sourceManager->getSource('source1');
             $this->fail('Should raise an exception');
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->assertContains('memcache', $e->getMessage());
         }
 
@@ -49,12 +51,12 @@ class SourceManagerTest extends \PHPUnit_Framework_TestCase {
         $memcacheFactory = $this->getMockBuilder('\Yucca\Component\SourceFactory\MemcacheFactory')
             ->disableOriginalConstructor()
             ->getMock();
-        $sourceManager->addSourceFactory('memcache',$memcacheFactory);
+        $sourceManager->addSourceFactory('memcache', $memcacheFactory);
 
         try {
             $sourceManager->getSource('source1');
             $this->fail('Should raise an exception');
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->assertContains('chain', $e->getMessage());
         }
 
@@ -62,13 +64,14 @@ class SourceManagerTest extends \PHPUnit_Framework_TestCase {
         $chainFactory = $this->getMockBuilder('\Yucca\Component\SourceFactory\ChainFactory')
             ->disableOriginalConstructor()
             ->getMock();
-        $sourceManager->addSourceFactory('chain',$chainFactory);
+        $sourceManager->addSourceFactory('chain', $chainFactory);
 
         $first = $sourceManager->getSource('source1');
         $this->assertSame($first, $sourceManager->getSource('source1'));
     }
 
-    public function test_getSourceSingleHandler(){
+    public function test_getSourceSingleHandler()
+    {
         $sourceManager = new \Yucca\Component\SourceManager(array(
             'source1'=>array(
                 'default_params'=>array('id'=>array('type'=>'identifier'), 'firstName'=>null),
@@ -82,10 +85,9 @@ class SourceManagerTest extends \PHPUnit_Framework_TestCase {
         $databaseSingleRowFactory = $this->getMockBuilder('\Yucca\Component\SourceFactory\DatabaseSingleRowFactory')
             ->disableOriginalConstructor()
             ->getMock();
-        $sourceManager->addSourceFactory('database_single_row',$databaseSingleRowFactory);
+        $sourceManager->addSourceFactory('database_single_row', $databaseSingleRowFactory);
 
         $first = $sourceManager->getSource('source1');
         $this->assertSame($first, $sourceManager->getSource('source1'));
     }
-
 }

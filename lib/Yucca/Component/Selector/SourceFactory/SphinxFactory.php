@@ -12,6 +12,10 @@ namespace Yucca\Component\Selector\SourceFactory;
 use \Yucca\Component\Selector\Source\Sphinx;
 use \Yucca\Component\ConnectionManager;
 
+/**
+ * Class SphinxFactory
+ * @package Yucca\Component\Selector\SourceFactory
+ */
 class SphinxFactory implements SelectorSourceFactoryInterface
 {
     /**
@@ -23,7 +27,8 @@ class SphinxFactory implements SelectorSourceFactoryInterface
      * Constructor
      * @param \Yucca\Component\ConnectionManager $connectionManager
      */
-    public function __construct(ConnectionManager $connectionManager) {
+    public function __construct(ConnectionManager $connectionManager)
+    {
         $this->connectionManager = $connectionManager;
     }
 
@@ -31,7 +36,8 @@ class SphinxFactory implements SelectorSourceFactoryInterface
      * Build source
      * @return \Yucca\Component\Selector\Source\Memcache
      */
-    public function getSource() {
+    public function getSource()
+    {
         $toReturn = new Sphinx();
         $toReturn->setConnectionManager($this->connectionManager);
 

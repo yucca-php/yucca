@@ -13,6 +13,7 @@ use \Yucca\Component\Source\DatabaseSingleRow;
 use \Yucca\Component\SchemaManager;
 use \Yucca\Component\ConnectionManager;
 use \Yucca\Component\Source\DataParser\DataParser;
+
 /**
  *
  */
@@ -34,11 +35,12 @@ class DatabaseSingleRowFactory implements SourceFactoryInterface
     protected $dataParser;
 
     /**
-     * @param \Yucca\Component\SchemaManager $schemaManager
-     * @param \Yucca\Component\ConnectionManager $connectionManager
+     * @param \Yucca\Component\SchemaManager                $schemaManager
+     * @param \Yucca\Component\ConnectionManager            $connectionManager
      * @param \Yucca\Component\Source\DataParser\DataParser $dataParser
      */
-    public function __construct(SchemaManager $schemaManager, ConnectionManager $connectionManager, DataParser $dataParser) {
+    public function __construct(SchemaManager $schemaManager, ConnectionManager $connectionManager, DataParser $dataParser)
+    {
         $this->schemaManager = $schemaManager;
         $this->connectionManager = $connectionManager;
         $this->dataParser = $dataParser;
@@ -46,11 +48,12 @@ class DatabaseSingleRowFactory implements SourceFactoryInterface
 
     /**
      * build source
-     * @param $sourceName
-     * @param array $params
+     * @param string $sourceName
+     * @param array  $params
      * @return \Yucca\Component\Source\DatabaseSingleRow
      */
-    public function getSource($sourceName, array $params = array()) {
+    public function getSource($sourceName, array $params = array())
+    {
         $toReturn = new DatabaseSingleRow($sourceName, $params);
         $toReturn->setSchemaManager($this->schemaManager);
         $toReturn->setConnectionManager($this->connectionManager);

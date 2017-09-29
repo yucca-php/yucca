@@ -11,13 +11,18 @@ namespace Yucca\Component\Selector\SourceFactory;
 
 use Yucca\Component\Selector\Source\ElasticSearch;
 
+/**
+ * Class ElasticSearchFactory
+ * @package Yucca\Component\Selector\SourceFactory
+ */
 class ElasticSearchFactory implements SelectorSourceFactoryInterface
 {
     /**
      * Build source
      * @return \Yucca\Component\Selector\Source\ElasticSearch
      */
-    public function getSource() {
+    public function getSource()
+    {
         $toReturn = new ElasticSearch();
 
         return $toReturn;

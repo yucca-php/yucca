@@ -12,29 +12,24 @@ namespace Yucca\Component\Selector\Source;
 use Elastica\Query;
 use Yucca\Component\ConnectionManager;
 
-class ElasticSearch implements SelectorSourceInterface{
+/**
+ * Class ElasticSearch
+ * @package Yucca\Component\Selector\Source
+ */
+class ElasticSearch implements SelectorSourceInterface
+{
 
     /**
      * @var \Yucca\Component\ConnectionManager
      */
     protected $connectionManager;
 
-    public function setConnectionManager(ConnectionManager $connectionManager){
+    /**
+     * @param ConnectionManager $connectionManager
+     */
+    public function setConnectionManager(ConnectionManager $connectionManager)
+    {
         $this->connectionManager = $connectionManager;
-    }
-
-    protected function getResultSetKey($query, $limit, $offset, $orderBy, $facets) {
-        $facetsParams = array();
-        foreach($facets as $facet) {
-            $facetsParams[] = $facet->getParams();
-        }
-        return md5(
-            var_export($query->toArray(), true).
-            $limit.
-            $offset.
-            var_export($orderBy, true).
-            var_export($facetsParams, true)
-        );
     }
 
     /**
@@ -44,7 +39,8 @@ class ElasticSearch implements SelectorSourceInterface{
      * @throws \Yucca\Component\Selector\Exception\NoDataException
      * @return string
      */
-    public function loadIds(array $criterias, array $options = array()) {
+    public function loadIds(array $criterias, array $options = array())
+    {
         //Merge options
         $defaultOptions = array(
             SelectorSourceInterface::ID_FIELD => array('id'),
@@ -69,13 +65,13 @@ class ElasticSearch implements SelectorSourceInterface{
         );
 
         //Check options
-        if(empty($options[SelectorSourceInterface::ELASTIC_SEARCHABLE])){
+        if (empty($options[SelectorSourceInterface::ELASTIC_SEARCHABLE])) {
             throw new \Exception('Elastic searchable index or type must be set for selector source');
         }
-        if(false === $options[SelectorSourceInterface::ELASTIC_SEARCHABLE] instanceof \Elastica\SearchableInterface){
+        if (false === $options[SelectorSourceInterface::ELASTIC_SEARCHABLE] instanceof \Elastica\SearchableInterface) {
             throw new \Exception('Elastic searchable must be an instance of \Elastica\SearchableInterface');
         }
-        if(empty($options[SelectorSourceInterface::ID_FIELD])){
+        if (empty($options[SelectorSourceInterface::ID_FIELD])) {
             throw new \Exception('Id Field must be set for selector source');
         }
 
@@ -89,31 +85,31 @@ class ElasticSearch implements SelectorSourceInterface{
         }
 
         if (self::RESULT_COUNT !== $options[SelectorSourceInterface::RESULT]) {
-            if(is_numeric($options[SelectorSourceInterface::LIMIT])) {
+            if (is_numeric($options[SelectorSourceInterface::LIMIT])) {
                 $query->setSize(
-                    (int)$options[SelectorSourceInterface::LIMIT]
+                    (int) $options[SelectorSourceInterface::LIMIT]
                 );
             }
-            if(is_numeric($options[SelectorSourceInterface::OFFSET])) {
+            if (is_numeric($options[SelectorSourceInterface::OFFSET])) {
                 $query->setFrom(
-                    (int)$options[SelectorSourceInterface::OFFSET]
+                    (int) $options[SelectorSourceInterface::OFFSET]
                 );
             }
 
             $orders = $options[SelectorSourceInterface::ORDERBY];
-            if(false === empty($orders) && is_array($orders)) {
-                foreach($orders as $order) {
+            if (false === empty($orders) && is_array($orders)) {
+                foreach ($orders as $order) {
                     $query->addSort($order);
                 }
             }
         }
 
-        if(false===empty($options[self::GROUPBY])) {
+        if (false === empty($options[self::GROUPBY])) {
             throw new \Exception('Not implemented yet');
         }
 
-        if(false===empty($options[self::FACETS])) {
-            foreach($options[self::FACETS] as $facet) {
+        if (false === empty($options[self::FACETS])) {
+            foreach ($options[self::FACETS] as $facet) {
                 $query->addFacet($facet);
             }
         }
@@ -130,11 +126,43 @@ class ElasticSearch implements SelectorSourceInterface{
         }
     }
 
-    public function saveIds($ids, array $criterias, array $options=array()){
+    /**
+     * @param array $ids
+     * @param array $criterias
+     * @param array $options
+     *
+     * @throws \Exception
+     */
+    public function saveIds($ids, array $criterias, array $options = array())
+    {
         throw new \Exception("ElasticSearch selector source can't save result");
     }
 
-    public function invalidateGlobal(array $options = array()){
+    /**
+     * @param array $options
+     */
+    public function invalidateGlobal(array $options = array())
+    {
+    }
 
+    /**
+     * @param $query
+     * @param $limit
+     * @param $offset
+     * @param $orderBy
+     * @param $facets
+     *
+     * @return string
+     */
+    protected function getResultSetKey($query, $limit, $offset, $orderBy, $facets)
+    {
+        $facetsParams = array();
+        foreach ($facets as $facet) {
+            $facetsParams[] = $facet->getParams();
+        }
+
+        return md5(
+            var_export($query->toArray(), true).$limit.$offset.var_export($orderBy, true).var_export($facetsParams, true)
+        );
     }
 }

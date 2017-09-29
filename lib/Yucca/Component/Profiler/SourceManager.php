@@ -14,6 +14,10 @@ use Yucca\Bundle\YuccaBundle\DataCollector\Logger;
 use Yucca\Component\Source\LogWrapper;
 use Yucca\Component\SourceManager as BaseSourceManager;
 
+/**
+ * Class SourceManager
+ * @package Yucca\Component\Profiler
+ */
 class SourceManager extends BaseSourceManager
 {
 
@@ -23,10 +27,13 @@ class SourceManager extends BaseSourceManager
 
     /**
      * SourceManager constructor.
-     * @param array $sourceConfig
+     *
+     * @param array          $sourceConfig
      * @param Stopwatch|null $stopWatch
+     * @param Logger         $datacollectorLogger
      */
-    public function __construct(array $sourceConfig, Stopwatch $stopWatch=null, Logger $datacollectorLogger) {
+    public function __construct(array $sourceConfig, Stopwatch $stopWatch = null, Logger $datacollectorLogger)
+    {
         parent::__construct($sourceConfig);
         $this->stopWatch = $stopWatch;
         $this->datacollectorLogger = $datacollectorLogger;
@@ -34,18 +41,19 @@ class SourceManager extends BaseSourceManager
 
     /**
      * Get a source by it's name
-     * @param $sourceName
+     * @param string $sourceName
      * @return \Yucca\Component\Source\SourceInterface
      * @throws \InvalidArgumentException
      */
-    public function getSource($sourceName){
-        if(false === isset($this->sources[$sourceName])){
-            if(false === isset($this->sourceConfig[$sourceName]['handlers'])){
+    public function getSource($sourceName)
+    {
+        if (false === isset($this->sources[$sourceName])) {
+            if (false === isset($this->sourceConfig[$sourceName]['handlers'])) {
                 throw new \InvalidArgumentException("\"$sourceName\" name has not been configured");
             }
 
             $sources = array();
-            foreach($this->sourceConfig[$sourceName]['handlers'] as $sourceConfig){
+            foreach ($this->sourceConfig[$sourceName]['handlers'] as $sourceConfig) {
                 $params = array_merge($this->sourceConfig[$sourceName]['default_params'], $sourceConfig);
                 $sources[] = new LogWrapper(
                     $this->getFactory($sourceConfig['type'])->getSource($sourceName, $params),
@@ -55,7 +63,7 @@ class SourceManager extends BaseSourceManager
                 );
             }
 
-            if(1 === count($sources)){
+            if (1 === count($sources)) {
                 $this->sources[$sourceName] = current($sources);
             } else {
                 $this->sources[$sourceName] = $this->getFactory('chain')->getSource($sourceName, $this->sourceConfig[$sourceName]['default_params'], $sources);

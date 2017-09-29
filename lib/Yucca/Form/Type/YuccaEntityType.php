@@ -104,7 +104,7 @@ class YuccaEntityType extends AbstractType
                 $propertyHash,
                 $preferredChoiceHashes,
                 $groupByHash,
-                $iteratorHash
+                $iteratorHash,
             )));
 
             if (!isset($choiceListCache[$hash])) {

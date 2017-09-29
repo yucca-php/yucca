@@ -11,8 +11,11 @@ namespace Yucca\Component\Selector\SourceFactory;
 
 use \Yucca\Component\Selector\Source\Database;
 use \Yucca\Component\SchemaManager;
-use \Yucca\Component\ConnectionManager;
 
+/**
+ * Class DatabaseFactory
+ * @package Yucca\Component\Selector\SourceFactory
+ */
 class DatabaseFactory implements SelectorSourceFactoryInterface
 {
     /**
@@ -24,17 +27,18 @@ class DatabaseFactory implements SelectorSourceFactoryInterface
      * construct
      * @param \Yucca\Component\SchemaManager $schemaManager
      */
-    public function __construct(SchemaManager $schemaManager) {
+    public function __construct(SchemaManager $schemaManager)
+    {
         $this->schemaManager = $schemaManager;
     }
 
     /**
      * build source
-     * @param $sourceName
      * @param array $params
      * @return \Yucca\Component\Source\DatabaseSingleRow
      */
-    public function getSource(array $params = array()) {
+    public function getSource(array $params = array())
+    {
         $toReturn = new Database();
         $toReturn->setSchemaManager($this->schemaManager);
 

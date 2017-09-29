@@ -9,6 +9,17 @@
  */
 namespace Yucca\Component\ShardingStrategy;
 
-interface ShardingStrategyInterface {
-    function getShardingIdentifier(array $tableConfig, $shardingKey);
+/**
+ * Interface ShardingStrategyInterface
+ * @package Yucca\Component\ShardingStrategy
+ */
+interface ShardingStrategyInterface
+{
+    /**
+     * @param array $tableConfig
+     * @param mixed $shardingKey
+     *
+     * @return mixed
+     */
+    public function getShardingIdentifier(array $tableConfig, $shardingKey);
 }

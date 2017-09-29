@@ -13,10 +13,13 @@ namespace Yucca\Bundle\YuccaBundle\Command;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 
 use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class GenerateModelCommand
+ * @package Yucca\Bundle\YuccaBundle\Command
+ */
 class GenerateModelCommand extends ContainerAwareCommand
 {
     protected function configure()
@@ -35,31 +38,32 @@ class GenerateModelCommand extends ContainerAwareCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $mapping = $this->getContainer()->getParameter('yucca.mapping');
-        foreach($mapping as $modelClassName=>$modelInformation) {
+        foreach ($mapping as $modelClassName => $modelInformation) {
             $toAdd = $this->createFileContent($modelClassName, $modelInformation);
             $this->addToModel($input->getArgument('path'), $modelClassName, $toAdd);
         }
     }
 
-    protected function addToModel($path, $modelClassName, array $toAdd) {
+    protected function addToModel($path, $modelClassName, array $toAdd)
+    {
         //Check if we have something to add
-        if(empty($toAdd['properties']) && empty($toAdd['methods'])) {
+        if (empty($toAdd['properties']) && empty($toAdd['methods'])) {
             return;
         }
 
         //Get File Path
         $realPath = array(
-            rtrim($path,DIRECTORY_SEPARATOR),
-            trim(str_replace('\\',DIRECTORY_SEPARATOR,$modelClassName),DIRECTORY_SEPARATOR),
+            rtrim($path, DIRECTORY_SEPARATOR),
+            trim(str_replace('\\', DIRECTORY_SEPARATOR, $modelClassName), DIRECTORY_SEPARATOR),
         );
-        $realPath = implode('/',$realPath).'.php';
+        $realPath = implode('/', $realPath).'.php';
 
         //Concatenate Properties and methods
-        $properties = implode("\n\n",$toAdd['properties']);
-        $methods = implode("\n\n",$toAdd['methods']);
+        $properties = implode("\n\n", $toAdd['properties']);
+        $methods = implode("\n\n", $toAdd['methods']);
 
         //If file exists, update
-        if(file_exists($realPath)) {
+        if (file_exists($realPath)) {
             $fileContent = file_get_contents($realPath);
             $oldCode = substr($fileContent, 0, strrpos($fileContent, '}'));
             $data = <<<EOT
@@ -71,10 +75,9 @@ $methods
 }
 
 EOT;
-
         } else {
-            $namespace = substr($modelClassName,0,strrpos($modelClassName,'\\'));
-            $className = substr($modelClassName,strrpos($modelClassName,'\\')+1);
+            $namespace = substr($modelClassName, 0, strrpos($modelClassName, '\\'));
+            $className = substr($modelClassName, strrpos($modelClassName, '\\')+1);
             $yuccaProperties = implode('\',\'', array_keys($toAdd['properties']));
             $data = <<<EOT
 <?php
@@ -91,16 +94,16 @@ $methods
 
 EOT;
         }
-        if(false === is_dir(dirname($realPath))) {
-            mkdir(dirname($realPath),0775,true);
+        if (false === is_dir(dirname($realPath))) {
+            mkdir(dirname($realPath), 0775, true);
         }
-        if(false === is_writable(dirname($realPath))) {
+        if (false === is_writable(dirname($realPath))) {
             throw new \RuntimeException(dirname($realPath).' is not writable');
         }
-        if(file_exists($realPath) && false === is_writable($realPath)) {
+        if (file_exists($realPath) && false === is_writable($realPath)) {
             throw new \RuntimeException($realPath.' is not writable');
         }
-        file_put_contents($realPath,$data);
+        file_put_contents($realPath, $data);
     }
 
     /**
@@ -108,17 +111,18 @@ EOT;
      * @param $modelInformation
      * @return array
      */
-    protected function createFileContent($modelClassName, $modelInformation) {
+    protected function createFileContent($modelClassName, $modelInformation)
+    {
         //Collect all fields from sources
         $fields = array();
         $sources = $this->getContainer()->getParameter('yucca.sources');
-        foreach($modelInformation['sources'] as $sourceName) {
+        foreach ($modelInformation['sources'] as $sourceName) {
             $fields = array_merge($fields, $sources[$sourceName]['default_params']['fields']);
         }
 
-        if(isset($modelInformation['properties']) && is_array($modelInformation['properties'])) {
-            foreach($modelInformation['properties'] as $propertyName => $propertyMapping) {
-                if(isset($propertyMapping['field']) && isset($fields[$propertyMapping['field']])) {
+        if (isset($modelInformation['properties']) && is_array($modelInformation['properties'])) {
+            foreach ($modelInformation['properties'] as $propertyName => $propertyMapping) {
+                if (isset($propertyMapping['field']) && isset($fields[$propertyMapping['field']])) {
                     $fields[$propertyName] = $fields[$propertyMapping['field']];
                     unset($fields[$propertyMapping['field']]);
                 }
@@ -128,19 +132,19 @@ EOT;
         //Fill in properties and methods
         $propertiesToAdd = array();
         $methodsToAdd = array();
-        foreach($fields as $fieldName=>$fieldInformation) {
+        foreach ($fields as $fieldName => $fieldInformation) {
             $tmp = $this->generatePropertyCode($modelClassName, $fieldName, $this->extractFieldType($fieldInformation));
-            if($tmp) {
+            if ($tmp) {
                 $propertiesToAdd[$fieldName] = $tmp;
             }
 
             $tmp = $this->generatePropertyGetter($modelClassName, $fieldName, $this->extractFieldType($fieldInformation));
-            if($tmp) {
+            if ($tmp) {
                 $methodsToAdd[] = $tmp;
             }
 
             $tmp = $this->generatePropertySetter($modelClassName, $fieldName, $this->extractFieldType($fieldInformation));
-            if($tmp) {
+            if ($tmp) {
                 $methodsToAdd[] = $tmp;
             }
         }
@@ -155,11 +159,12 @@ EOT;
      * @param $fieldInformation
      * @return string
      */
-    protected function extractFieldType($fieldInformation) {
+    protected function extractFieldType($fieldInformation)
+    {
         $type = 'mixed';
-        if(isset($fieldInformation['type']) && in_array($fieldInformation['type'], array('date','datetime'))) {
+        if (isset($fieldInformation['type']) && in_array($fieldInformation['type'], array('date', 'datetime'))) {
             $type = '\DateTime';
-        } elseif(isset($fieldInformation['type']) && 'object' === $fieldInformation['type']) {
+        } elseif (isset($fieldInformation['type']) && 'object' === $fieldInformation['type']) {
             $type = '\\'.$fieldInformation['class_name'];
         }
 
@@ -171,12 +176,14 @@ EOT;
      * @param bool $ucFirst
      * @return string
      */
-    protected function underscoreToCamelcase($string, $ucFirst) {
+    protected function underscoreToCamelcase($string, $ucFirst)
+    {
 
         $parts = explode('_', $string);
         $parts = $parts ? array_map('strtolower', $parts) : array($string);
         $parts = $parts ? array_map('ucfirst', $parts) : array($string);
         $parts[0] = $ucFirst ? ucfirst($parts[0]) : lcfirst($parts[0]);
+
         return implode('', $parts);
     }
 
@@ -186,12 +193,14 @@ EOT;
      * @param $type
      * @return string
      */
-    protected function generatePropertyCode($className,$fieldName,$type) {
+    protected function generatePropertyCode($className, $fieldName, $type)
+    {
         try {
             $class = new  \ReflectionClass($className);
             $class->getProperty($fieldName);
+
             return '';
-        } catch(\ReflectionException $exception) {
+        } catch (\ReflectionException $exception) {
             return <<<EOT
     /**
      * @var $type
@@ -207,13 +216,15 @@ EOT;
      * @param $type
      * @return string
      */
-    protected function generatePropertyGetter($className,$fieldName,$type) {
+    protected function generatePropertyGetter($className, $fieldName, $type)
+    {
         $getterName = 'get'.$this->underscoreToCamelcase($fieldName, true);
         try {
             $class = new  \ReflectionClass($className);
             $class->getMethod($getterName);
+
             return '';
-        } catch(\ReflectionException $exception) {
+        } catch (\ReflectionException $exception) {
             return <<<EOT
     /**
      * @return $type
@@ -232,15 +243,17 @@ EOT;
      * @param $type
      * @return string
      */
-    protected function generatePropertySetter($className,$fieldName,$type) {
+    protected function generatePropertySetter($className, $fieldName, $type)
+    {
         $setterName = 'set'.$this->underscoreToCamelcase($fieldName, true);
-        $typeHinting = (('mixed'===$type) ? '' : $type.' ');
+        $typeHinting = (('mixed' === $type) ? '' : $type.' ');
 
         try {
             $class = new  \ReflectionClass($className);
             $class->getMethod($setterName);
+
             return '';
-        } catch(\ReflectionException $exception) {
+        } catch (\ReflectionException $exception) {
             return <<<EOT
     /**
      * @param $typeHinting\$$fieldName

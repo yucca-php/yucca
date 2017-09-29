@@ -12,6 +12,10 @@ namespace Yucca\Component\Selector\SourceFactory;
 use \Yucca\Component\Selector\Source\Memcache;
 use \Yucca\Component\ConnectionManager;
 
+/**
+ * Class MemcacheFactory
+ * @package Yucca\Component\Selector\SourceFactory
+ */
 class MemcacheFactory implements SelectorSourceFactoryInterface
 {
     /**
@@ -23,7 +27,8 @@ class MemcacheFactory implements SelectorSourceFactoryInterface
      * Constructor
      * @param \Yucca\Component\ConnectionManager $connectionManager
      */
-    public function __construct(ConnectionManager $connectionManager) {
+    public function __construct(ConnectionManager $connectionManager)
+    {
         $this->connectionManager = $connectionManager;
     }
 
@@ -31,7 +36,8 @@ class MemcacheFactory implements SelectorSourceFactoryInterface
      * Build source
      * @return \Yucca\Component\Selector\Source\Memcache
      */
-    public function getSource() {
+    public function getSource()
+    {
         $toReturn = new Memcache();
         $toReturn->setConnectionManager($this->connectionManager);
 

@@ -5,6 +5,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 
+/**
+ * Class YuccaDataCollector
+ * @package Yucca\Bundle\YuccaBundle\DataCollector
+ */
 class YuccaDataCollector extends DataCollector
 {
     private $logger;
@@ -19,8 +23,8 @@ class YuccaDataCollector extends DataCollector
     }
 
     /**
-     * @param Request $request
-     * @param Response $response
+     * @param Request         $request
+     * @param Response        $response
      * @param \Exception|null $exception
      */
     public function collect(Request $request, Response $response, \Exception $exception = null)
@@ -46,13 +50,14 @@ class YuccaDataCollector extends DataCollector
     public function getCallsCount()
     {
         $toReturn = 0;
-        foreach($this->data['yucca'] as $handler=>$actions) {
-            foreach($actions as $actionName=>$results) {
-                foreach($results as $result=>$events) {
+        foreach ($this->data['yucca'] as $handler => $actions) {
+            foreach ($actions as $actionName => $results) {
+                foreach ($results as $result => $events) {
                     $toReturn += count($events);
                 }
             }
         }
+
         return $toReturn;
     }
 
@@ -61,15 +66,15 @@ class YuccaDataCollector extends DataCollector
      * @param null $action
      * @return int
      */
-    public function getTotalDuration($handler=null, $action=null)
+    public function getTotalDuration($handler = null, $action = null)
     {
 
         $duration = 0;
-        foreach($this->data['yucca'] as $handlerName=>$actions) {
-            if(!isset($handler) || $handler == $handlerName) {
-                foreach($actions as $actionName=>$results) {
+        foreach ($this->data['yucca'] as $handlerName => $actions) {
+            if (!isset($handler) || $handler == $handlerName) {
+                foreach ($actions as $actionName => $results) {
                     if (!isset($action) || $action == $actionName) {
-                        foreach($results as $result=>$events) {
+                        foreach ($results as $result => $events) {
                             foreach ($events as $event) {
                                 $duration += $event['duration'];
                             }

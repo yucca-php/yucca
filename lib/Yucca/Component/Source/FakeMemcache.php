@@ -10,43 +10,63 @@
 namespace Yucca\Component\Source;
 
 use Yucca\Component\Source\Exception\NoDataException;
-use Yucca\Component\ConnectionManager;
-use Yucca\Component\Source\DataParser\DataParser;
 
+/**
+ * Class FakeMemcache
+ * @package Yucca\Component\Source
+ */
 class FakeMemcache extends SourceAbstract
 {
     /**
      * @param array $identifier
-     * @param bool $rawData
-     * @return array
-     * @throws Exception\NoDataException
+     * @param bool  $rawData
+     * @param mixed $shardingKey
+     *
+     * @throws NoDataException
      */
-    public function load(array $identifier, $rawData, $shardingKey) {
+    public function load(array $identifier, $rawData, $shardingKey)
+    {
         throw new NoDataException("No datas found in fake cache");
     }
 
     /**
      * @param array $identifier
-     * @return Memcache
+     * @param null  $shardingKey
+     *
+     * @return $this
      */
-    public function remove(array $identifier, $shardingKey=null) {
+    public function remove(array $identifier, $shardingKey = null)
+    {
         return $this;
     }
 
     /**
-     * @param $serializedCriterias
+     * @param mixed $serializedCriterias
      * @param array $options
      * @throws Exception\NoDataException
      */
-    public function loadIds($serializedCriterias, array $options=array()) {
+    public function loadIds($serializedCriterias, array $options = array())
+    {
         throw new NoDataException("No datas found in fake cache");
     }
 
-    public function save($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null) {
-
+    /**
+     * @param array $datas
+     * @param array $identifier
+     * @param null  $shardingKey
+     * @param null  $affectedRows
+     */
+    public function save($datas, array $identifier = array(), $shardingKey = null, &$affectedRows = null)
+    {
     }
 
-    public function saveAfterLoading($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null) {
-
+    /**
+     * @param array $datas
+     * @param array $identifier
+     * @param null  $shardingKey
+     * @param null  $affectedRows
+     */
+    public function saveAfterLoading($datas, array $identifier = array(), $shardingKey = null, &$affectedRows = null)
+    {
     }
 }

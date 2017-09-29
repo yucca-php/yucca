@@ -9,6 +9,11 @@
  */
 namespace Yucca\Component\Selector\Exception;
 
-class SphinxConnectionException extends SphinxException{
+/**
+ * Class SphinxConnectionException
+ * @package Yucca\Component\Selector\Exception
+ */
+class SphinxConnectionException extends SphinxException
+{
 
 }

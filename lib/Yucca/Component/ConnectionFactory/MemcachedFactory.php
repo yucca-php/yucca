@@ -9,23 +9,29 @@
  */
 namespace Yucca\Component\ConnectionFactory;
 
-
-class MemcachedFactory implements ConnectionFactoryInterface {
+/**
+ * Class MemcachedFactory
+ * @package Yucca\Component\ConnectionFactory
+ */
+class MemcachedFactory implements ConnectionFactoryInterface
+{
     /**
      * @param array $params
      * @return \Memcache
      */
-    public function getConnection(array $params) {
+    public function getConnection(array $params)
+    {
         $addServerParamsDefault = array(
             'host'=>null,
             'port'=>null,
         );
 
         $memcache = new \Memcached();
-        foreach($params['options']['servers'] as $server){
+        foreach ($params['options']['servers'] as $server) {
             $addServerParams = array_merge($addServerParamsDefault, $server);
             $memcache->addServer($addServerParams['host'], $addServerParams['port']);
         }
+
         return $memcache;
     }
 }

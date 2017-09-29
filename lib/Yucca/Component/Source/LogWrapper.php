@@ -1,10 +1,13 @@
 <?php
 namespace Yucca\Component\Source;
 
-
 use Symfony\Component\Stopwatch\Stopwatch;
 use Yucca\Bundle\YuccaBundle\DataCollector\Logger;
 
+/**
+ * Class LogWrapper
+ * @package Yucca\Component\Source
+ */
 class LogWrapper implements SourceInterface
 {
     protected $source;
@@ -23,21 +26,22 @@ class LogWrapper implements SourceInterface
     /**
      * LogWrapper constructor.
      * @param SourceInterface $source
-     * @param Stopwatch $stopWatch
-     * @param Logger $logger
-     * @param $sourceName
+     * @param Stopwatch       $stopWatch
+     * @param Logger          $logger
+     * @param string          $sourceName
      */
     public function __construct(SourceInterface $source, Stopwatch $stopWatch, Logger $logger, $sourceName)
     {
         $this->source = $source;
-        $this->sourceHandlerName = (new \ReflectionClass($source))->getShortName();;
+        $this->sourceHandlerName = (new \ReflectionClass($source))->getShortName();
+        ;
         $this->stopWatch = $stopWatch;
         $this->logger = $logger;
         $this->sourceName = $sourceName;
     }
 
     /**
-     * @param $field
+     * @param string $field
      * @return SourceInterface
      */
     public function canHandle($field)
@@ -46,7 +50,7 @@ class LogWrapper implements SourceInterface
     }
 
     /**
-     * @param $field
+     * @param string $field
      * @return mixed
      */
     public function isIdentifier($field)
@@ -56,8 +60,8 @@ class LogWrapper implements SourceInterface
 
     /**
      * @param array $identifier
-     * @param $rawData
-     * @param $shardingKey
+     * @param mixed $rawData
+     * @param mixed $shardingKey
      * @return mixed
      * @throws \Exception
      */
@@ -85,7 +89,7 @@ class LogWrapper implements SourceInterface
             );
 
             return $toReturn;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $event = $this->stopWatch->stop($eventName);
             $periodsCount = count($event->getPeriods());
             $this->logger->addCall(
@@ -106,10 +110,10 @@ class LogWrapper implements SourceInterface
     }
 
     /**
-     * @param $datas
+     * @param mixed $datas
      * @param array $identifier
-     * @param null $shardingKey
-     * @param null $affectedRows
+     * @param null  $shardingKey
+     * @param null  $affectedRows
      * @return mixed
      * @throws \Exception
      */
@@ -138,7 +142,7 @@ class LogWrapper implements SourceInterface
             );
 
             return $toReturn;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $event = $this->stopWatch->stop($eventName);
             $periodsCount = count($event->getPeriods());
             $this->logger->addCall(
@@ -160,10 +164,10 @@ class LogWrapper implements SourceInterface
     }
 
     /**
-     * @param $datas
+     * @param mixed $datas
      * @param array $identifier
-     * @param null $shardingKey
-     * @param null $affectedRows
+     * @param null  $shardingKey
+     * @param null  $affectedRows
      * @return mixed
      * @throws \Exception
      */
@@ -192,7 +196,7 @@ class LogWrapper implements SourceInterface
             );
 
             return $toReturn;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $event = $this->stopWatch->stop($eventName);
             $periodsCount = count($event->getPeriods());
             $this->logger->addCall(
@@ -215,7 +219,7 @@ class LogWrapper implements SourceInterface
 
     /**
      * @param array $identifier
-     * @param $shardingKey
+     * @param mixed $shardingKey
      * @return mixed
      * @throws \Exception
      */
@@ -242,7 +246,7 @@ class LogWrapper implements SourceInterface
             );
 
             return $toReturn;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $event = $this->stopWatch->stop($eventName);
             $periodsCount = count($event->getPeriods());
             $this->logger->addCall(

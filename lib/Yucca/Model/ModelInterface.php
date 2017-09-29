@@ -6,7 +6,15 @@ use Yucca\Component\MappingManager;
 use Yucca\Component\EntityManager;
 use Yucca\Component\SelectorManager;
 
-interface ModelInterface {
+/**
+ * Interface ModelInterface
+ * @package Yucca\Model
+ */
+interface ModelInterface
+{
+    /**
+     * @return mixed
+     */
     public function getId();
 
     /**
@@ -29,23 +37,26 @@ interface ModelInterface {
     public function setYuccaSelectorManager(SelectorManager $selectorManager);
 
     /**
-     * @param MappingManager    $mappingManager
-     * @param SelectorManager   $selectorManager
-     * @param EntityManager     $entityManager
+     * @param MappingManager  $mappingManager
+     * @param SelectorManager $selectorManager
+     * @param EntityManager   $entityManager
      *
      * @return mixed
      */
     public function refresh(MappingManager $mappingManager, SelectorManager $selectorManager, EntityManager $entityManager);
 
     /**
-     * @param $identifier
-     * @return ModelInterface
+     * @param mixed $identifier
+     * @param null  $shardingKey
+     *
+     * @return mixed
      */
-    public function setYuccaIdentifier($identifier, $shardingKey=null);
+    public function setYuccaIdentifier($identifier, $shardingKey = null);
 
     /**
-     * @param $identifier
-     * @return ModelInterface
+     * @param mixed $identifier
+     *
+     * @return mixed
      */
     public function reset($identifier);
 

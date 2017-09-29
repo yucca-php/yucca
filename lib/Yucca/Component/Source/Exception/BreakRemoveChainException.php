@@ -9,6 +9,11 @@
  */
 namespace Yucca\Component\Source\Exception;
 
-class BreakRemoveChainException extends \Exception {
+/**
+ * Class BreakRemoveChainException
+ * @package Yucca\Component\Source\Exception
+ */
+class BreakRemoveChainException extends \Exception
+{
 
 }

@@ -45,19 +45,18 @@ class ChoiceLoader implements ChoiceLoaderInterface
     /**
      * Creates a new entity choice list.
      *
-     * @param EntityManager             $manager           An EntityManager instance
-     * @param string                    $modelClassName   The model class name
-     * @param string                    $selectorClassName The selector class name
-     * @param string                    $labelPath         The property path used for the label
-     * @param Iterator                  $iterator          An optional query builder
-     * @param array                     $entities          An array of choices
-     * @param array                     $preferredEntities An array of preferred choices
-     * @param string                    $groupPath         A property path pointing to the property used
+     * @param EntityManager              $manager           An EntityManager instance
+     * @param string                     $modelClassName    The model class name
+     * @param string                     $selectorClassName The selector class name
+     * @param string                     $labelPath         The property path used for the label
+     * @param Iterator                   $iterator          An optional query builder
+     * @param array                      $preferredEntities An array of preferred choices
+     * @param string                     $groupPath         A property path pointing to the property used
      *                                                     to group the choices. Only allowed if
      *                                                     the choices are given as flat array.
-     * @param PropertyAccessorInterface $propertyAccessor The reflection graph for reading property paths.
+     * @param ChoiceListFactoryInterface $factory
      */
-    public function __construct(EntityManager $manager, $modelClassName, $selectorClassName, $labelPath = null, $iterator = null, array $preferredEntities = array(), $groupPath = null, ChoiceListFactoryInterface $factory)
+    public function __construct(EntityManager $manager, $modelClassName, $selectorClassName, $labelPath = null, $iterator = null, array $preferredEntities = array(), $groupPath = null, ChoiceListFactoryInterface $factory = null)
     {
         $this->entityManager = $manager;
         $this->modelClassName = $modelClassName;
@@ -72,9 +71,9 @@ class ChoiceLoader implements ChoiceLoaderInterface
      */
     public function loadChoiceList($value = null)
     {
-        if(is_null($value)) {
-            $value = function($choice){
-                if($choice instanceof \Yucca\Model\ModelInterface) {
+        if (is_null($value)) {
+            $value = function ($choice) {
+                if ($choice instanceof \Yucca\Model\ModelInterface) {
                     return $choice->getId();
                 } else {
                     return (string) $choice;
@@ -87,7 +86,7 @@ class ChoiceLoader implements ChoiceLoaderInterface
         }
 
         if ($this->iterator) {
-            if(is_array($this->iterator)) {
+            if (is_array($this->iterator)) {
                 $entities = $this->iterator;
             } else {
                 $entities = $this->iterator->getArray();

@@ -10,9 +10,11 @@
 
 namespace Yucca\Test\Component;
 
-class SelectorManagerTest extends \PHPUnit_Framework_TestCase {
+class SelectorManagerTest extends \PHPUnit_Framework_TestCase
+{
 
-    public function test_getSelector(){
+    public function test_getSelector()
+    {
         $selectorManager = new \Yucca\Component\SelectorManager(array(
             'Yucca\Test\Concrete\Selector\Base'=>array(
                 'sources'=>array(
@@ -26,7 +28,7 @@ class SelectorManagerTest extends \PHPUnit_Framework_TestCase {
         try {
             $selectorManager->getSelector('Yucca\Test\Concrete\Selector\Fake');
             $this->fail('Should raise an exception');
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->assertContains('Yucca\Test\Concrete\Selector\Fake', $e->getMessage());
         }
 
@@ -34,13 +36,13 @@ class SelectorManagerTest extends \PHPUnit_Framework_TestCase {
         $databaseFactory = $this->getMockBuilder('\Yucca\Component\Selector\SourceFactory\DatabaseFactory')
             ->disableOriginalConstructor()
             ->getMock();
-        $selectorManager->addSelectorSourceFactory('database',$databaseFactory);
+        $selectorManager->addSelectorSourceFactory('database', $databaseFactory);
 
 
         try {
             $selectorManager->getSelector('Yucca\Test\Concrete\Selector\Base');
             $this->fail('Should raise an exception');
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->assertContains('memcache', $e->getMessage());
         }
 
@@ -48,12 +50,12 @@ class SelectorManagerTest extends \PHPUnit_Framework_TestCase {
         $memcacheFactory = $this->getMockBuilder('\Yucca\Component\Selector\SourceFactory\MemcacheFactory')
             ->disableOriginalConstructor()
             ->getMock();
-        $selectorManager->addSelectorSourceFactory('memcache',$memcacheFactory);
+        $selectorManager->addSelectorSourceFactory('memcache', $memcacheFactory);
 
         try {
             $selectorManager->getSelector('Yucca\Test\Concrete\Selector\Base');
             $this->fail('Should raise an exception');
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->assertContains('chain', $e->getMessage());
         }
 
@@ -61,12 +63,13 @@ class SelectorManagerTest extends \PHPUnit_Framework_TestCase {
         $chainFactory = $this->getMockBuilder('\Yucca\Component\Selector\SourceFactory\ChainFactory')
             ->disableOriginalConstructor()
             ->getMock();
-        $selectorManager->addSelectorSourceFactory('chain',$chainFactory);
+        $selectorManager->addSelectorSourceFactory('chain', $chainFactory);
 
-        $this->assertInstanceOf('Yucca\Component\Selector\SelectorAbstract',$selectorManager->getSelector('Yucca\Test\Concrete\Selector\Base'));
+        $this->assertInstanceOf('Yucca\Component\Selector\SelectorAbstract', $selectorManager->getSelector('Yucca\Test\Concrete\Selector\Base'));
     }
 
-    public function test_getSourceSingleHandler(){
+    public function test_getSourceSingleHandler()
+    {
         $selectorManager = new \Yucca\Component\SelectorManager(array(
             'Yucca\Test\Concrete\Selector\Base'=>array(
                 'sources'=>array(
@@ -78,9 +81,8 @@ class SelectorManagerTest extends \PHPUnit_Framework_TestCase {
         $databaseFactory = $this->getMockBuilder('\Yucca\Component\Selector\SourceFactory\DatabaseFactory')
             ->disableOriginalConstructor()
             ->getMock();
-        $selectorManager->addSelectorSourceFactory('database',$databaseFactory);
+        $selectorManager->addSelectorSourceFactory('database', $databaseFactory);
 
-        $this->assertInstanceOf('Yucca\Component\Selector\SelectorAbstract',$selectorManager->getSelector('Yucca\Test\Concrete\Selector\Base'));
+        $this->assertInstanceOf('Yucca\Component\Selector\SelectorAbstract', $selectorManager->getSelector('Yucca\Test\Concrete\Selector\Base'));
     }
-
 }

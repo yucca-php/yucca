@@ -15,8 +15,8 @@ use \Yucca\Component\Selector\Source\SelectorSourceInterface;
 use Yucca\Component\Selector\Exception\PointerException;
 
 /**
- * Selector Abstract
- * @author rjanot
+ * Class SelectorAbstract
+ * @package Yucca\Component\Selector
  */
 abstract class SelectorAbstract implements SelectorInterface
 {
@@ -61,38 +61,16 @@ abstract class SelectorAbstract implements SelectorInterface
     public function setSource(SelectorSourceInterface $source = null)
     {
         $this->source = $source;
-        return $this;
-    }
 
-    public function invalidateGlobal(){
-        $this->source->invalidateGlobal($this->options);
+        return $this;
     }
 
     /**
-     * prepare ids : there the criterias are fetched
-     * @throws Exception\NoDataException
-     * @return \Yucca\Component\Selector\SelectorAbstract
+     *
      */
-    protected function prepareQuery() {
-        if(false === $this->isQueryPrepared) {
-            $options = array(
-                SelectorSourceInterface::RESULT => SelectorSourceInterface::RESULT_IDENTIFIERS,
-                SelectorSourceInterface::LIMIT => $this->limit,
-                SelectorSourceInterface::OFFSET => $this->offset,
-                SelectorSourceInterface::ORDERBY => $this->orderBy,
-                SelectorSourceInterface::GROUPBY => $this->groupBy,
-            );
-            $this->setIdsArray(
-                $this->source->loadIds(
-                    $this->criterias,
-                    array_merge($this->options, $options)
-                ),
-                array_merge($this->options, $options)
-            );
-            $this->isQueryPrepared = true;
-        }
-
-        return $this;
+    public function invalidateGlobal()
+    {
+        $this->source->invalidateGlobal($this->options);
     }
 
     /**
@@ -105,32 +83,13 @@ abstract class SelectorAbstract implements SelectorInterface
     }
 
     /**
-     * prepare count : there the criterias are fetched
-     * @throws Exception\NoDataException
-     * @return \Yucca\Component\Selector\SelectorAbstract
-     */
-    protected function prepareCount() {
-        if(is_null($this->idsCount)) {
-            $options = array(
-                SelectorSourceInterface::RESULT => SelectorSourceInterface::RESULT_COUNT,
-                SelectorSourceInterface::GROUPBY => $this->groupBy,
-            );
-            $this->idsCount = $this->source->loadIds(
-                $this->criterias,
-                array_merge($this->options, $options)
-            );
-        }
-
-        return $this;
-    }
-
-    /**
      * Get content
      * @return array
      */
-    public function getIds( )
+    public function getIds()
     {
         $this->prepareQuery(false);
+
         return $this->idsArray;
     }
 
@@ -141,6 +100,7 @@ abstract class SelectorAbstract implements SelectorInterface
     public function reset()
     {
         $this->criterias = array();
+
         return $this;
     }
 
@@ -151,6 +111,7 @@ abstract class SelectorAbstract implements SelectorInterface
     public function count()
     {
         $this->prepareCount(true);
+
         return $this->idsCount;
     }
 
@@ -163,12 +124,9 @@ abstract class SelectorAbstract implements SelectorInterface
     {
         $this->prepareQuery();
 
-        if( false !== current($this->idsArray) )
-        {
+        if (false !== current($this->idsArray)) {
             return current($this->idsArray);
-        }
-        else
-        {
+        } else {
             throw new PointerException('Can\'t retrieve the current element');
         }
     }
@@ -189,6 +147,7 @@ abstract class SelectorAbstract implements SelectorInterface
     public function key()
     {
         $this->prepareQuery();
+
         return key($this->idsArray);
     }
 
@@ -217,27 +176,46 @@ abstract class SelectorAbstract implements SelectorInterface
     public function valid()
     {
         $this->prepareQuery();
+
         return ( false !== current($this->idsArray) );
     }
 
+    /**
+     * @param mixed $value
+     *
+     * @return $this
+     */
     public function orderBy($value)
     {
         $this->orderBy = $value;
+
         return $this;
     }
 
+    /**
+     * @param mixed $value
+     *
+     * @return $this
+     */
     public function offset($value)
     {
         $this->offset = $value;
+
         return $this;
     }
 
+    /**
+     * @param mixed $value
+     *
+     * @return $this
+     */
     public function limit($value)
     {
-        if(0===preg_match('/^([0-9]+)(,[0-9]+)?$/',$value)){
+        if (0 === preg_match('/^([0-9]+)(,[0-9]+)?$/', $value)) {
             throw new \InvalidArgumentException($value.' doesn\'t match limit pattern');
         }
         $this->limit = $value;
+
         return $this;
     }
 
@@ -249,5 +227,54 @@ abstract class SelectorAbstract implements SelectorInterface
         foreach ($criteria as $field => $value) {
             $this->criterias[$field][] = $value;
         }
+    }
+
+    /**
+     * prepare ids : there the criterias are fetched
+     * @throws Exception\NoDataException
+     * @return \Yucca\Component\Selector\SelectorAbstract
+     */
+    protected function prepareQuery()
+    {
+        if (false === $this->isQueryPrepared) {
+            $options = array(
+                SelectorSourceInterface::RESULT => SelectorSourceInterface::RESULT_IDENTIFIERS,
+                SelectorSourceInterface::LIMIT => $this->limit,
+                SelectorSourceInterface::OFFSET => $this->offset,
+                SelectorSourceInterface::ORDERBY => $this->orderBy,
+                SelectorSourceInterface::GROUPBY => $this->groupBy,
+            );
+            $this->setIdsArray(
+                $this->source->loadIds(
+                    $this->criterias,
+                    array_merge($this->options, $options)
+                ),
+                array_merge($this->options, $options)
+            );
+            $this->isQueryPrepared = true;
+        }
+
+        return $this;
+    }
+
+    /**
+     * prepare count : there the criterias are fetched
+     * @throws Exception\NoDataException
+     * @return \Yucca\Component\Selector\SelectorAbstract
+     */
+    protected function prepareCount()
+    {
+        if (is_null($this->idsCount)) {
+            $options = array(
+                SelectorSourceInterface::RESULT => SelectorSourceInterface::RESULT_COUNT,
+                SelectorSourceInterface::GROUPBY => $this->groupBy,
+            );
+            $this->idsCount = $this->source->loadIds(
+                $this->criterias,
+                array_merge($this->options, $options)
+            );
+        }
+
+        return $this;
     }
 }

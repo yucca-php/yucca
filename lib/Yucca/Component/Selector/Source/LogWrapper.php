@@ -1,11 +1,13 @@
 <?php
 namespace Yucca\Component\Selector\Source;
 
-
 use Symfony\Component\Stopwatch\Stopwatch;
 use Yucca\Bundle\YuccaBundle\DataCollector\Logger;
-use Yucca\Component\Selector\Source\SelectorSourceInterface;
 
+/**
+ * Class LogWrapper
+ * @package Yucca\Component\Selector\Source
+ */
 class LogWrapper implements SelectorSourceInterface
 {
     /**
@@ -25,13 +27,14 @@ class LogWrapper implements SelectorSourceInterface
     /**
      * LogWrapper constructor.
      * @param SelectorSourceInterface $source
-     * @param Stopwatch $stopWatch
-     * @param Logger $logger
+     * @param Stopwatch               $stopWatch
+     * @param Logger                  $logger
      */
     public function __construct(SelectorSourceInterface $source, Stopwatch $stopWatch, Logger $logger)
     {
         $this->source = $source;
-        $this->sourceHandlerName = (new \ReflectionClass($source))->getShortName();;
+        $this->sourceHandlerName = (new \ReflectionClass($source))->getShortName();
+        ;
         $this->stopWatch = $stopWatch;
         $this->logger = $logger;
     }
@@ -41,7 +44,7 @@ class LogWrapper implements SelectorSourceInterface
      * @param array $options
      * @return mixed
      */
-    public function loadIds(array $criterias, array $options=array())
+    public function loadIds(array $criterias, array $options = array())
     {
         $eventName = 'loadIds.'.$this->sourceHandlerName;
         $this->stopWatch->start($eventName, 'propel');
@@ -63,7 +66,7 @@ class LogWrapper implements SelectorSourceInterface
             );
 
             return $toReturn;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $event = $this->stopWatch->stop($eventName);
             $periodsCount = count($event->getPeriods());
             $this->logger->addCall(
@@ -83,12 +86,12 @@ class LogWrapper implements SelectorSourceInterface
     }
 
     /**
-     * @param $ids
+     * @param array $ids
      * @param array $criterias
      * @param array $options
      * @return mixed
      */
-    public function saveIds($ids, array $criterias, array $options=array())
+    public function saveIds($ids, array $criterias, array $options = array())
     {
         $eventName = 'saveIds.'.$this->sourceHandlerName;
         $this->stopWatch->start($eventName, 'propel');
@@ -111,7 +114,7 @@ class LogWrapper implements SelectorSourceInterface
             );
 
             return $toReturn;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $event = $this->stopWatch->stop($eventName);
             $periodsCount = count($event->getPeriods());
             $this->logger->addCall(
@@ -155,7 +158,7 @@ class LogWrapper implements SelectorSourceInterface
             );
 
             return $toReturn;
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $event = $this->stopWatch->stop($eventName);
             $periodsCount = count($event->getPeriods());
             $this->logger->addCall(
@@ -179,11 +182,11 @@ class LogWrapper implements SelectorSourceInterface
     protected function filterOptions($options)
     {
         $toReturn=array();
-        foreach($options as $k=>$v) {
-            try{
+        foreach ($options as $k => $v) {
+            try {
                 serialize($v);
                 $toReturn[$k] = $v;
-            } catch(\Throwable $error) {
+            } catch (\Throwable $error) {
                 //Nothing to do
             }
         }

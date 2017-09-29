@@ -13,7 +13,12 @@ use Yucca\Component\EntityManager;
 use Yucca\Component\MappingManager;
 use Yucca\Component\SelectorManager;
 
-abstract class ModelAbstract implements ModelInterface{
+/**
+ * Class ModelAbstract
+ * @package Yucca\Model
+ */
+abstract class ModelAbstract implements ModelInterface
+{
     protected $yuccaInitialized = array();
     protected $yuccaProperties = array();
 
@@ -41,7 +46,8 @@ abstract class ModelAbstract implements ModelInterface{
      * @param \Yucca\Component\MappingManager $mappingManager
      * @return ModelAbstract
      */
-    public function setYuccaMappingManager(MappingManager $mappingManager) {
+    public function setYuccaMappingManager(MappingManager $mappingManager)
+    {
         $this->yuccaMappingManager = $mappingManager;
 
         return $this;
@@ -51,7 +57,8 @@ abstract class ModelAbstract implements ModelInterface{
      * @param \Yucca\Component\EntityManager $entityManager
      * @return ModelAbstract
      */
-    public function setYuccaEntityManager(EntityManager $entityManager) {
+    public function setYuccaEntityManager(EntityManager $entityManager)
+    {
         $this->yuccaEntityManager = $entityManager;
 
         return $this;
@@ -61,16 +68,17 @@ abstract class ModelAbstract implements ModelInterface{
      * @param \Yucca\Component\SelectorManager $selectorManager
      * @return ModelAbstract
      */
-    public function setYuccaSelectorManager(SelectorManager $selectorManager) {
+    public function setYuccaSelectorManager(SelectorManager $selectorManager)
+    {
         $this->yuccaSelectorManager = $selectorManager;
 
         return $this;
     }
 
     /**
-     * @param MappingManager    $mappingManager
-     * @param SelectorManager   $selectorManager
-     * @param EntityManager     $entityManager
+     * @param MappingManager  $mappingManager
+     * @param SelectorManager $selectorManager
+     * @param EntityManager   $entityManager
      *
      * @return mixed
      */
@@ -90,10 +98,13 @@ abstract class ModelAbstract implements ModelInterface{
     }
 
     /**
-     * @param $identifier
-     * @return ModelAbstract
+     * @param mixed $identifier
+     * @param null  $shardingKey
+     *
+     * @return $this
      */
-    public function setYuccaIdentifier($identifier, $shardingKey=null) {
+    public function setYuccaIdentifier($identifier, $shardingKey = null)
+    {
         $this->yuccaIdentifier = $identifier;
         $this->yuccaShardingKey = $shardingKey;
 
@@ -101,12 +112,14 @@ abstract class ModelAbstract implements ModelInterface{
     }
 
     /**
-     * @param $identifier
-     * @return ModelAbstract
+     * @param mixed $identifier
+     *
+     * @return $this
      */
-    public function reset($identifier) {
+    public function reset($identifier)
+    {
         $this->yuccaIdentifier = $identifier;
-        foreach($this->yuccaProperties as $propertyName) {
+        foreach ($this->yuccaProperties as $propertyName) {
             $this->$propertyName = null;
         }
         $this->yuccaInitialized = array();
@@ -115,50 +128,24 @@ abstract class ModelAbstract implements ModelInterface{
     }
 
     /**
-     * @param $properties
-     * @return ModelAbstract
-     */
-    protected function setYuccaProperties(array $properties) {
-        $this->yuccaProperties = $properties;
-
-        return $this;
-    }
-
-    /**
-     * Hydrate this model with information coming from the mapping manager
-     * @param $propertyName
-     * @return ModelAbstract
-     */
-    protected function hydrate($propertyName) {
-
-        if (isset($this->yuccaMappingManager) && (false === isset($this->yuccaInitialized[$propertyName])) && (false===empty($this->yuccaIdentifier))) {
-            $values = $this->yuccaMappingManager->getMapper(get_class($this))->load($this->yuccaIdentifier, $propertyName, $this->yuccaShardingKey);
-            foreach($values as $property=>$value) {
-                $this->$property = $value;
-                $this->yuccaInitialized[$property] = true;
-            }
-        }
-        $this->yuccaInitialized[$propertyName] = true;
-
-        return $this;
-    }
-
-    /**
+     * @return $this
      * @throws \Yucca\Component\Source\Exception\NoDataException
      */
-    public function ensureExist(){
-        if(empty($this->yuccaIdentifier)){
+    public function ensureExist()
+    {
+        if (empty($this->yuccaIdentifier)) {
             throw new \Yucca\Component\Source\Exception\NoDataException(get_class($this).' doesn\'t seems to be saved in database');
         }
         try {
-            foreach($this->yuccaProperties as $propertyName) {
-                if(false === isset($this->yuccaInitialized[$propertyName])) {
+            foreach ($this->yuccaProperties as $propertyName) {
+                if (false === isset($this->yuccaInitialized[$propertyName])) {
                     $this->hydrate($propertyName);
                 }
             }
-        } catch(\Yucca\Component\Source\Exception\NoDataException $exception){
-            throw new \Yucca\Component\Source\Exception\NoDataException(get_class($this).' doesn\'t seems to exist with identifiers : '.var_export($this->yuccaIdentifier,true));
+        } catch (\Yucca\Component\Source\Exception\NoDataException $exception) {
+            throw new \Yucca\Component\Source\Exception\NoDataException(get_class($this).' doesn\'t seems to exist with identifiers : '.var_export($this->yuccaIdentifier, true));
         }
+
         return $this;
     }
 
@@ -166,22 +153,23 @@ abstract class ModelAbstract implements ModelInterface{
      * @return ModelAbstract
      * @throws \Exception
      */
-    public function save(){
+    public function save()
+    {
         // Check that we have a mapping
-        if(false === isset($this->yuccaMappingManager)){
+        if (false === isset($this->yuccaMappingManager)) {
             throw new \Exception("Mapping manager isn't set");
         }
 
         //load values
-        foreach($this->yuccaProperties as $propertyName) {
-            if(false === isset($this->yuccaInitialized[$propertyName])) {
+        foreach ($this->yuccaProperties as $propertyName) {
+            if (false === isset($this->yuccaInitialized[$propertyName])) {
                 $this->hydrate($propertyName);
             }
         }
 
         //Create value list to save
         $toSave = array();
-        foreach($this->yuccaProperties as $propertyName) {
+        foreach ($this->yuccaProperties as $propertyName) {
             $toSave[$propertyName] = $this->$propertyName;
         }
 
@@ -189,7 +177,7 @@ abstract class ModelAbstract implements ModelInterface{
         $this->yuccaIdentifier = $this->yuccaMappingManager->getMapper(get_class($this))->save($this->yuccaIdentifier, $toSave, $this->yuccaShardingKey);
 
         //Set identifier to properties
-        foreach($this->yuccaIdentifier as $property=>$value) {
+        foreach ($this->yuccaIdentifier as $property => $value) {
             $this->$property = $value;
             $this->yuccaInitialized[$property] = true;
         }
@@ -197,9 +185,14 @@ abstract class ModelAbstract implements ModelInterface{
         return $this;
     }
 
-    public function remove(){
+    /**
+     * @return $this
+     * @throws \Exception
+     */
+    public function remove()
+    {
         // Check that we have a mapping
-        if(false === isset($this->yuccaMappingManager)){
+        if (false === isset($this->yuccaMappingManager)) {
             throw new \Exception("Mapping manager isn't set");
         }
 
@@ -220,5 +213,36 @@ abstract class ModelAbstract implements ModelInterface{
             array('yuccaInitialized', 'yuccaProperties', 'yuccaIdentifier', 'yuccaShardingKey'),
             $this->yuccaProperties
         );
+    }
+
+    /**
+     * @param $properties
+     * @return ModelAbstract
+     */
+    protected function setYuccaProperties(array $properties)
+    {
+        $this->yuccaProperties = $properties;
+
+        return $this;
+    }
+
+    /**
+     * Hydrate this model with information coming from the mapping manager
+     * @param $propertyName
+     * @return ModelAbstract
+     */
+    protected function hydrate($propertyName)
+    {
+
+        if (isset($this->yuccaMappingManager) && (false === isset($this->yuccaInitialized[$propertyName])) && (false === empty($this->yuccaIdentifier))) {
+            $values = $this->yuccaMappingManager->getMapper(get_class($this))->load($this->yuccaIdentifier, $propertyName, $this->yuccaShardingKey);
+            foreach ($values as $property => $value) {
+                $this->$property = $value;
+                $this->yuccaInitialized[$property] = true;
+            }
+        }
+        $this->yuccaInitialized[$propertyName] = true;
+
+        return $this;
     }
 }

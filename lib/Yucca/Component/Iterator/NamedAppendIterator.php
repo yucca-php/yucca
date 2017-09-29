@@ -9,15 +9,29 @@
  */
 namespace Yucca\Component\Iterator;
 
-class NamedAppendIterator extends \AppendIterator {
+/**
+ * Class NamedAppendIterator
+ * @package Yucca\Component\Iterator
+ */
+class NamedAppendIterator extends \AppendIterator
+{
     protected $names = array();
 
-    public function append (\Iterator $iterator, $name='') {
+    /**
+     * @param \Iterator $iterator
+     * @param string    $name
+     */
+    public function append(\Iterator $iterator, $name = '')
+    {
         parent::append($iterator);
         $this->names[] = $name;
     }
 
-    public function name() {
+    /**
+     * @return mixed
+     */
+    public function name()
+    {
         return $this->names[$this->getIteratorIndex()];
     }
 }

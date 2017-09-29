@@ -14,7 +14,8 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * @return mixed
      */
-    public function test_construct(){
+    public function test_construct()
+    {
         //Correct constructor
         new \Yucca\Component\EntityManager();
     }
@@ -22,7 +23,8 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * @return mixed
      */
-    public function test_setYuccaMappingManager(){
+    public function test_setYuccaMappingManager()
+    {
         $mappingManagerMock = $this->getMockBuilder('\Yucca\Component\MappingManager')
             ->disableOriginalConstructor()
             ->getMock();
@@ -35,7 +37,8 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * @return mixed
      */
-    public function test_setYuccaSelectorManager(){
+    public function test_setYuccaSelectorManager()
+    {
         $selectorManagerMock = $this->getMockBuilder('\Yucca\Component\SelectorManager')
             ->disableOriginalConstructor()
             ->getMock();
@@ -48,7 +51,8 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * @return mixed
      */
-    public function test_setYuccaEntityManager(){
+    public function test_setYuccaEntityManager()
+    {
         $entityManagerMock = $this->getMockBuilder('\Yucca\Component\EntityManager')
             ->disableOriginalConstructor()
             ->getMock();
@@ -61,7 +65,8 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
     /**
      * @return mixed
      */
-    public function test_setYuccaIdentifier(){
+    public function test_setYuccaIdentifier()
+    {
         $yuccaIdentifier = 3;
         $model = new \Yucca\Test\Concrete\Model\Base();
         $return = $model->setYuccaIdentifier($yuccaIdentifier);
@@ -69,7 +74,8 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($yuccaIdentifier, $return->getYuccaIdentifier());
     }
 
-    public function test_reset() {
+    public function test_reset()
+    {
         $model = new \Yucca\Test\Concrete\Model\Properties();
         $model->setFirst(1)
             ->setSecond(2)
@@ -94,13 +100,14 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(null, $model->getThird());
     }
 
-    public function test_save() {
+    public function test_save()
+    {
         $model = new \Yucca\Test\Concrete\Model\Properties();
 
         try {
             $model->save();
             $this->fail('Should raise an exception');
-        } catch(\Exception $exception){
+        } catch (\Exception $exception) {
             $this->assertContains('Mapping manager', $exception->getMessage());
         }
 
@@ -133,7 +140,8 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(array('id'=>1000), $model->getYuccaIdentifier());
     }
 
-    public function test_hydrate(){
+    public function test_hydrate()
+    {
         $model = new \Yucca\Test\Concrete\Model\Properties();
 
         //Assert nothing is done when no mapper set
@@ -174,13 +182,14 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
     /**
      *
      */
-    public function test_remove() {
+    public function test_remove()
+    {
         $model = new \Yucca\Test\Concrete\Model\Base();
         try {
             $model->remove();
             $this->fail('Should raise an exception');
-        } catch(\Exception $e) {
-            $this->assertContains("Mapping manager isn't set",$e->getMessage());
+        } catch (\Exception $e) {
+            $this->assertContains("Mapping manager isn't set", $e->getMessage());
         }
 
         //Create mapper and mapping manager

@@ -10,16 +10,24 @@
 namespace Yucca\Component\Selector\Source;
 
 use Yucca\Component\SchemaManager;
-use Yucca\Component\Selector\Exception\NoDataException;
 
-class Database implements SelectorSourceInterface{
+/**
+ * Class Database
+ * @package Yucca\Component\Selector\Source
+ */
+class Database implements SelectorSourceInterface
+{
 
     /**
      * @var \Yucca\Component\SchemaManager
      */
     protected $schemaManager;
 
-    public function setSchemaManager($schemaManager){
+    /**
+     * @param SchemaManager $schemaManager
+     */
+    public function setSchemaManager($schemaManager)
+    {
         $this->schemaManager = $schemaManager;
     }
 
@@ -30,7 +38,8 @@ class Database implements SelectorSourceInterface{
      * @throws \Yucca\Component\Selector\Exception\NoDataException
      * @return string
      */
-    public function loadIds(array $criterias, array $options = array()) {
+    public function loadIds(array $criterias, array $options = array())
+    {
         //Merge options
         $defaultOptions = array(
             SelectorSourceInterface::ID_FIELD => array('id'),
@@ -42,25 +51,25 @@ class Database implements SelectorSourceInterface{
         $options = array_merge($defaultOptions, $options);
 
         //Check options
-        if(empty($options[SelectorSourceInterface::TABLE])){
+        if (empty($options[SelectorSourceInterface::TABLE])) {
             throw new \Exception('Table must be set for selector source');
         }
-        if(empty($options[SelectorSourceInterface::ID_FIELD])){
+        if (empty($options[SelectorSourceInterface::ID_FIELD])) {
             throw new \Exception('Id Field must be set for selector source');
         }
 
         //fields
         if (self::RESULT_COUNT === $options[SelectorSourceInterface::RESULT]) {
             $securedFields = array();
-            foreach($options[SelectorSourceInterface::ID_FIELD] as $optionFieldName){
-                if('*' == $optionFieldName) {
+            foreach ($options[SelectorSourceInterface::ID_FIELD] as $optionFieldName) {
+                if ('*' == $optionFieldName) {
                     $securedFields[] = '*';
                 } else {
-                    $fullyQualifiedFieldName = explode(' as ',$optionFieldName);
+                    $fullyQualifiedFieldName = explode(' as ', $optionFieldName);
                     $securedFields[] = $fullyQualifiedFieldName[0];
                 }
             }
-            $fields = array("COUNT(".implode(',',$securedFields).")");
+            $fields = array("COUNT(".implode(',', $securedFields).")");
         } elseif (self::RESULT_IDENTIFIERS === $options[SelectorSourceInterface::RESULT]) {
             if (empty($options[SelectorSourceInterface::SHARDING_KEY_FIELD])) {
                 $fields = $options[SelectorSourceInterface::ID_FIELD];
@@ -81,20 +90,32 @@ class Database implements SelectorSourceInterface{
         );
 
         if (self::RESULT_COUNT === $options[SelectorSourceInterface::RESULT]) {
-            if(false === is_array($result) || false === is_array(current($result))) {
+            if (false === is_array($result) || false === is_array(current($result))) {
                 return 0;
             }
+
             return current(current($result));
         } else {
             return $result;
         }
     }
 
-    public function saveIds($ids, array $criterias, array $options=array()){
+    /**
+     * @param array $ids
+     * @param array $criterias
+     * @param array $options
+     *
+     * @throws \Exception
+     */
+    public function saveIds($ids, array $criterias, array $options = array())
+    {
         throw new \Exception("Database selector source can't save result");
     }
 
-    public function invalidateGlobal(array $options = array()){
-
+    /**
+     * @param array $options
+     */
+    public function invalidateGlobal(array $options = array())
+    {
     }
 }

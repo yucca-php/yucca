@@ -9,9 +9,12 @@
  */
 namespace Yucca\Component;
 
-use Yucca\Component\SourceManager;
-
-class MappingManager {
+/**
+ * Class MappingManager
+ * @package Yucca\Component
+ */
+class MappingManager
+{
 
     protected $mappersConfiguration = array();
 
@@ -22,25 +25,36 @@ class MappingManager {
      */
     protected $sourceManager;
 
-    public function __construct(array $mappersConfiguration){
+    /**
+     * MappingManager constructor.
+     *
+     * @param array $mappersConfiguration
+     */
+    public function __construct(array $mappersConfiguration)
+    {
         $this->mappersConfiguration = $mappersConfiguration;
     }
 
-    public function setSourceManager(SourceManager $sourceManager){
+    /**
+     * @param SourceManager $sourceManager
+     */
+    public function setSourceManager(SourceManager $sourceManager)
+    {
         $this->sourceManager = $sourceManager;
     }
 
     /**
-     * @param $className
+     * @param string $className
      * @return \Yucca\Component\Mapping\Mapper
      * @throws \RuntimeException
      */
-    public function getMapper($className) {
-        if( false === isset($this->mappersConfiguration[$className])) {
+    public function getMapper($className)
+    {
+        if (false === isset($this->mappersConfiguration[$className])) {
             throw new \RuntimeException("$className can't be handled by the Mapping Manager");
         }
 
-        if( false === isset($this->mappers[$className])){
+        if (false === isset($this->mappers[$className])) {
             $mapperClassName = isset($this->mappersConfiguration[$className]['mapper_class_name'])
                 ? $this->mappersConfiguration[$className]['mapper_class_name']
                 : 'Yucca\Component\Mapping\Mapper';

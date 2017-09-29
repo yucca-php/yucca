@@ -11,6 +11,10 @@ namespace Yucca\Component;
 
 use Yucca\Component\ConnectionFactory\ConnectionFactoryInterface;
 
+/**
+ * Class ConnectionManager
+ * @package Yucca\Component
+ */
 class ConnectionManager
 {
     protected $connectionsConfig;
@@ -22,45 +26,53 @@ class ConnectionManager
      *
      * @param array $connectionsConfig
      */
-    public function __construct(array $connectionsConfig) {
+    public function __construct(array $connectionsConfig)
+    {
         $this->connectionsConfig = $connectionsConfig;
     }
 
     /**
      * Add a connection factory to the pool
-     * @param string $connectionFactoryName
+     * @param string                                                        $connectionFactoryName
      * @param \Yucca\Component\ConnectionFactory\ConnectionFactoryInterface $connectionFactory
      * @return \Yucca\Component\ConnectionManager
      */
-    public function addConnectionFactory($connectionFactoryName, ConnectionFactoryInterface $connectionFactory) {
+    public function addConnectionFactory($connectionFactoryName, ConnectionFactoryInterface $connectionFactory)
+    {
         $this->connectionFactories[$connectionFactoryName] = $connectionFactory;
+
         return $this;
     }
 
     /**
      * Get connection
      * @param string $connectionName
-     * @param bool $forceFromMaster
+     * @param bool   $forceFromMaster
      * @return \Doctrine\DBAL\Connection
      */
-    public function getConnection($connectionName, $forceFromMaster=true) {
+    public function getConnection($connectionName, $forceFromMaster = true)
+    {
         /*if($forceFromMaster) {
             return $this->buildConnection($this->connectionsConfig[$connectionName]);
         }*/
         //FIXME : check forceFromMaster parameter
-        if(false === isset($this->connections[$connectionName])) {
-            if(false === isset($this->connectionsConfig[$connectionName])) {
+        if (false === isset($this->connections[$connectionName])) {
+            if (false === isset($this->connectionsConfig[$connectionName])) {
                 throw new \InvalidArgumentException("Connection \"$connectionName\" is not configured");
             }
             $this->connections[$connectionName] = $this->buildConnection($this->connectionsConfig[$connectionName]);
         }
+
         return $this->connections[$connectionName];
     }
 
     /**
+     * @param string $connectionName
      *
+     * @return mixed
      */
-    public function getConnectionConfig($connectionName) {
+    public function getConnectionConfig($connectionName)
+    {
         return $this->connectionsConfig[$connectionName];
     }
 
@@ -70,10 +82,12 @@ class ConnectionManager
      * @throws \InvalidArgumentException
      * @return mixed
      */
-    protected function buildConnection(array $connectionConfig) {
-        if(false === isset($connectionConfig['type'])) {
+    protected function buildConnection(array $connectionConfig)
+    {
+        if (false === isset($connectionConfig['type'])) {
             throw new \InvalidArgumentException("Connection is not well formed : missing key \"type\"");
         }
+
         return $this->getConnectionFactory($connectionConfig['type'])->getConnection($connectionConfig);
     }
 
@@ -83,8 +97,9 @@ class ConnectionManager
      * @throws \Exception
      * @return \Yucca\Component\ConnectionFactory\ConnectionFactoryInterface
      */
-    protected function getConnectionFactory($type) {
-        if(false === isset($this->connectionFactories[$type])) {
+    protected function getConnectionFactory($type)
+    {
+        if (false === isset($this->connectionFactories[$type])) {
             throw new \InvalidArgumentException("Missing connection factory \"$type\"");
         }
 

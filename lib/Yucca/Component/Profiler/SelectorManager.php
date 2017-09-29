@@ -14,16 +14,24 @@ use Yucca\Bundle\YuccaBundle\DataCollector\Logger;
 use Yucca\Component\Selector\Source\LogWrapper;
 use Yucca\Component\SelectorManager as BaseSelectorManager;
 
+/**
+ * Class SelectorManager
+ * @package Yucca\Component\Profiler
+ */
 class SelectorManager extends BaseSelectorManager
 {
     protected $stopWatch;
 
     protected $datacollectorLogger;
+
     /**
      * SelectorManager constructor.
-     * @param array $selectorSourceConfig
+     *
+     * @param array     $selectorSourceConfig
+     * @param Stopwatch $stopWatch
+     * @param Logger    $datacollectorLogger
      */
-    public function __construct(array $selectorSourceConfig, Stopwatch $stopWatch=null, Logger $datacollectorLogger)
+    public function __construct(array $selectorSourceConfig, Stopwatch $stopWatch = null, Logger $datacollectorLogger)
     {
         parent::__construct($selectorSourceConfig);
         $this->stopWatch = $stopWatch;
@@ -36,8 +44,9 @@ class SelectorManager extends BaseSelectorManager
      * @return \Yucca\Component\Selector\Source\SelectorSourceInterface
      * @throws \InvalidArgumentException
      */
-    protected function getSource($selectorSourceName){
-        if(false === isset($this->sources[$selectorSourceName])){
+    protected function getSource($selectorSourceName)
+    {
+        if (false === isset($this->sources[$selectorSourceName])) {
             $this->sources[$selectorSourceName] = new LogWrapper(
                 $this->getFactory($selectorSourceName)->getSource(),
                 $this->stopWatch,

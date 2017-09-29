@@ -9,11 +9,13 @@
  */
 namespace Yucca\Component\SourceFactory;
 
-use \Yucca\Component\Source\Memcached;
-use \Yucca\Component\ConnectionManager;
 use \Yucca\Component\Source\DataParser\DataParser;
 use Yucca\Component\Source\PhpArray;
 
+/**
+ * Class PhpArrayFactory
+ * @package Yucca\Component\SourceFactory
+ */
 class PhpArrayFactory implements SourceFactoryInterface
 {
     /**
@@ -24,17 +26,19 @@ class PhpArrayFactory implements SourceFactoryInterface
     /**
      * @param \Yucca\Component\Source\DataParser\DataParser $dataParser
      */
-    public function __construct(DataParser $dataParser) {
+    public function __construct(DataParser $dataParser)
+    {
         $this->dataParser = $dataParser;
     }
 
     /**
      * Build source
-     * @param $sourceName
-     * @param array $params
+     * @param string $sourceName
+     * @param array  $params
      * @return \Yucca\Component\Source\Memcache
      */
-    public function getSource($sourceName, array $params = array()) {
+    public function getSource($sourceName, array $params = array())
+    {
         $toReturn = new PhpArray($sourceName, $params);
         $toReturn->setDataParser($this->dataParser);
 

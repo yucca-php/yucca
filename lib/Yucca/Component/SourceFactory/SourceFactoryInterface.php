@@ -9,13 +9,18 @@
  */
 namespace Yucca\Component\SourceFactory;
 
-interface SourceFactoryInterface {
+/**
+ * Interface SourceFactoryInterface
+ * @package Yucca\Component\SourceFactory
+ */
+interface SourceFactoryInterface
+{
     /**
      * build factory
      * @abstract
-     * @param $sourceName
-     * @param array $params
+     * @param string $sourceName
+     * @param array  $params
      * @return mixed
      */
-    function getSource($sourceName, array $params=array());
+    public function getSource($sourceName, array $params = array());
 }

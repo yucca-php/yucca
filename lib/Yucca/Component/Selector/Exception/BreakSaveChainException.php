@@ -9,6 +9,11 @@
  */
 namespace Yucca\Component\Selector\Exception;
 
-class BreakSaveChainException extends \Exception {
+/**
+ * Class BreakSaveChainException
+ * @package Yucca\Component\Selector\Exception
+ */
+class BreakSaveChainException extends \Exception
+{
 
 }

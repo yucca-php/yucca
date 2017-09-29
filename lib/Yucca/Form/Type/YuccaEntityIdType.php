@@ -16,6 +16,10 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Yucca\Component\EntityManager;
 use Symfony\Component\Form\AbstractType;
 
+/**
+ * Class YuccaEntityIdType
+ * @package Yucca\Form\Type
+ */
 class YuccaEntityIdType extends AbstractType
 {
     /**
@@ -23,12 +27,19 @@ class YuccaEntityIdType extends AbstractType
      */
     protected $entityManager;
 
+    /**
+     * YuccaEntityIdType constructor.
+     *
+     * @param EntityManager $entityManager
+     */
     public function __construct(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
     }
 
-
+    /**
+     * @param OptionsResolver $resolver
+     */
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
@@ -36,6 +47,10 @@ class YuccaEntityIdType extends AbstractType
         ));
     }
 
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $entityManager = $this->entityManager;
@@ -44,15 +59,17 @@ class YuccaEntityIdType extends AbstractType
             ->addViewTransformer(
                 new CallbackTransformer(
                     function ($data) {
-                        if(empty($data)) {
+                        if (empty($data)) {
                             return null;
                         }
+
                         return $data->getId();
                     },
                     function ($data) use ($entityManager, $options) {
-                        if(empty($data)) {
+                        if (empty($data)) {
                             return null;
                         }
+
                         return $entityManager->load($options['model_class_name'], $data)->ensureExist();
                     }
                 ),
@@ -60,11 +77,18 @@ class YuccaEntityIdType extends AbstractType
             )
         ;
     }
+
+    /**
+     * @return string
+     */
     public function getBlockPrefix()
     {
         return 'yucca_entity_id';
     }
 
+    /**
+     * @return mixed
+     */
     public function getParent()
     {
         return TextType::class;

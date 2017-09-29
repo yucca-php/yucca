@@ -15,7 +15,12 @@ use Yucca\Component\Source\Exception\BreakSaveChainException;
 use Yucca\Component\Source\Exception\NoDataException;
 use Yucca\Component\Source\DataParser\DataParser;
 
-class DatabaseSingleRow extends SourceAbstract{
+/**
+ * Class DatabaseSingleRow
+ * @package Yucca\Component\Source
+ */
+class DatabaseSingleRow extends SourceAbstract
+{
 
     protected $tableName;
 
@@ -36,14 +41,15 @@ class DatabaseSingleRow extends SourceAbstract{
 
     /**
      * Constructor
-     * @param $sourceName
-     * @param array $configuration
+     * @param string $sourceName
+     * @param array  $configuration
      * @throws \InvalidArgumentException
      */
-    public function __construct($sourceName, array $configuration=array()) {
+    public function __construct($sourceName, array $configuration = array())
+    {
         parent::__construct($sourceName, $configuration);
 
-        if(false===isset($this->configuration['table_name'])){
+        if (false === isset($this->configuration['table_name'])) {
             throw new \InvalidArgumentException("Configuration array must contain a 'table_name' key");
         }
         $this->tableName = $this->configuration['table_name'];
@@ -54,8 +60,10 @@ class DatabaseSingleRow extends SourceAbstract{
      * @param \Yucca\Component\SchemaManager $schemaManager
      * @return \Yucca\Component\Source\DatabaseSingleRow
      */
-    public function setSchemaManager(SchemaManager $schemaManager){
+    public function setSchemaManager(SchemaManager $schemaManager)
+    {
         $this->schemaManager = $schemaManager;
+
         return $this;
     }
 
@@ -63,8 +71,10 @@ class DatabaseSingleRow extends SourceAbstract{
      * @param \Yucca\Component\ConnectionManager $connectionManager
      * @return \Yucca\Component\Source\DatabaseSingleRow
      */
-    public function setConnectionManager(ConnectionManager $connectionManager){
+    public function setConnectionManager(ConnectionManager $connectionManager)
+    {
         $this->connectionManager = $connectionManager;
+
         return $this;
     }
 
@@ -72,55 +82,68 @@ class DatabaseSingleRow extends SourceAbstract{
      * @param DataParser $dataParser
      * @return DatabaseSingleRow
      */
-    public function setDataParser(DataParser $dataParser){
+    public function setDataParser(DataParser $dataParser)
+    {
         $this->dataParser = $dataParser;
+
         return $this;
     }
 
     /**
-     * Load datas for specified identifier
      * @param array $identifier
-     * @param bool $rawData
-     * @throws Exception\NoDataException
-     * @return array
+     * @param bool  $rawData
+     * @param mixed $shardingKey
+     *
+     * @return array|mixed
+     * @throws NoDataException
+     * @throws \Exception
      */
-    public function load(array $identifier, $rawData, $shardingKey){
+    public function load(array $identifier, $rawData, $shardingKey)
+    {
         $datas = $this->schemaManager->fetchOne($this->tableName, $identifier, $shardingKey);
-        if(empty($datas) || 1 != count($datas)) {
-            if(count($datas)){
-                throw new NoDataException("Too much datas for $this->tableName with ids : ".var_export($identifier,true));
+        if (empty($datas) || 1 != count($datas)) {
+            if (count($datas)) {
+                throw new NoDataException("Too much datas for $this->tableName with ids : ".var_export($identifier, true));
             } else {
-                throw new NoDataException("No datas for $this->tableName with ids : ".var_export($identifier,true));
+                throw new NoDataException("No datas for $this->tableName with ids : ".var_export($identifier, true));
             }
         }
 
-        if($rawData) {
+        if ($rawData) {
             return current($datas);
         } else {
             return $this->dataParser->decode(current($datas), $this->configuration['fields']);
         }
-
     }
 
     /**
      * @param array $identifier
-     * @return DatabaseSingleRow
+     * @param null  $shardingKey
+     *
+     * @return $this
      */
-    public function remove(array $identifier, $shardingKey=null){
+    public function remove(array $identifier, $shardingKey = null)
+    {
         $this->schemaManager->remove($this->tableName, $identifier, $shardingKey);
 
         return $this;
     }
 
     /**
-     * Save datas
-     * @param $datas
+     * @param array $datas
      * @param array $identifier
-     * @param array $affectedRows
+     * @param null  $shardingKey
+     * @param null  $affectedRows
+     * @param bool  $replace
+     * @param bool  $rawData
+     *
+     * @return array
+     * @throws BreakSaveChainException
+     * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
-     * @return int
      */
-    public function save($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null, $replace=false, $rawData=false){
+    public function save($datas, array $identifier = array(), $shardingKey = null, &$affectedRows = null, $replace = false, $rawData = false)
+    {
         if ($this->breakChainOnSave) {
             throw new BreakSaveChainException('Source configured to break chain on save');
         }
@@ -133,18 +156,18 @@ class DatabaseSingleRow extends SourceAbstract{
 
         //find identifiers
         $identifierFieldName = null;
-        foreach($this->configuration['fields'] as $field=>$fieldProperties) {
-            if(isset($fieldProperties['type']) && 'identifier' == $fieldProperties['type'] && false === array_key_exists($field, $datas)) {
+        foreach ($this->configuration['fields'] as $field => $fieldProperties) {
+            if (isset($fieldProperties['type']) && 'identifier' == $fieldProperties['type'] && false === array_key_exists($field, $datas)) {
                 $identifierFieldName = $field;
-                if(array_key_exists($field, $datas) && is_null($datas[$field])) {
+                if (array_key_exists($field, $datas) && is_null($datas[$field])) {
                     unset($datas[$field]);
                 }
             }
         }
 
         //Check if we have datas to update or insert
-        if(empty($datas)){
-            throw new \Exception("Trying to save empty datas for table {$this->tableName} and identifier ".var_export($identifier,true));
+        if (empty($datas)) {
+            throw new \Exception("Trying to save empty datas for table {$this->tableName} and identifier ".var_export($identifier, true));
         }
 
         //Get Connection and table name
@@ -152,25 +175,25 @@ class DatabaseSingleRow extends SourceAbstract{
             $this->schemaManager->getConnectionName($this->tableName, $shardingKey, true),
             true
         );
-        $shardingIdentifier = $this->schemaManager->getShardingIdentifier($this->tableName,$shardingKey);
+        $shardingIdentifier = $this->schemaManager->getShardingIdentifier($this->tableName, $shardingKey);
         $tableName = $this->tableName;
-        if(isset($shardingIdentifier)) {
+        if (isset($shardingIdentifier)) {
             $tableName = sprintf('%1$s_%2$s', $this->tableName, $shardingIdentifier);
         }
 
         //Parse datas
-        if(false === $rawData) {
+        if (false === $rawData) {
             $datas = $this->dataParser->encode($datas, $this->configuration['fields']);
         }
         //check if it's an insert or update
-        if($insert){
+        if ($insert) {
             //Insert
             $affectedRows = $connection->insert($tableName, $datas);
 
-            if(isset($identifierFieldName)) {
+            if (isset($identifierFieldName)) {
                 return array(
                     'sharding_key' => $shardingKey,
-                    $identifierFieldName=>$connection->lastInsertId()
+                    $identifierFieldName=>$connection->lastInsertId(),
                 );
             } else {
                 return $identifier;
@@ -182,15 +205,15 @@ class DatabaseSingleRow extends SourceAbstract{
                 $set = array();
                 $params = array();
                 foreach ($datas as $columnName => $value) {
-                    $set[$columnName] = $columnName . ' = ?';
+                    $set[$columnName] = $columnName.' = ?';
                     $params[$columnName] = $value;
                 }
                 foreach ($identifier as $columnName => $value) {
-                    $set[$columnName] = $columnName . ' = ?';
+                    $set[$columnName] = $columnName.' = ?';
                     $params[$columnName] = $value;
                 }
 
-                $sql  = 'REPLACE INTO `' . $tableName . '` SET ' . implode(', ', $set);
+                $sql  = 'REPLACE INTO `'.$tableName.'` SET '.implode(', ', $set);
 
                 $affectedRows = $connection->executeUpdate($sql, array_values($params));
 
@@ -205,13 +228,17 @@ class DatabaseSingleRow extends SourceAbstract{
     }
 
     /**
-     * Save datas
-     * @param $datas
+     * @param array $datas
      * @param array $identifier
-     * @param array $affectedRows
-     * @return int
+     * @param null  $shardingKey
+     * @param null  $affectedRows
+     *
+     * @return array
+     * @throws BreakSaveChainException
+     * @throws \Exception
      */
-    public function saveAfterLoading($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null){
+    public function saveAfterLoading($datas, array $identifier = array(), $shardingKey = null, &$affectedRows = null)
+    {
         return $this->save($datas, $identifier, $shardingKey, $affectedRows, true, true);
     }
 }

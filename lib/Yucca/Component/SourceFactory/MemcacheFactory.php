@@ -13,6 +13,10 @@ use \Yucca\Component\Source\Memcache;
 use \Yucca\Component\ConnectionManager;
 use \Yucca\Component\Source\DataParser\DataParser;
 
+/**
+ * Class MemcacheFactory
+ * @package Yucca\Component\SourceFactory
+ */
 class MemcacheFactory implements SourceFactoryInterface
 {
     /**
@@ -26,22 +30,24 @@ class MemcacheFactory implements SourceFactoryInterface
     protected $dataParser;
 
     /**
-     * @param \Yucca\Component\ConnectionManager $connectionManager
+     * @param \Yucca\Component\ConnectionManager            $connectionManager
      * @param \Yucca\Component\Source\DataParser\DataParser $dataParser
      */
-    public function __construct(ConnectionManager $connectionManager, DataParser $dataParser) {
+    public function __construct(ConnectionManager $connectionManager, DataParser $dataParser)
+    {
         $this->connectionManager = $connectionManager;
         $this->dataParser = $dataParser;
     }
 
     /**
      * Build source
-     * @param $sourceName
-     * @param array $params
+     * @param string $sourceName
+     * @param array  $params
      * @return \Yucca\Component\Source\Memcache
      */
-    public function getSource($sourceName, array $params = array()) {
-        if(false===isset($params['connection_name'])){
+    public function getSource($sourceName, array $params = array())
+    {
+        if (false === isset($params['connection_name'])) {
             throw new \InvalidArgumentException("Configuration array must contain a 'connection_name' key");
         }
         $connectionConfig = $this->connectionManager->getConnectionConfig($params['connection_name']);

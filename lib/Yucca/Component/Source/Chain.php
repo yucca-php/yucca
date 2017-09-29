@@ -12,9 +12,12 @@ namespace Yucca\Component\Source;
 use \Yucca\Component\Source\Exception\NoDataException;
 use \Yucca\Component\Source\Exception\BreakSaveChainException;
 use \Yucca\Component\Source\Exception\BreakRemoveChainException;
-use \Yucca\Component\ConnectionManager;
 use Yucca\Component\Source\DataParser\DataParser;
 
+/**
+ * Class Chain
+ * @package Yucca\Component\Source
+ */
 class Chain extends SourceAbstract
 {
     /**
@@ -27,22 +30,32 @@ class Chain extends SourceAbstract
      */
     protected $dataParser;
 
-    public function __construct($sourceName, array $configuration=array(), $sources=array()) {
+    /**
+     * Chain constructor.
+     *
+     * @param string $sourceName
+     * @param array  $configuration
+     * @param array  $sources
+     */
+    public function __construct($sourceName, array $configuration = array(), $sources = array())
+    {
         parent::__construct($sourceName, $configuration);
 
-        if(empty($sources)){
+        if (empty($sources)) {
             throw new \InvalidArgumentException("\"sources\" must be a non empty array");
         }
         $this->sources = $sources;
     }
 
     /**
-     * @param $fieldName
+     * @param string $fieldName
+     *
      * @return bool
      */
-    public function canHandle($fieldName){
-        foreach($this->sources as $source){
-            if($source->canHandle($fieldName)){
+    public function canHandle($fieldName)
+    {
+        foreach ($this->sources as $source) {
+            if ($source->canHandle($fieldName)) {
                 return true;
             }
         }
@@ -54,20 +67,27 @@ class Chain extends SourceAbstract
      * @param DataParser\DataParser $dataParser
      * @return DatabaseSingleRow
      */
-    public function setDataParser(DataParser $dataParser){
+    public function setDataParser(DataParser $dataParser)
+    {
         $this->dataParser = $dataParser;
+
         return $this;
     }
 
     /**
      * @param array $identifier
-     * @throws Exception\NoDataException
+     * @param bool  $rawData
+     * @param mixed $shardingKey
+     *
      * @return array
+     * @throws NoDataException
+     * @throws \Exception
      */
-    public function load(array $identifier, $rawData, $shardingKey){
+    public function load(array $identifier, $rawData, $shardingKey)
+    {
         $sourcesToFeed = array();
         $datas = null;
-        foreach($this->sources as $sourceKey=>$source){
+        foreach ($this->sources as $sourceKey => $source) {
             try {
                 $datas = $source->load($identifier, true, $shardingKey);
                 break;
@@ -76,54 +96,65 @@ class Chain extends SourceAbstract
             }
         }
 
-        if(isset($datas)){
-            foreach($sourcesToFeed as $sourceKey){
+        if (isset($datas)) {
+            foreach ($sourcesToFeed as $sourceKey) {
                 $this->sources[$sourceKey]->saveAfterLoading($datas, $identifier, $shardingKey);
             }
 
             return $this->dataParser->decode($datas, $this->configuration['fields']);
         }
 
-        throw new NoDataException("Chain can't load datas for source {$this->sourceName} with ids : ".var_export($identifier,true));
+        throw new NoDataException("Chain can't load datas for source {$this->sourceName} with ids : ".var_export($identifier, true));
     }
 
     /**
      * @param array $identifier
-     * @return array
+     * @param null  $shardingKey
      */
-    public function remove(array $identifier, $shardingKey=null){
+    public function remove(array $identifier, $shardingKey = null)
+    {
         try {
-            foreach($this->sources as $source){
+            foreach ($this->sources as $source) {
                 $source->remove($identifier, $shardingKey);
             }
-        } catch(BreakRemoveChainException $e) {
-
+        } catch (BreakRemoveChainException $e) {
         }
     }
 
-    public function saveAfterLoading($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null){
+    /**
+     * @param array $datas
+     * @param array $identifier
+     * @param null  $shardingKey
+     * @param null  $affectedRows
+     *
+     * @throws \Exception
+     */
+    public function saveAfterLoading($datas, array $identifier = array(), $shardingKey = null, &$affectedRows = null)
+    {
         throw new \Exception("Don't know what to do in chain {$this->sourceName}...");
     }
 
     /**
-     * Save datas
-     * @param $datas
+     * @param array $datas
      * @param array $identifier
-     * @param array $affectedRows
-     * @return int
+     * @param null  $shardingKey
+     * @param null  $affectedRows
+     *
+     * @return array
      */
-    public function save($datas, array $identifier=array(), $shardingKey=null, &$affectedRows=null){
+    public function save($datas, array $identifier = array(), $shardingKey = null, &$affectedRows = null)
+    {
         $toReturn = array();
         try {
-            foreach($this->sources as $source){
+            foreach ($this->sources as $source) {
                 $justCreated = $source->save($datas, $identifier, $shardingKey, $affectedRows);
-                if(is_array($justCreated)) {
+                if (is_array($justCreated)) {
                     $toReturn = array_merge($toReturn, $justCreated);
                 }
             }
-        } catch(BreakSaveChainException $e) {
-
+        } catch (BreakSaveChainException $e) {
         }
+
         return $toReturn;
     }
 }

@@ -14,7 +14,8 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @return mixed
      */
-    public function test_construct(){
+    public function test_construct()
+    {
         //Correct constructor
         new \Yucca\Component\EntityManager();
     }
@@ -22,7 +23,8 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @return mixed
      */
-    public function test_setMappingManager(){
+    public function test_setMappingManager()
+    {
         $mappingManagerMock = $this->getMockBuilder('\Yucca\Component\MappingManager')
                                     ->disableOriginalConstructor()
                                     ->getMock();
@@ -34,7 +36,8 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @return mixed
      */
-    public function test_setSelectorManager(){
+    public function test_setSelectorManager()
+    {
         $selectorManagerMock = $this->getMockBuilder('\Yucca\Component\SelectorManager')
                                     ->disableOriginalConstructor()
                                     ->getMock();
@@ -43,7 +46,8 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
         $entityManager->setSelectorManager($selectorManagerMock);
     }
 
-    public function test_load(){
+    public function test_load()
+    {
         //Initialize entity manager
         $selectorManagerMock = $this->getMockBuilder('\Yucca\Component\SelectorManager')
             ->disableOriginalConstructor()
@@ -59,21 +63,21 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
 
         //Load with wrong class
         try {
-            $entityManager->load('\DateTime',1);
+            $entityManager->load('\DateTime', 1);
             $this->fail('Should raise an exception');
-        } catch(\Exception $exception) {
+        } catch (\Exception $exception) {
             $this->assertContains('Entity class \DateTime must implement \Yucca\Model\ModelInterface.', $exception->getMessage());
         }
         //Load with class that does not exists
         try {
-            $entityManager->load('\FakeClass',1);
+            $entityManager->load('\FakeClass', 1);
             $this->fail('Should raise an exception');
-        } catch(\Exception $exception) {
+        } catch (\Exception $exception) {
             $this->assertContains('Entity class \FakeClass not found.', $exception->getMessage());
         }
 
         //Load without sharding key
-        $model = $entityManager->load('\Yucca\Test\Concrete\Model\Base',1);
+        $model = $entityManager->load('\Yucca\Test\Concrete\Model\Base', 1);
         $this->assertSame($selectorManagerMock, $model->getYuccaSelectorManager());
         $this->assertSame($mappingManagerMock, $model->getYuccaMappingManager());
         $this->assertSame(array('strange_identifier'=>1), $model->getYuccaIdentifier());
@@ -81,13 +85,14 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertInstanceOf('\Yucca\Test\Concrete\Model\Base', $model);
 
         //Load with sharding key
-        $model = $entityManager->load('\Yucca\Test\Concrete\Model\Base',2,4);
+        $model = $entityManager->load('\Yucca\Test\Concrete\Model\Base', 2, 4);
         $this->assertSame(array('strange_identifier'=>2), $model->getYuccaIdentifier());
         $this->assertSame(4, $model->getYuccaShardingKey());
         $this->assertInstanceOf('\Yucca\Test\Concrete\Model\Base', $model);
     }
 
-    public function test_save(){
+    public function test_save()
+    {
         //Initialize entity manager
         $selectorManagerMock = $this->getMockBuilder('\Yucca\Component\SelectorManager')
             ->disableOriginalConstructor()
@@ -101,7 +106,7 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
         $entityManager->setMappingManager($mappingManagerMock);
         $entityManager->setSelectorManager($selectorManagerMock);
 
-        $modelMock = $this->getMock('\Yucca\Model\ModelAbstract');
+        $modelMock = $this->createMock('\Yucca\Model\ModelAbstract');
         $modelMock->expects($this->once())
             ->method('save')
             ->will($this->returnValue(null));
@@ -119,7 +124,8 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($return, $entityManager);
     }
 
-    public function test_remove(){
+    public function test_remove()
+    {
         //Initialize entity manager
         $selectorManagerMock = $this->getMockBuilder('\Yucca\Component\SelectorManager')
             ->disableOriginalConstructor()
@@ -133,7 +139,7 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
         $entityManager->setMappingManager($mappingManagerMock);
         $entityManager->setSelectorManager($selectorManagerMock);
 
-        $modelMock = $this->getMock('\Yucca\Model\ModelAbstract');
+        $modelMock = $this->createMock('\Yucca\Model\ModelAbstract');
         $modelMock->expects($this->once())
             ->method('remove')
             ->will($this->returnValue(null));
@@ -151,12 +157,13 @@ class EntityManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($return, $entityManager);
     }
 
-    public function test_reset(){
+    public function test_reset()
+    {
         //Initialize entity manager
         $entityManager = new \Yucca\Component\EntityManager('strange_identifier');
 
         $newIdentifier = array('id'=>5);
-        $modelMock = $this->getMock('\Yucca\Model\ModelAbstract');
+        $modelMock = $this->createMock('\Yucca\Model\ModelAbstract');
         $modelMock->expects($this->once())
             ->method('reset')
             ->with($this->equalTo($newIdentifier))

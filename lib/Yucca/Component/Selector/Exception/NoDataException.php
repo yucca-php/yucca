@@ -9,6 +9,10 @@
  */
 namespace Yucca\Component\Selector\Exception;
 
+/**
+ * Class NoDataException
+ * @package Yucca\Component\Selector\Exception
+ */
 class NoDataException extends \Exception
 {
 

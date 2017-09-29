@@ -41,7 +41,8 @@ class Configuration implements ConfigurationInterface
         return $treeBuilder;
     }
 
-    protected function addSchema(ArrayNodeDefinition $rootNode) {
+    protected function addSchema(ArrayNodeDefinition $rootNode)
+    {
         $rootNode
             ->children()
                 ->arrayNode('schema')
@@ -64,7 +65,8 @@ class Configuration implements ConfigurationInterface
         ;
     }
 
-    protected function addConnections(ArrayNodeDefinition $rootNode) {
+    protected function addConnections(ArrayNodeDefinition $rootNode)
+    {
         $rootNode
             ->children()
                 ->arrayNode('connections')
@@ -85,7 +87,8 @@ class Configuration implements ConfigurationInterface
         ;
     }
 
-    protected function addSources(ArrayNodeDefinition $rootNode) {
+    protected function addSources(ArrayNodeDefinition $rootNode)
+    {
         $rootNode
             ->children()
                 ->arrayNode('sources')
@@ -97,7 +100,8 @@ class Configuration implements ConfigurationInterface
         ;
     }
 
-    protected function addSelectors(ArrayNodeDefinition $rootNode) {
+    protected function addSelectors(ArrayNodeDefinition $rootNode)
+    {
         $rootNode
             ->children()
                 ->arrayNode('selectors')
@@ -109,7 +113,8 @@ class Configuration implements ConfigurationInterface
         ;
     }
 
-    protected function addMapping(ArrayNodeDefinition $rootNode) {
+    protected function addMapping(ArrayNodeDefinition $rootNode)
+    {
         $rootNode
             ->children()
                 ->arrayNode('mapping')

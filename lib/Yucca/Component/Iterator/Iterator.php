@@ -47,9 +47,9 @@ class Iterator implements \Countable, \Iterator
 
     /**
      * Constructor
-     * @param \Yucca\Component\Selector\SelectorInterface   $selector
-     * @param \Yucca\Component\EntityManager                $entityManager
-     * @param string                                        $modelClassName
+     * @param \Yucca\Component\Selector\SelectorInterface $selector
+     * @param \Yucca\Component\EntityManager              $entityManager
+     * @param string                                      $modelClassName
      */
     public function __construct(SelectorInterface $selector, EntityManager $entityManager, $modelClassName)
     {
@@ -67,22 +67,6 @@ class Iterator implements \Countable, \Iterator
     public function wantNewModel($value = true)
     {
         $this->wantNewModel = ($value ? true : false);
-
-        return $this;
-    }
-
-    /**
-     * initialize the unique model
-     * @param mixed $id
-     * @param mixed $shardingKey
-     *
-     * @return self
-     */
-    protected function initializeModel($id, $shardingKey=null)
-    {
-        if (is_null($this->model)) {
-            $this->model = $this->entityManager->load($this->modelClassName, $id, $shardingKey);
-        }
 
         return $this;
     }
@@ -174,5 +158,21 @@ class Iterator implements \Countable, \Iterator
         $this->wantNewModel($oldWantNewModel);
 
         return $toReturn;
+    }
+
+    /**
+     * initialize the unique model
+     * @param mixed $id
+     * @param mixed $shardingKey
+     *
+     * @return self
+     */
+    protected function initializeModel($id, $shardingKey = null)
+    {
+        if (is_null($this->model)) {
+            $this->model = $this->entityManager->load($this->modelClassName, $id, $shardingKey);
+        }
+
+        return $this;
     }
 }

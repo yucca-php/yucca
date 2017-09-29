@@ -9,6 +9,10 @@
  */
 namespace Yucca\Component\Source;
 
+/**
+ * Class SourceAbstract
+ * @package Yucca\Component\Source
+ */
 abstract class SourceAbstract implements SourceInterface
 {
     protected $configuration;
@@ -16,27 +20,30 @@ abstract class SourceAbstract implements SourceInterface
 
     /**
      * Constructor
-     * @param $sourceName
-     * @param array $configuration
+     * @param string $sourceName
+     * @param array  $configuration
      */
-    public function __construct($sourceName, array $configuration=array()) {
+    public function __construct($sourceName, array $configuration = array())
+    {
         $this->configuration = $configuration;
         $this->sourceName = $sourceName;
     }
 
     /**
-     * @param $fieldName
+     * @param string $fieldName
      * @return bool
      */
-    public function canHandle($fieldName){
+    public function canHandle($fieldName)
+    {
         return array_key_exists($fieldName, $this->configuration['fields']);
     }
 
     /**
-     * @param $fieldName
+     * @param string $fieldName
      * @return bool
      */
-    public function isIdentifier($fieldName){
-        return isset($this->configuration['fields'][$fieldName]['type']) && ('identifier'===$this->configuration['fields'][$fieldName]['type']);
+    public function isIdentifier($fieldName)
+    {
+        return isset($this->configuration['fields'][$fieldName]['type']) && ('identifier' === $this->configuration['fields'][$fieldName]['type']);
     }
 }

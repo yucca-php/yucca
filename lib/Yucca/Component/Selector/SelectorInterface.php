@@ -9,7 +9,21 @@
  */
 namespace Yucca\Component\Selector;
 
-interface SelectorInterface extends \Countable, \Iterator{
-    function currentShardingKey();
-    function setCriteria(array $criteria);
+/**
+ * Interface SelectorInterface
+ * @package Yucca\Component\Selector
+ */
+interface SelectorInterface extends \Countable, \Iterator
+{
+    /**
+     * @return mixed
+     */
+    public function currentShardingKey();
+
+    /**
+     * @param array $criteria
+     *
+     * @return mixed
+     */
+    public function setCriteria(array $criteria);
 }

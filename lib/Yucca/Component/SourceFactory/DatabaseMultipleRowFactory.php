@@ -14,6 +14,10 @@ use \Yucca\Component\SchemaManager;
 use \Yucca\Component\ConnectionManager;
 use \Yucca\Component\Source\DataParser\DataParser;
 
+/**
+ * Class DatabaseMultipleRowFactory
+ * @package Yucca\Component\SourceFactory
+ */
 class DatabaseMultipleRowFactory implements SourceFactoryInterface
 {
     /**
@@ -32,11 +36,13 @@ class DatabaseMultipleRowFactory implements SourceFactoryInterface
     protected $dataParser;
 
     /**
-     * @param \Yucca\Component\SchemaManager $schemaManager
-     * @param \Yucca\Component\ConnectionManager $connectionManager
+     * @param \Yucca\Component\SchemaManager                $schemaManager
+     * @param \Yucca\Component\ConnectionManager            $connectionManager
      * @param \Yucca\Component\Source\DataParser\DataParser $dataParser
      */
-    public function __construct(SchemaManager $schemaManager, ConnectionManager $connectionManager, DataParser $dataParser) {;
+    public function __construct(SchemaManager $schemaManager, ConnectionManager $connectionManager, DataParser $dataParser)
+    {
+        ;
         $this->schemaManager = $schemaManager;
         $this->connectionManager = $connectionManager;
         $this->dataParser = $dataParser;
@@ -44,11 +50,12 @@ class DatabaseMultipleRowFactory implements SourceFactoryInterface
 
     /**
      * build source
-     * @param $sourceName
-     * @param array $params
+     * @param string $sourceName
+     * @param array  $params
      * @return \Yucca\Component\Source\DatabaseSingleRow
      */
-    public function getSource($sourceName, array $params = array()) {
+    public function getSource($sourceName, array $params = array())
+    {
         $toReturn = new DatabaseMultipleRow($sourceName, $params);
         $toReturn->setSchemaManager($this->schemaManager);
         $toReturn->setConnectionManager($this->connectionManager);

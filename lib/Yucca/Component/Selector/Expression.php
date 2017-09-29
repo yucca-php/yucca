@@ -10,6 +10,10 @@
 
 namespace Yucca\Component\Selector;
 
+/**
+ * Class Expression
+ * @package Yucca\Component\Selector
+ */
 class Expression
 {
     /**
@@ -26,20 +30,21 @@ class Expression
      * @param array $text
      * @param array $params
      */
-    public function __construct(array $text, array $params=array())
+    public function __construct(array $text, array $params = array())
     {
         $this->text = $text;
         $this->params = $params;
     }
 
     /**
-     * @param $handler
+     * @param string $handler
+     *
      * @return mixed
      * @throws \Exception
      */
     public function toString($handler)
     {
-        if(false === isset($this->text[$handler])){
+        if (false === isset($this->text[$handler])) {
             throw new \Exception('Missing handler '.$handler.' for expression : '.var_export($handler, true));
         }
 

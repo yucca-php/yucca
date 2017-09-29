@@ -11,6 +11,10 @@ namespace Yucca\Component\Selector\SourceFactory;
 
 use \Yucca\Component\Selector\Source\Chain;
 
+/**
+ * Class ChainFactory
+ * @package Yucca\Component\Selector\SourceFactory
+ */
 class ChainFactory implements SelectorSourceFactoryInterface
 {
     /**
@@ -18,7 +22,8 @@ class ChainFactory implements SelectorSourceFactoryInterface
      * @param array $sources
      * @return \Yucca\Component\Selector\Source\Chain
      */
-    public function getSource(array $sources=array()) {
+    public function getSource(array $sources = array())
+    {
         $toReturn = new Chain($sources);
 
         return $toReturn;

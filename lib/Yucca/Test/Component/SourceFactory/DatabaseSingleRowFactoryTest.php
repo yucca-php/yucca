@@ -11,7 +11,8 @@ namespace Yucca\Test\Component\SourceFactory;
 
 class DatabaseSingleRowFactoryTest extends \PHPUnit_Framework_TestCase
 {
-    public function test_getSource() {
+    public function test_getSource()
+    {
         //Test with properties
         $dataParserMock = $this->getMockBuilder('\Yucca\Component\Source\DataParser\DataParser')
             ->disableOriginalConstructor()
@@ -27,7 +28,7 @@ class DatabaseSingleRowFactoryTest extends \PHPUnit_Framework_TestCase
         try {
             $factory->getSource('sourceName', array());
             $this->fail('Should raise an exception');
-        } catch(\Exception $exception) {
+        } catch (\Exception $exception) {
             $this->assertContains('Configuration array must contain a \'table_name\' key', $exception->getMessage());
         }
 

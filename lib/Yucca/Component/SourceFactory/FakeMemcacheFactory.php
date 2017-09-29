@@ -10,19 +10,23 @@
 namespace Yucca\Component\SourceFactory;
 
 use \Yucca\Component\Source\FakeMemcache;
-use \Yucca\Component\ConnectionManager;
-use \Yucca\Component\Source\DataParser\DataParser;
 
+/**
+ * Class FakeMemcacheFactory
+ * @package Yucca\Component\SourceFactory
+ */
 class FakeMemcacheFactory implements SourceFactoryInterface
 {
     /**
      * Build source
-     * @param $sourceName
-     * @param array $params
+     * @param string $sourceName
+     * @param array  $params
      * @return \Yucca\Component\Source\Memcache
      */
-    public function getSource($sourceName, array $params = array()) {
+    public function getSource($sourceName, array $params = array())
+    {
         $toReturn = new FakeMemcache($sourceName, $params);
+
         return $toReturn;
     }
 }
