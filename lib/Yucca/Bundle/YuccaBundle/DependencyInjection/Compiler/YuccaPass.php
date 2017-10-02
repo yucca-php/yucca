@@ -63,5 +63,15 @@ class YuccaPass implements CompilerPassInterface
                 }
             }
         }
+
+        if ($container->hasDefinition('yucca.source.data_parser')) {
+            //parsers
+            $definition = $container->getDefinition('yucca.source.data_parser');
+            foreach ($container->findTaggedServiceIds('yucca.source.parser') as $id => $tags) {
+                foreach ($tags as $attributes) {
+                    $definition->addMethodCall('addParser', array($attributes['alias'], new Reference($id)));
+                }
+            }
+        }
     }
 }

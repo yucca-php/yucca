@@ -23,11 +23,25 @@ class DataParser
     protected $entityManager;
 
     /**
+     * @var ParserInterface[]
+     */
+    protected $additionalParsers;
+
+    /**
      * @param \Yucca\Component\EntityManager $entityManager
      */
     public function setEntityManager(EntityManager $entityManager)
     {
         $this->entityManager = $entityManager;
+    }
+
+    /**
+     * @param string          $type
+     * @param ParserInterface $parser
+     */
+    public function addParser($type, ParserInterface $parser)
+    {
+        $this->additionalParsers[$type] = $parser;
     }
 
     /**
@@ -95,8 +109,22 @@ class DataParser
                         }
                         break;
                     case 'scalar':
-                    default:
                         $toReturn[$dataKey] = $dataValue;
+                        break;
+                    default:
+                        if (isset($this->additionalParsers[$fieldsConfiguration[$dataKey]['type']])) {
+                            $toReturn = array_merge(
+                                $toReturn,
+                                $this->additionalParsers[$fieldsConfiguration[$dataKey]['type']]->decode(
+                                    $dataKey,
+                                    $dataValue,
+                                    $toReturn,
+                                    $fieldsConfiguration[$dataKey]
+                                )
+                            );
+                        } else {
+                            $toReturn[$dataKey] = $dataValue;
+                        }
                         break;
                 }
             } else {
@@ -202,8 +230,22 @@ class DataParser
                         }
                         break;
                     case 'scalar':
-                    default:
                         $toReturn[$dataKey] = $dataValue;
+                        break;
+                    default:
+                        if (isset($this->additionalParsers[$fieldsConfiguration[$dataKey]['type']])) {
+                            $toReturn = array_merge(
+                                $toReturn,
+                                $this->additionalParsers[$fieldsConfiguration[$dataKey]['type']]->encode(
+                                    $dataKey,
+                                    $dataValue,
+                                    $toReturn,
+                                    $fieldsConfiguration[$dataKey]
+                                )
+                            );
+                        } else {
+                            $toReturn[$dataKey] = $dataValue;
+                        }
                         break;
                 }
             } else {
