@@ -114,7 +114,11 @@ class ConnectionManagerTest extends \PHPUnit_Framework_TestCase
             'param3'=>3,
         );
 
-        $connectionMock = $this->createMock('\Memcache');
+        if (class_exists('Memcache')) {
+            $connectionMock = $this->createMock('\Memcache');
+        } else {
+            $connectionMock = $this->createMock('\Memcached');
+        }
         $connectionFactoryMock = $this->createMock('\Yucca\Component\ConnectionFactory\ConnectionFactoryInterface');
         $connectionFactoryMock->expects($this->once())
             ->method('getConnection')
