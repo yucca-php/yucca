@@ -118,6 +118,14 @@ class Mapper
             $identifier = array();
         }
 
+        //Check timestampable
+        if (array_key_exists('timestampable', $this->configuration)) {
+            if (!isset($propertyValues['createdAt'])) {
+                $propertyValues['createdAt'] = new \DateTime();
+            }
+            $propertyValues['updatedAt'] = new \DateTime();
+        }
+
         //First, create datas to save for each sources
         $datasBySource = array();
         foreach ($propertyValues as $propertyName => $value) {
