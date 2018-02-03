@@ -9,6 +9,7 @@
  */
 namespace Yucca\Model;
 
+use Wheeliz\Domain\Car\Entity\RentEntity;
 use Yucca\Component\EntityManager;
 use Yucca\Component\MappingManager;
 use Yucca\Component\SelectorManager;
@@ -172,14 +173,20 @@ abstract class ModelAbstract implements ModelInterface
         foreach ($this->yuccaProperties as $propertyName) {
             $toSave[$propertyName] = $this->$propertyName;
         }
-
         //Save
-        $this->yuccaIdentifier = $this->yuccaMappingManager->getMapper(get_class($this))->save($this->yuccaIdentifier, $toSave, $this->yuccaShardingKey);
+        $mapper = $this->yuccaMappingManager->getMapper(get_class($this));
+        $this->yuccaIdentifier = $mapper->save($this->yuccaIdentifier, $toSave, $this->yuccaShardingKey);
 
         //Set identifier to properties
         foreach ($this->yuccaIdentifier as $property => $value) {
             $this->$property = $value;
             $this->yuccaInitialized[$property] = true;
+        }
+
+        //Unset some properties dynamically set by DB
+        foreach ($mapper->getPropertiesToRefreshAfterSave() as $property) {
+            $this->$property = null;
+            unset($this->yuccaInitialized[$property]);
         }
 
         return $this;
@@ -237,8 +244,10 @@ abstract class ModelAbstract implements ModelInterface
         if (isset($this->yuccaMappingManager) && (false === isset($this->yuccaInitialized[$propertyName])) && (false === empty($this->yuccaIdentifier))) {
             $values = $this->yuccaMappingManager->getMapper(get_class($this))->load($this->yuccaIdentifier, $propertyName, $this->yuccaShardingKey);
             foreach ($values as $property => $value) {
-                $this->$property = $value;
-                $this->yuccaInitialized[$property] = true;
+                if (false === isset($this->yuccaInitialized[$property])) {
+                    $this->$property = $value;
+                    $this->yuccaInitialized[$property] = true;
+                }
             }
         }
         $this->yuccaInitialized[$propertyName] = true;

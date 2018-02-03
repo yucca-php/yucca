@@ -105,6 +105,19 @@ class Mapper
     }
 
     /**
+     * @return array
+     */
+    public function getPropertiesToRefreshAfterSave()
+    {
+        $toReturn = array();
+        if (array_key_exists('timestampable', $this->configuration)) {
+            $toReturn = array('createdAt', 'updatedAt');
+        }
+
+        return $toReturn;
+    }
+
+    /**
      * @param mixed $identifier
      * @param array $propertyValues
      * @param null  $shardingKey
