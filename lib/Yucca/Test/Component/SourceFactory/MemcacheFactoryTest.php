@@ -9,7 +9,9 @@
  */
 namespace Yucca\Test\Component\SourceFactory;
 
-class MemcacheFactoryTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class MemcacheFactoryTest extends TestCase
 {
     public function test_getSource()
     {

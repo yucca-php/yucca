@@ -10,24 +10,10 @@
 
 namespace Yucca\Test\Component;
 
-use Yucca\Component\Selector\Expression;
+use PHPUnit\Framework\TestCase;
 
-class SchemaManagerTest extends \PHPUnit_Framework_TestCase
+class SchemaManagerTest extends TestCase
 {
-    public function test_init()
-    {
-        $schemaManager = new \Yucca\Component\SchemaManager(array());
-        $schemaManager->setConnectionManager(
-            $this->getMockBuilder('Yucca\Component\ConnectionManager')
-                ->disableOriginalConstructor()
-                ->getMock()
-        );
-        $schemaManager->addShardingStrategy(
-            'fake',
-            $this->createMock('Yucca\Component\ShardingStrategy\ShardingStrategyInterface')
-        );
-    }
-
     public function test_getConnectionName()
     {
 

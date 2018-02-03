@@ -10,7 +10,9 @@
 
 namespace Yucca\Test\Component;
 
-class SelectorManagerTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class SelectorManagerTest extends TestCase
 {
 
     public function test_getSelector()

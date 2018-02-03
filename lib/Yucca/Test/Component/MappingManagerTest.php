@@ -9,7 +9,9 @@
  */
 namespace Yucca\Test\Component;
 
-class MappingManagerTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class MappingManagerTest extends TestCase
 {
     public function test_getMapper()
     {

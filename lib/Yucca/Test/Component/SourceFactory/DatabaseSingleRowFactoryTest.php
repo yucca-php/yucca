@@ -9,7 +9,9 @@
  */
 namespace Yucca\Test\Component\SourceFactory;
 
-class DatabaseSingleRowFactoryTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class DatabaseSingleRowFactoryTest extends TestCase
 {
     public function test_getSource()
     {

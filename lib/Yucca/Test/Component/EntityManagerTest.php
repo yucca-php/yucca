@@ -9,42 +9,10 @@
  */
 namespace Yucca\Test\Component;
 
-class EntityManagerTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class EntityManagerTest extends TestCase
 {
-    /**
-     * @return mixed
-     */
-    public function test_construct()
-    {
-        //Correct constructor
-        new \Yucca\Component\EntityManager();
-    }
-
-    /**
-     * @return mixed
-     */
-    public function test_setMappingManager()
-    {
-        $mappingManagerMock = $this->getMockBuilder('\Yucca\Component\MappingManager')
-                                    ->disableOriginalConstructor()
-                                    ->getMock();
-
-        $entityManager = new \Yucca\Component\EntityManager();
-        $entityManager->setMappingManager($mappingManagerMock);
-    }
-
-    /**
-     * @return mixed
-     */
-    public function test_setSelectorManager()
-    {
-        $selectorManagerMock = $this->getMockBuilder('\Yucca\Component\SelectorManager')
-                                    ->disableOriginalConstructor()
-                                    ->getMock();
-
-        $entityManager = new \Yucca\Component\EntityManager();
-        $entityManager->setSelectorManager($selectorManagerMock);
-    }
 
     public function test_load()
     {

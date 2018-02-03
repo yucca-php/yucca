@@ -10,7 +10,9 @@
 
 namespace Yucca\Test\Component;
 
-class SourceManagerTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class SourceManagerTest extends TestCase
 {
 
     public function test_getSource()

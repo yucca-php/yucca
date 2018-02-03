@@ -9,26 +9,39 @@
  */
 namespace Yucca\Test\Component;
 
-class ConnectionManagerTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class ConnectionManagerTest extends TestCase
 {
     /**
+     * @param $type
+     * @param $exceptionClass
+     *
      * @return mixed
+     * @dataProvider providertest_construct
      */
-    public function test_construct()
+    public function test_construct($type, $exceptionClass)
     {
-        //Loop on invalid types
-        foreach (array(1,'1',true,null) as $type) {
-            try {
-                new \Yucca\Component\ConnectionManager($type);
-            } catch (\TypeError $exception) {
-                continue;
-            }
-
-            $this->fail('First argument of \Yucca\Component\ConnectionManager must be an array');
+        if ($exceptionClass) {
+            $this->expectException($exceptionClass);
         }
 
-        //Correct constructor
-        new \Yucca\Component\ConnectionManager(array());
+        new \Yucca\Component\ConnectionManager($type);
+
+    }
+
+    /**
+     * @return array
+     */
+    public function providertest_construct()
+    {
+        return [
+            //Loop on invalid types
+            [1, \TypeError::class],
+            ['1', \TypeError::class],
+            [true, \TypeError::class],
+            [null, \TypeError::class],
+        ];
     }
 
     /**

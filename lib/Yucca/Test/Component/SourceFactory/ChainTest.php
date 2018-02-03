@@ -9,7 +9,9 @@
  */
 namespace Yucca\Test\Component\SourceFactory;
 
-class ChainFactoryTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class ChainFactoryTest extends TestCase
 {
     public function test_getSource()
     {

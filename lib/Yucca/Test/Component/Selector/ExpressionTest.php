@@ -10,9 +10,10 @@
 
 namespace Yucca\Test\Component\Selector;
 
+use PHPUnit\Framework\TestCase;
 use Yucca\Component\Selector\Expression;
 
-class ExpressionTest extends \PHPUnit_Framework_TestCase
+class ExpressionTest extends TestCase
 {
 
     public function test_toString()

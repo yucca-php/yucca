@@ -9,17 +9,10 @@
  */
 namespace Yucca\Test\Model;
 
-class ModelAbstractTest extends \PHPUnit_Framework_TestCase
-{
-    /**
-     * @return mixed
-     */
-    public function test_construct()
-    {
-        //Correct constructor
-        new \Yucca\Component\EntityManager();
-    }
+use PHPUnit\Framework\TestCase;
 
+class ModelAbstractTest extends TestCase
+{
     /**
      * @return mixed
      */
@@ -121,7 +114,10 @@ class ModelAbstractTest extends \PHPUnit_Framework_TestCase
         $mapperMock->expects($this->once())
                     ->method('save')
                     ->with($this->equalTo(null), $this->equalTo(array('id'=>null,'first'=>1,'second'=>2,'third'=>3)))
-                    ->will($this->returnValue(array('id'=>1000)));
+                    ->willReturn(array('id'=>1000));
+        $mapperMock->expects($this->once())
+                    ->method('getPropertiesToRefreshAfterSave')
+                    ->willReturn(array());
 
         $mappingManagerMock = $this->getMockBuilder('\Yucca\Component\MappingManager')
             ->disableOriginalConstructor()
