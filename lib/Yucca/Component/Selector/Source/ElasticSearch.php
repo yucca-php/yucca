@@ -110,7 +110,7 @@ class ElasticSearch implements SelectorSourceInterface
 
         if (false === empty($options[self::FACETS])) {
             foreach ($options[self::FACETS] as $facet) {
-                $query->addFacet($facet);
+                $query->addAggregation($facet);
             }
         }
 
