@@ -10,7 +10,6 @@
 namespace Yucca\Component\Source;
 
 use Yucca\Component\Source\Exception\NoDataException;
-use Yucca\Component\ConnectionManager;
 use Yucca\Component\Source\DataParser\DataParser;
 
 /**
@@ -20,6 +19,7 @@ use Yucca\Component\Source\DataParser\DataParser;
 class PhpArray extends SourceAbstract
 {
     static protected $datas;
+    static protected $enabled = true;
 
     /**
      * @var \Yucca\Component\Source\DataParser\DataParser
@@ -36,6 +36,22 @@ class PhpArray extends SourceAbstract
     public function __construct($sourceName, array $configuration = array(), $prefix = '')
     {
         parent::__construct($sourceName, $configuration);
+    }
+
+    /**
+     *
+     */
+    public static function enablePhpArrayCache()
+    {
+        self::$enabled = true;
+    }
+
+    /**
+     *
+     */
+    public static function disablePhpArrayCache()
+    {
+        self::$enabled = false;
     }
 
     /**
@@ -61,6 +77,9 @@ class PhpArray extends SourceAbstract
      */
     public function load(array $identifier, $rawData, $shardingKey)
     {
+        if (!self::$enabled) {
+            throw new NoDataException(__CLASS__." is disabled");
+        }
         $cacheKey = $this->getCacheKey($identifier);
         if (isset(static::$datas[$cacheKey])) {
             $datas = static::$datas[$cacheKey];
@@ -83,6 +102,10 @@ class PhpArray extends SourceAbstract
      */
     public function remove(array $identifier, $shardingKey = null)
     {
+        if (!self::$enabled) {
+            return $this;
+        }
+
         unset(static::$datas[$this->getCacheKey($identifier)]);
 
         return $this;
@@ -96,6 +119,10 @@ class PhpArray extends SourceAbstract
      */
     public function loadIds($serializedCriterias, array $options = array())
     {
+        if (!self::$enabled) {
+            throw new NoDataException(__CLASS__." is disabled");
+        }
+
         if (isset(static::$datas[$serializedCriterias])) {
             return static::$datas[$serializedCriterias];
         }
@@ -113,6 +140,10 @@ class PhpArray extends SourceAbstract
      */
     public function save($datas, array $identifier = array(), $shardingKey = null, &$affectedRows = null)
     {
+        if (!self::$enabled) {
+            return;
+        }
+
         unset(static::$datas[$this->getCacheKey($identifier)]);
     }
 
@@ -124,6 +155,10 @@ class PhpArray extends SourceAbstract
      */
     public function saveAfterLoading($datas, array $identifier = array(), $shardingKey = null, &$affectedRows = null)
     {
+        if (!self::$enabled) {
+            return;
+        }
+
         static::$datas[$this->getCacheKey($identifier)] = $datas;
     }
 

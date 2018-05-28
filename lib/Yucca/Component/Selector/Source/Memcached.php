@@ -85,6 +85,8 @@ class Memcached implements SelectorSourceInterface
 
     protected function getCacheKey(array $criterias, array $options = array())
     {
+        ksort($criterias);
+        ksort($options);
         //fields
         if (SelectorSourceInterface::RESULT_COUNT === $options[SelectorSourceInterface::RESULT]) {
             $suffix = 'count';
