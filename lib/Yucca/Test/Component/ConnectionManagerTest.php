@@ -146,4 +146,18 @@ class ConnectionManagerTest extends TestCase
         //To see if real singleton
         $this->assertSame($connectionMock, $connectionManager->getConnection('fake'));
     }
+
+    /**
+     *
+     */
+    public function testGetConnectionConfig()
+    {
+        $connectionsConfig = array(
+            'fake' => array(
+                'type'=>'unknown'
+            )
+        );
+        $connectionManager = new \Yucca\Component\ConnectionManager($connectionsConfig);
+        $this->assertSame(array('type'=>'unknown'), $connectionManager->getConnectionConfig('fake'));
+    }
 }

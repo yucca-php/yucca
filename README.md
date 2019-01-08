@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/yucca-php/yucca.png?branch=master)](https://travis-ci.org/yucca-php/yucca)
+[![Coverage Status](https://coveralls.io/repos/github/yucca-php/yucca/badge.svg?branch=master)](https://coveralls.io/github/yucca-php/yucca?branch=master)
 
 Yucca
 =====

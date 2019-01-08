@@ -12,8 +12,8 @@
         <whitelist>
             <directory>./</directory>
             <exclude>
-                <directory>./Resources</directory>
-                <directory>./Test</directory>
+                <directory>./doc</directory>
+                <directory>./lib/Yucca/Test</directory>
                 <directory>./vendor</directory>
             </exclude>
         </whitelist>

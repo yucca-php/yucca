@@ -110,7 +110,6 @@ class UniqueEntityValidator extends ConstraintValidator
          * which is the same as the entity being validated, the criteria is
          * unique.
          */
-
         if (0 == $iterator->count() || (1 == $iterator->count() && $entity->getId() == ($iterator->current()->getId()))) {
             return;
         }

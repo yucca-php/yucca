@@ -11,6 +11,7 @@
 namespace Yucca\Test\Component;
 
 use PHPUnit\Framework\TestCase;
+use Yucca\Test\Concrete\Model\Base;
 
 class SchemaManagerTest extends TestCase
 {
@@ -175,6 +176,23 @@ class SchemaManagerTest extends TestCase
         }
 
         $this->assertSame($result, $schemaManager->fetchOne('table0', array('id'=>1)));
+
+        $this->expectExceptionMessage("Trying to load from table0 with no identifiers");
+        $schemaManager->fetchOne('table0', array());
+    }
+
+    public function test_fetchOneWithoutTableName()
+    {
+        $schemaManager = new \Yucca\Component\SchemaManager(array(
+            'table0' => array(
+                'sharding_strategy'=> 'moduloReturn0',
+                'shards' => array('default0')
+            ),
+        ));
+
+
+        $this->expectExceptionMessage("table name must not be empty");
+        $schemaManager->fetchOne('', array('id'=>1));
     }
 
     public function test_fetchOneSharded()
@@ -249,6 +267,39 @@ class SchemaManagerTest extends TestCase
         $this->assertSame($result, $schemaManager->fetchIds('table0', array('firstName'=>'Bill')));
 
         $this->assertSame($result, $schemaManager->fetchIds('table0', array('firstName'=>array('Bill'))));
+    }
+
+    public function test_fetchAllGroupOrderLimit()
+    {
+        $result = array(array('id'=>1),array('id'=>3));
+        $connection = $this->getMockBuilder('\Doctrine\DBAL\Connection')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $connection->expects($this->once())
+            ->method('fetchAll')
+            ->with('SELECT id FROM `table0` WHERE `firstName`=:firstName GROUP BY id ORDER BY id LIMIT 1,100', array(':firstName'=>'Bill'))
+            ->will($this->returnValue($result));
+        $connectionManager = $this->getMockBuilder('Yucca\Component\ConnectionManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $connectionManager->expects($this->once())
+            ->method('getConnection')
+            ->with('default0')
+            ->will($this->returnValue($connection));
+
+        $schemaManager = new \Yucca\Component\SchemaManager(array(
+            'table0' => array(
+                'sharding_strategy'=> 'moduloReturn0',
+                'shards' => array('default0')
+            ),
+        ));
+        $schemaManager->setConnectionManager($connectionManager);
+
+        $schemaManager->fetchIds('table0', array('firstName'=>'Bill'), array('id'), null, false, array(
+            'orderBy'=>'id',
+            'groupBy'=>'id',
+            'limit'=>'1,100',
+        ));
     }
 
     public function test_fetchAllOneCriteriaMultipleValues()
@@ -545,6 +596,62 @@ class SchemaManagerTest extends TestCase
         $schemaManager->setConnectionManager($connectionManager);
 
         $this->assertSame($schemaManager, $schemaManager->remove('table0', array('id'=>1)));
+    }
+
+    public function test_removeWithObjectCriteria()
+    {
+        $connection = $this->getMockBuilder('\Doctrine\DBAL\Connection')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $connection->expects($this->once())
+            ->method('executeUpdate')
+            ->with('DELETE FROM table0 WHERE id = ?', array(0=>1));
+        $connectionManager = $this->getMockBuilder('Yucca\Component\ConnectionManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $connectionManager->expects($this->once())
+            ->method('getConnection')
+            ->with('default0')
+            ->will($this->returnValue($connection));
+
+        $schemaManager = new \Yucca\Component\SchemaManager(array(
+            'table0' => array(
+                'sharding_strategy'=> 'moduloReturn0',
+                'shards' => array('default0')
+            ),
+        ));
+        $schemaManager->setConnectionManager($connectionManager);
+
+        $object = new Base();
+        $object->setId(1);
+        $this->assertSame($schemaManager, $schemaManager->remove('table0', array('id'=>$object)));
+    }
+
+    public function test_removeWithArrayCriteria()
+    {
+        $connection = $this->getMockBuilder('\Doctrine\DBAL\Connection')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $connection->expects($this->once())
+            ->method('executeUpdate')
+            ->with('DELETE FROM table0 WHERE id IN (?,?)', array(0=>1, 1=>10));
+        $connectionManager = $this->getMockBuilder('Yucca\Component\ConnectionManager')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $connectionManager->expects($this->once())
+            ->method('getConnection')
+            ->with('default0')
+            ->will($this->returnValue($connection));
+
+        $schemaManager = new \Yucca\Component\SchemaManager(array(
+            'table0' => array(
+                'sharding_strategy'=> 'moduloReturn0',
+                'shards' => array('default0')
+            ),
+        ));
+        $schemaManager->setConnectionManager($connectionManager);
+
+        $this->assertSame($schemaManager, $schemaManager->remove('table0', array('id'=>array(1,10))));
     }
 
     public function test_removeSharded()
