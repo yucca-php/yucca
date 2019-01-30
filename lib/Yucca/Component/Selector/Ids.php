@@ -19,8 +19,11 @@ class Ids implements SelectorInterface
      * @var array
      */
     protected $ids;
+    protected $preparedIds;
+    protected $isQueryPrepared = false;
 
     protected $keyName;
+    protected $limit = null;
 
     /**
      * @param array  $ids
@@ -37,10 +40,12 @@ class Ids implements SelectorInterface
      */
     public function current()
     {
+        $this->prepareQuery();
+
         if (isset($this->keyName)) {
-            return array($this->keyName => current($this->ids));
+            return array($this->keyName => current($this->preparedIds));
         } else {
-            return current($this->ids);
+            return current($this->preparedIds);
         }
     }
 
@@ -49,7 +54,9 @@ class Ids implements SelectorInterface
      */
     public function next()
     {
-        next($this->ids);
+        $this->prepareQuery();
+
+        next($this->preparedIds);
     }
 
     /**
@@ -57,7 +64,9 @@ class Ids implements SelectorInterface
      */
     public function key()
     {
-        return key($this->ids);
+        $this->prepareQuery();
+
+        return key($this->preparedIds);
     }
 
     /**
@@ -65,7 +74,9 @@ class Ids implements SelectorInterface
      */
     public function valid()
     {
-        return ( false !== current($this->ids) );
+        $this->prepareQuery();
+
+        return ( false !== current($this->preparedIds) );
     }
 
     /**
@@ -73,7 +84,9 @@ class Ids implements SelectorInterface
      */
     public function rewind()
     {
-        reset($this->ids);
+        $this->prepareQuery();
+
+        reset($this->preparedIds);
     }
 
     /**
@@ -100,5 +113,40 @@ class Ids implements SelectorInterface
     public function setCriteria(array $criteria)
     {
         throw new \RuntimeException();
+    }
+
+    /**
+     * @param mixed $value
+     *
+     * @return $this
+     */
+    public function limit($value)
+    {
+        if (0 === preg_match('/^([0-9]+)(,[0-9]+)?$/', $value)) {
+            throw new \InvalidArgumentException($value.' doesn\'t match limit pattern');
+        }
+        $this->limit = $value;
+
+        return $this;
+    }
+
+    /**
+     *
+     */
+    protected function prepareQuery()
+    {
+        if (false === $this->isQueryPrepared) {
+            if ($this->limit) {
+                $limits = explode(',', $this->limit);
+                if (count($limits) == 1) {
+                    $this->preparedIds = array_slice($this->ids, 0, $limits[0]);
+                } else {
+                    $this->preparedIds = array_slice($this->ids, $limits[0], $limits[1]);
+                }
+            } else {
+                $this->preparedIds = $this->ids;
+            }
+            $this->isQueryPrepared = true;
+        }
     }
 }
